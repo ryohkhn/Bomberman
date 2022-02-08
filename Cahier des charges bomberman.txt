@@ -1,0 +1,61 @@
+﻿Projet - PI4
+Cahier des charges:
+
+
+Menu/Accueil  :
+1. Choix du plateau
+2. Choix du nombres de joueurs/bots
+3. Choix du mode de jeu
+
+Plateau:
+1. Blocs cassables/ Incassables
+2. Ennemis
+3. Bonus (dans les blocs cassables)
+4. Longueur impaire (contraintes: alternance de blocs cassables et non cass.)
+
+Joueurs:
+1. Poser bombe
+2. Se déplacer (sprite)
+3. Peut passer à travers les autres joueurs.
+4. Ne peut pas sortir de l'arène
+5. Ne peut pas traverser les obstacles (blocs, briques et bombes)
+
+Monstres:
+1.Les monstres tuent les joueurs au contact.
+2. Se déplacent de manière aléatoire ou prédéfinie (en fonction des monstres)
+
+Bombes:
+1. Exploser au bout d’un certain temps (secondes)
+2. Sans bonus, quand l’explosion entre en contact avec un objet (pas un joueur ou un ennemi), elle le détruit si possible, mais ne détruit pas l’objet derrière
+
+Bonus :
+1. Traverser les monstres (pendant une durée) ?
+2. Vie supplémentaire
+3. Augmenter la portée des bombes
+4. Pousser les bombes
+5. Courir plus vite
+6. Bombe supplémentaire
+7. Passer à travers les blocs ?
+
+Modes de jeu:
+1. Multijoueur local (avec ou sans bots) - Il s'agit d'un affrontement entre les joueurs. Le but étant d'éliminer tous les joueurs (portail à la fin)
+2. Multijoueur en coop (avec ou sans bots) - Joueurs versus monstres. Un certain nombre de joueurs contre des monstres dans un temps imparti) Faire le plus de points possible.
+3. Solo versus monstres (chrono avec portail),
+Faire le plus de points possible.
+
+
+Taches pour le jeu minimal:
+
+- Faire le plateau de base avec la map
+- Un niveau
+- Sprites (images animées)
+- Les bombes cassent les blocs
+- Le joueur existe, il peut se déplacer sur la carte, il peut poser des bombes
+- Détection des collisions entre objets (bombes,joueurs,maps etc)
+- Mode de base (JCJ)
+- Menu (choix de niveau)
+- Affichage tête haute
+
+- Intellij IDEA, VSC
+- Java 10 (adaptable aux machines du Script)
+
