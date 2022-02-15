@@ -1,8 +1,8 @@
 package model;
 
-public class Bot extends Player implements Movable{
+public class Bot extends Player {
 
 	public Bot(int id) {
-		super(id);
+		super(null,id,0,0);
 	}
 }
