@@ -1,3 +1,6 @@
 .idea
 *.iml
 /bin/
+.classpath
+.project
+out/
