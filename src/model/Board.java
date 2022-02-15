@@ -1,15 +1,14 @@
 package model;
 
+import view.Gui;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Random;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 
 public class Board{
     private Case[][] cases;
@@ -122,8 +121,16 @@ public class Board{
     		System.out.println();
     	}
     }
-    
-    public static void main(String[] args){
+
+	public Case[][] getCases(){
+		return cases;
+	}
+
+	public ArrayList<Player> getPlayerList(){
+		return playerList;
+	}
+
+	public static void main(String[] args){
     	ArrayList<Player> players = new ArrayList<Player>();
     	
 		players.add(new Player(0));
@@ -138,5 +145,6 @@ public class Board{
 		}
     	//System.out.println(board.mapLayout.toString() + "\n");
     	board.printCases();
+		Gui gui=new Gui(board);
     }
 }
