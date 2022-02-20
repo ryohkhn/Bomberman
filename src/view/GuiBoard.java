@@ -2,6 +2,8 @@ package view;
 
 import model.Board;
 import model.Case;
+import model.GameObject;
+import model.Loader;
 import model.Player;
 
 import javax.imageio.ImageIO;
@@ -15,11 +17,18 @@ import java.util.ArrayList;
 public class GuiBoard extends JPanel{
     private Board board;
     private ArrayList<Player> players;
+    Loader loader;
 
     public GuiBoard(Board board){
         this.board=board;
         this.players=board.getPlayerList();
+        GameObject.setSizeY(this.getHeight());
+        GameObject.setSizeX(this.getWidth());
         setBackground(Color.WHITE);
+    }
+
+    public void placePlayers() {
+        //
     }
 
     @Override
@@ -35,6 +44,7 @@ public class GuiBoard extends JPanel{
     }
 
     private void paintBoard(Graphics2D g2) throws IOException{
+        loader = new Loader();
         Case[][] cases=board.getCases();
         int x_pos=0;
         int y_pos=0;
@@ -70,6 +80,8 @@ public class GuiBoard extends JPanel{
         int y_pos=0;
         int y_width=this.getWidth()/cases[0].length;
         int x_width=this.getHeight()/cases.length;
+        GameObject.setSizeY(y_width);
+        GameObject.setSizeX(x_width);
         for(int x=0;x<cases.length;x++){
             for(int y=0;y<cases[0].length;y++){
                 if(cases[x][y].getMovablesOnCase().size()!=0 && cases[x][y].getMovablesOnCase().get(0) instanceof Player){

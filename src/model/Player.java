@@ -26,14 +26,17 @@ public class Player extends GameObject implements Movable{
         this.y = y;
         centerRow = (int)(((this.getPositionY() + Player.sizeY/2 )/Gui.height)*Board.sizeRow);
 		centerCol = (int)(((this.getPositionX()+ Player.sizeX/2)/Gui.width)*Board.sizeCol);
-		
+		/*
 		walkFrames = new BufferedImage[2][4];
 		for(int i=0; i<2; i++) {
 			for(int j=0; j<4; j++) {
 				walkFrames[i][j] = image.getSubimage(j*Player.sizeX, i*Player.sizeY, Player.sizeX, Player.sizeY);
 			}
 		}
+		
         currentFrame = walkFrames[0][0];
+		*/
+		currentFrame = image;
     }
     
 	public int getId() {
@@ -57,6 +60,7 @@ public class Player extends GameObject implements Movable{
 			pressRight = true;
 		}else if(k == keyLeft) {
 			pressLeft = true;
+			System.out.print("Player" + id + "Pressed: " + e.getKeyChar() + "\n");
 	    }
     }
 		
@@ -70,12 +74,12 @@ public class Player extends GameObject implements Movable{
 			pressDown = false;
 		}else if(k == keyLeft) {
 			velq = 0;
-				pressLeft = false;
+			pressLeft = false;
+			System.out.print("Player" + id +" Released: " + e.getKeyChar() + "\n");
 		}else if(k == keyRight) {
 			veld = 0;
 			pressRight = false;
-		}	
-		
+		}
 	}
 
     
@@ -161,13 +165,10 @@ public class Player extends GameObject implements Movable{
 	}
 
     public void update() {
-
         preX = position.x;
 		preY = position.y;
-	
 		Board.cases[centerRow][centerCol].deleteMovableOnCase(this);
 		if(pressDown || pressUp || pressLeft || pressRight) {
-			
 			if(pressDown){
 				detectCollisionDown(position.y + speed);
 			}
@@ -183,7 +184,6 @@ public class Player extends GameObject implements Movable{
     		this.translate(velq + veld, velz + vels);
 		} 
         Board.cases[centerRow][centerCol].addMovableOnCase(this);
-		
 	
 	}
 
@@ -198,7 +198,8 @@ public class Player extends GameObject implements Movable{
 			vels = speed;
 		}
 		centerRow = (int)(((this.position.y + Player.sizeY/2) / Gui.height)*Board.sizeRow);
-      
+		System.out.println(centerRow);
+		System.out.println(centerCol);
 	}
 	
 	private void detectCollisionUp(float newPosY) {

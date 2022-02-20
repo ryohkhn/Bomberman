@@ -1,7 +1,5 @@
 package model;
 
-import view.Gui;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -10,18 +8,35 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Board{
+public class Board implements Runnable{
     public static Case[][] cases;
     private ArrayList<ArrayList<String>> mapLayout;
 	private BufferedReader bufferedReader;
 	private ArrayList<Player> playerList;
-	public static int sizeRow = 15;
-	public static int sizeCol = 13;
+	public static int sizeRow;
+	public static int sizeCol;
+	private Thread thread;
     
-	public Board(String filename, ArrayList<Player> playerList) throws FileNotFoundException {
-		this.playerList = playerList;
+	public Board(String filename,ArrayList<Player> p) throws FileNotFoundException {
+		this.playerList = p;
 		this.loadBoardFile(filename);
 		this.loadCases();
+		this.printCases();
+		this.init();
+	}
+
+	public void init() {
+		thread = new Thread(this);
+		thread.start();
+	}
+	@Override
+	public void run() {
+		while (true) {
+			getPlayer1().update();
+			getPlayer2().update();
+			getPlayer3().update();
+			getPlayer4().update();
+		}
 	}
 
 	public Case[][] getCases() {
@@ -59,7 +74,9 @@ public class Board{
     
     //create array of array of cases from mapLayout
     public void loadCases() {
-		this.cases = new Case[this.mapLayout.size()][this.mapLayout.get(0).size()];
+		sizeCol = this.mapLayout.size();
+		sizeRow = this.mapLayout.get(0).size();
+		cases = new Case[this.mapLayout.size()][this.mapLayout.get(0).size()];
     	int lineCount = 0;
     	for(ArrayList<String> line : this.mapLayout) {
 			int columnCount = 0;
@@ -99,7 +116,7 @@ public class Board{
 	    			default:
 	    				break;
     			}
-    			this.cases[lineCount][columnCount] = currentCase;
+    			cases[lineCount][columnCount] = currentCase;
     			
     			columnCount++;
     		}
@@ -108,7 +125,7 @@ public class Board{
     }
     
     public void printCases() {
-    	for(Case[] line : this.cases) {
+    	for(Case[] line : cases) {
     		for(Case c : line) {
     			if(c.getWall() != null) {
     				String res = c.getWall().isBreakable()?"B":"H";
@@ -132,24 +149,6 @@ public class Board{
 		return playerList;
 	}
 
-	public static void main(String[] args){
-    	ArrayList<Player> players = new ArrayList<Player>();
-    	
-		players.add(new Player(null,0,0,0));
-		players.add(new Player(null,1,0,0));
-		players.add(new Player(null,2,0,0));
-		players.add(new Player(null,3,0,0));
-    	Board board = null;
-		try {
-			board = new Board("maps/default.csv",players);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-    	//System.out.println(board.mapLayout.toString() + "\n");
-    	board.printCases();
-		Gui gui=new Gui(board);
-    }
-
 	public int getCasesCol() {
 		return cases[0].length;
 	}
@@ -158,5 +157,18 @@ public class Board{
 		return cases.length;
 	}
 
+	public Player getPlayer1() {
+		return playerList.get(0);
+	}
+
+	public Player getPlayer2() {
+		return playerList.get(1);
+	}
+	public Player getPlayer3() {
+		return playerList.get(2);
+	}
+	public Player getPlayer4() {
+		return playerList.get(3);
+	}
 	
 }
