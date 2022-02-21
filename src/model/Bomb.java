@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 /**
  * Bomb objects that are created by players.
  */
-public class Bomb{
+public class Bomb implements Runnable{
 
     // Original player that placed this bomb
     private Player player;
@@ -15,7 +15,6 @@ public class Bomb{
     private Board board;
     
     // Stats
-    private int state; // 1 waiting, 2 exploding, 3 finished exploding
     private int firepower;
     private boolean pierce;
     
@@ -31,7 +30,7 @@ public class Bomb{
      * @param timer How long before the bomb detonates
      * @param player Original player that placed this bomb
      */
-    public Bomb(int x, int y, int firepower, boolean pierce, int timer, Player player, Board board) {
+    public Bomb(int x, int y, int firepower, boolean pierce, Player player, Board board) {
     	
     	//Position
     	this.x = x;
@@ -42,8 +41,6 @@ public class Bomb{
         this.firepower = firepower;
         this.pierce = pierce;
         this.player = player;
-        this.state = 1;
-
         // Kicking bomb
         this.kicked = false;
         this.kickDirection = KickDirection.Nothing;
@@ -99,6 +96,27 @@ public class Bomb{
 		//startTime = -1;
 		board.getCases()[x][y].setBomb(null);
 	}
+
+
+    @Override
+    public void run() {
+        try{
+            placeBomb();
+            System.out.println("bombe placée");
+            Thread.sleep(3000);
+            explode();
+            deleteBomb();
+            System.out.println("bombe explose + supprimée");
+            for(int i=0;i<10;i++){
+                killMovables();
+                Thread.sleep(100);
+                System.out.printf("tour %d ",i);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
 
 /**

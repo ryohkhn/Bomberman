@@ -149,10 +149,13 @@ public class Board{
 			e.printStackTrace();
 		}
     	//System.out.println(board.mapLayout.toString() + "\n");
-		Bomb bomb = new Bomb(1, 1, 0, false, 0, null, board);
-    	board.printCases();
 		Gui gui=new Gui(board);
-    }
+		Thread bomb1=new Thread(new Bomb(1, 1, 0, false, players.get(0), board));
+		Thread bomb2=new Thread(new Bomb(1, 1, 0, false, players.get(0), board));
+		bomb1.start();
+		bomb2.start();
+		board.printCases();
+	}
 
 	public int getCasesCol() {
 		return cases[0].length;

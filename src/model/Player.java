@@ -35,6 +35,7 @@ public class Player extends GameObject implements Movable{
 		walkFrames = new BufferedImage[2][4];
 		for(int i=0; i<2; i++) {
 			for(int j=0; j<4; j++) {
+				if(image == null) continue;
 				walkFrames[i][j] = image.getSubimage(j*Player.sizeX, i*Player.sizeY, Player.sizeX, Player.sizeY);
 			}
 		}
