@@ -17,6 +17,9 @@ public class Case{
 		this.movablesOnCase.add(movable);
 	}
 	
+	public void deleteMovableOnCase(Movable movable) {
+		this.movablesOnCase.remove(movable);
+	}
 	public ArrayList<Movable> getMovablesOnCase(){
 		return this.movablesOnCase;
 	}

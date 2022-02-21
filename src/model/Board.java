@@ -11,15 +11,21 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Board{
-    private Case[][] cases;
+    public static Case[][] cases;
     private ArrayList<ArrayList<String>> mapLayout;
 	private BufferedReader bufferedReader;
 	private ArrayList<Player> playerList;
+	public static int sizeRow = 15;
+	public static int sizeCol = 13;
     
 	public Board(String filename, ArrayList<Player> playerList) throws FileNotFoundException {
 		this.playerList = playerList;
 		this.loadBoardFile(filename);
 		this.loadCases();
+	}
+
+	public Case[][] getCases() {
+		return cases;
 	}
 	
     //take filename and load the board
@@ -125,10 +131,6 @@ public class Board{
     	}
     }
 
-	public Case[][] getCases(){
-		return cases;
-	}
-
 	public ArrayList<Player> getPlayerList(){
 		return playerList;
 	}
@@ -136,10 +138,10 @@ public class Board{
 	public static void main(String[] args){
     	ArrayList<Player> players = new ArrayList<Player>();
     	
-		players.add(new Player(0));
-		players.add(new Player(1));
-		players.add(new Player(2));
-		players.add(new Player(3));
+		players.add(new Player(null,0,0,0));
+		players.add(new Player(null,1,0,0));
+		players.add(new Player(null,2,0,0));
+		players.add(new Player(null,3,0,0));
     	Board board = null;
 		try {
 			board = new Board("maps/default.csv",players);
@@ -151,4 +153,13 @@ public class Board{
     	board.printCases();
 		Gui gui=new Gui(board);
     }
+
+	public int getCasesCol() {
+		return cases[0].length;
+	}
+
+	public int getCasesRow() {
+		return cases.length;
+	}
+	
 }
