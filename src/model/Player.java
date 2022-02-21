@@ -1,17 +1,16 @@
 package model;
 
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.awt.event.KeyEvent;
 import view.Gui;
 
-public class Player extends GameObject implements Movable{
+public class Player extends GameObject implements Movable,Runnable{
     private int id;
-    private float x;
-    private float y;
-    private float speed = 2;
+    private float speed = (float)0.2;
     private int centerRow;
     private int centerCol;
-    private int keyUp, keyDown, keyLeft, keyRight;
+    private int keyUp, keyDown, keyLeft, keyRight,keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false;
     private float velz, velq, vels, veld;
     private BufferedImage[][] walkFrames;
@@ -22,10 +21,8 @@ public class Player extends GameObject implements Movable{
     public Player(BufferedImage image,int id,float x,float y) {
         super(image,x,y);
     	this.id = id;
-        this.x = x;
-        this.y = y;
-        centerRow = (int)(((this.getPositionY() + Player.sizeY/2 )/Gui.height)*Board.sizeRow);
-		centerCol = (int)(((this.getPositionX()+ Player.sizeX/2)/Gui.width)*Board.sizeCol);
+        //centerRow = (int)(((this.getPositionY() + Player.sizeY/2 )/Gui.height)*Board.sizeRow);
+		//centerCol = (int)(((this.getPositionX()+ Player.sizeX/2)/Gui.width)*Board.sizeCol);
 		/*
 		walkFrames = new BufferedImage[2][4];
 		for(int i=0; i<2; i++) {
@@ -43,11 +40,12 @@ public class Player extends GameObject implements Movable{
 		return id;
 	}
 
-    public void bindKeys(int up, int down, int left, int right) {
+    public void bindKeys(int up, int down, int left, int right,int action) {
 		keyUp = up;
 		keyDown = down;
 		keyLeft = left;
 		keyRight = right;
+		keyAction = action;
 	}
 
     public void keyPressed(KeyEvent e) {
@@ -58,10 +56,13 @@ public class Player extends GameObject implements Movable{
 			pressDown = true;
 		}else if(k == keyRight) {
 			pressRight = true;
+			System.out.print("Player" + id + "Pressed: " + e.getKeyChar() + "\n");
 		}else if(k == keyLeft) {
 			pressLeft = true;
 			System.out.print("Player" + id + "Pressed: " + e.getKeyChar() + "\n");
-	    }
+	    } else if(k == keyAction) {
+			//bomber
+		}
     }
 		
 	public void keyReleased(KeyEvent e) {	
@@ -79,6 +80,7 @@ public class Player extends GameObject implements Movable{
 		}else if(k == keyRight) {
 			veld = 0;
 			pressRight = false;
+			System.out.print("Player" + id + "Released: " + e.getKeyChar() + "\n");
 		}
 	}
 
@@ -165,25 +167,28 @@ public class Player extends GameObject implements Movable{
 	}
 
     public void update() {
-        preX = position.x;
-		preY = position.y;
-		Board.cases[centerRow][centerCol].deleteMovableOnCase(this);
+		//Board.cases[centerRow][centerCol].deleteMovableOnCase(this);
+		
 		if(pressDown || pressUp || pressLeft || pressRight) {
+			/*
 			if(pressDown){
 				detectCollisionDown(position.y + speed);
+				// x en 0.8 et 0.2
 			}
 			if(pressUp) {
 				detectCollisionUp(position.y - speed);
+				//haut et bas en 0.8
 			}
 			if(pressLeft) {
 				detectCollisionLeft(position.x - speed);
 			}
+			*/
 			if(pressRight) {
-				detectCollisionRight(position.x + speed);
+				detectCollisionRight();
             }
-    		this.translate(velq + veld, velz + vels);
+    		//this.translate(velq + veld, velz + vels);
 		} 
-        Board.cases[centerRow][centerCol].addMovableOnCase(this);
+        //Board.cases[centerRow][centerCol].addMovableOnCase(this);
 	
 	}
 
@@ -198,8 +203,6 @@ public class Player extends GameObject implements Movable{
 			vels = speed;
 		}
 		centerRow = (int)(((this.position.y + Player.sizeY/2) / Gui.height)*Board.sizeRow);
-		System.out.println(centerRow);
-		System.out.println(centerCol);
 	}
 	
 	private void detectCollisionUp(float newPosY) {
@@ -228,7 +231,8 @@ public class Player extends GameObject implements Movable{
 		centerCol = (int)(((this.position.x + Player.sizeX/2)/Gui.width)*Board.sizeCol);
 	}
 	
-	private void detectCollisionRight(float newPosX) {
+	private void detectCollisionRight() {
+		/*
 		int newMatrixX = (int)(((newPosX+Player.sizeX)/Gui.width)*Board.sizeRow);
 		int oldMatrixYUp = (int)(((preY) / Gui.height)*Board.sizeCol);
 		int oldMatrixYDown = (int)(((preY + Player.sizeY)/Gui.height)*Board.sizeCol);
@@ -239,6 +243,36 @@ public class Player extends GameObject implements Movable{
 			veld = speed;
 		}
 		centerCol = (int)(((this.position.x + Player.sizeX/2)/Gui.width)*Board.sizeCol);
+		*/
+		if (position.x % 1  >= 0.8F) {
+			// check les murs
+			int currentx = (int)position.x;
+			int nextx = currentx+1;
+			int nexty = (int)position.y;
+			if (nextx < Board.cases.length) {
+				if(Board.cases[nextx][nexty] != null){
+					position.x+= speed;
+					Board.cases[currentx][(int)position.y].deleteMovableOnCase(this);
+					Board.cases[nextx][nexty].addMovableOnCase(this);
+				}
+			}
+			System.out.println(position.x);
+		}else {
+			position.x += speed;
+		}
+		System.out.println(position.x);
+	}
+
+	public void setPlayer(BufferedImage a,int ind,float x,float y) {
+		this.image = a;
+		this.id = ind;
+		this.setAttributs(a,x,y);
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

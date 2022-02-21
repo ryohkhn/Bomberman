@@ -14,15 +14,14 @@ public class GamePVP extends Game{
     Player player1,player2,player3,player4;
     BufferedImage image1,image2,image3,image4;
     Loader loader;
+    private Board board;
 
     public GamePVP() {
         playerList = new ArrayList<Player>();
     	loader = new Loader();
-        this.addPlayers();
     }
 
     public void init() {
-        Board board = null;
 		try {
 			board = new Board("maps/default.csv",playerList);
 		} catch (FileNotFoundException e) {
@@ -37,6 +36,7 @@ public class GamePVP extends Game{
     	gui.addKeyListener(key3);
         key4 = new PlayerInput(board.getPlayer4());
     	gui.addKeyListener(key4);
+        this.addPlayers();
     }
 
     public void addPlayers() {
@@ -45,18 +45,18 @@ public class GamePVP extends Game{
             image2 = loader.loadImage("resources/player_1.png");
             image3 = loader.loadImage("resources/player_2.png");
             image4 = loader.loadImage("resources/player_3.png");
-            player1 = new Player(image1, 0, 0, 0);
-            player1.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D);
-            player2 = new Player(image2, 1, 5, 5);
-            player2.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT);
-            player3 = new Player(image3, 2, 10, 10);
-            player3.bindKeys(KeyEvent.VK_8, KeyEvent.VK_5, KeyEvent.VK_4, KeyEvent.VK_6);
-            player4 = new Player(image4, 3, 15, 15);
-            player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K);
-            playerList.add(player1);
-            playerList.add(player2);
-            playerList.add(player3);
-            playerList.add(player4);
+            player1 = board.getPlayer1();
+            player1.setPlayer(image1,0,0.4F, 0.4F);
+            player1.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D,KeyEvent.VK_CONTROL);
+            player2 = board.getPlayer2();
+            player2.setPlayer(image2,1,14.4F, 0F);
+            player2.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_PAUSE);
+            player3 = board.getPlayer3();
+            player3.setPlayer(image3,2,0F, 12.4F);
+            player3.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
+            player4 = board.getPlayer4();
+            player4.setPlayer(image4,3,14.4F, 12.4F);
+            player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
         } catch (Exception e) {
             e.printStackTrace();
         }

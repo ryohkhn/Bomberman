@@ -86,18 +86,24 @@ public class Board implements Runnable{
     			
 				switch(c) {
 	    			case "1":
+						Player p1 = new Player(null, 0, 0, 0);
+						Thread a = new Thread(p1);
+						this.playerList.add(p1);
 	    				currentCase.addMovableOnCase(this.playerList.get(0));
 	    				break;
 	    				
 	    			case "2":
+						this.playerList.add(new Player(null, 1, 0, 0));
 	    				currentCase.addMovableOnCase(this.playerList.get(1));
 	    				break;
 	    				
 	    			case "3":
+						this.playerList.add(new Player(null, 2, 0, 0));
 	    				currentCase.addMovableOnCase(this.playerList.get(2));
 	    				break;
 	    				
 	    			case "4":
+						this.playerList.add(new Player(null, 3, 0, 0));
 	    				currentCase.addMovableOnCase(this.playerList.get(3));
 	    				break;
 	    				
@@ -170,5 +176,8 @@ public class Board implements Runnable{
 	public Player getPlayer4() {
 		return playerList.get(3);
 	}
+
+
+
 	
 }

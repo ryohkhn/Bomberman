@@ -52,23 +52,16 @@ public class GameObject {
     	this.position.x = x;
     	this.position.y = y;
     }
-      
-    public void setPosition(Vector2f position) {
-        this.setPosition(position.x, position.y);
-    }
-   
-    public void setPositionY(float y) {
-    	position.y = y;
-    }
-      
-    public void setPositionX(float x) {
-    	position.x = x;
-    }
      
     public BufferedImage getImage() {
     	return image;
     }
 
+    protected void setAttributs(BufferedImage a, float x, float y) {
+        image = a;
+        position.x = x;
+        position.y = y;
+    }
     class Vector2f {
         public float x;
         public float y;
