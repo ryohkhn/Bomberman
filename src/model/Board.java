@@ -104,6 +104,7 @@ public class Board{
     public void printCases() {
     	for(Case[] line : this.cases) {
     		for(Case c : line) {
+    			if(c.getBomb() != null) System.out.print("(");
     			if(c.getWall() != null) {
     				String res = c.getWall().isBreakable()?"B":"H";
     				System.out.print(res);
@@ -116,8 +117,10 @@ public class Board{
     					System.out.print(((Player) (c.getMovablesOnCase().get(0))).getId());
     				}
     			}
-    			System.out.print(" ");
+    			if(c.getBomb() != null) System.out.print(")");
+    			else System.out.print(" ");
     		}
+    		
     		System.out.println();
     	}
     }
@@ -144,6 +147,7 @@ public class Board{
 			e.printStackTrace();
 		}
     	//System.out.println(board.mapLayout.toString() + "\n");
+		Bomb bomb = new Bomb(1, 1, 0, false, 0, null, board);
     	board.printCases();
 		Gui gui=new Gui(board);
     }
