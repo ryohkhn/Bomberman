@@ -25,10 +25,7 @@ public class GuiBoard extends JPanel{
         GameObject.setSizeY(this.getHeight());
         GameObject.setSizeX(this.getWidth());
         setBackground(Color.WHITE);
-    }
-
-    public void placePlayers() {
-        //
+        loader = new Loader();
     }
 
     @Override
@@ -41,72 +38,64 @@ public class GuiBoard extends JPanel{
         } catch(IOException e){
             e.printStackTrace();
         }
+        repaint();
     }
 
     private void paintBoard(Graphics2D g2) throws IOException{
-        loader = new Loader();
         Case[][] cases=board.getCases();
         int x_pos=0;
         int y_pos=0;
         int y_width=this.getWidth()/cases[0].length;
-        int x_width=this.getHeight()/cases.length;
-        for(int x=0;x<cases.length;x++){
-            for(int y=0;y<cases[0].length;y++){
-                if(cases[x][y].getWall()==null){
+        int x_height=this.getHeight()/cases.length;
+        for(Case[] line : cases) {
+            for(Case c : line) {
+                if(c.getWall() == null) {
                     File image=new File("resources/block.png");
                     BufferedImage bufferedImage=ImageIO.read(image);
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_width,y_width,null);
+                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
                 }
-                else if(cases[x][y].getWall().isBreakable()){
+                else if(c.getWall().isBreakable()){
                     File image=new File("resources/block_breakable.png");
                     BufferedImage bufferedImage=ImageIO.read(image);
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_width,y_width,null);
+                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
                 }
                 else{
                     File image=new File("resources/block_unbreakable.png");
                     BufferedImage bufferedImage=ImageIO.read(image);
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_width,y_width,null);
+                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
                 }
-                y_pos+=y_width;
+                x_pos+=x_height;
             }
-            y_pos=0;
-            x_pos+=x_width;
+            x_pos=0;
+            y_pos+=y_width;
         }
     }
 
     private void paintPlayers(Graphics2D g2) throws IOException{
-        Case[][] cases=board.getCases();
-        int x_pos=0;
-        int y_pos=0;
-        int y_width=this.getWidth()/cases[0].length;
-        int x_width=this.getHeight()/cases.length;
-        for(int x=0;x<cases.length;x++){
-            for(int y=0;y<cases[0].length;y++){
-                if(cases[x][y].getMovablesOnCase().size()!=0 && cases[x][y].getMovablesOnCase().get(0) instanceof Player){
-                    File image=null;
-                    switch(((Player) cases[x][y].getMovablesOnCase().get(0)).getId()){
-                        case 0:
-                            image=new File("resources/player_0.png");
-                            break;
-                        case 1:
-                            image=new File("resources/player_1.png");
-                            break;
-                        case 2:
-                            image=new File("resources/player_2.png");
-                            break;
-                        case 3:
-                            image=new File("resources/player_3.png");
-                            break;
-                        default:
-                            break;
-                    }
-                    BufferedImage bufferedImage=ImageIO.read(image);
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_width,y_width,null);
-                }
-                y_pos+=y_width;
+        for(Player player:players){
+            File image=null;
+            float x=player.getPositionX();
+            float y=player.getPositionY();
+            int y_width=this.getWidth()/board.getCases()[0].length;
+            int x_height=this.getHeight()/board.getCases().length;
+            switch(player.getId()){
+                case 0:
+                    image=new File("resources/player_0.png");
+                    break;
+                case 1:
+                    image=new File("resources/player_1.png");
+                    break;
+                case 2:
+                    image=new File("resources/player_2.png");
+                    break;
+                case 3:
+                    image=new File("resources/player_3.png");
+                    break;
+                default:
+                    break;
             }
-            y_pos=0;
-            x_pos+=x_width;
+            BufferedImage bufferedImage=ImageIO.read(image);
+            g2.drawImage(ImageIO.read(image),((int)x)*x_height,((int)y)*y_width,x_height,y_width,null);
         }
     }
 }

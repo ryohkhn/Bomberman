@@ -8,28 +8,4 @@ public class Monster extends GameObject implements Movable{
         super(image, x, y);
         //TODO Auto-generated constructor stub
     }
-
-    @Override
-    public void moveUp(boolean b) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void moveDown(boolean b) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void moveLeft(boolean b) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void moveRight(boolean b) {
-        // TODO Auto-generated method stub
-        
-    }
 }

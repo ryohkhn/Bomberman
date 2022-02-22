@@ -8,7 +8,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Board implements Runnable{
+public class Board{
+	// cases.length représente les lignes
+	// cases[0].length représente les colonnes
     public static Case[][] cases;
     private ArrayList<ArrayList<String>> mapLayout;
 	private BufferedReader bufferedReader;
@@ -22,21 +24,6 @@ public class Board implements Runnable{
 		this.loadBoardFile(filename);
 		this.loadCases();
 		this.printCases();
-		this.init();
-	}
-
-	public void init() {
-		thread = new Thread(this);
-		thread.start();
-	}
-	@Override
-	public void run() {
-		while (true) {
-			getPlayer1().update();
-			getPlayer2().update();
-			getPlayer3().update();
-			getPlayer4().update();
-		}
 	}
 
 	public Case[][] getCases() {
@@ -176,8 +163,4 @@ public class Board implements Runnable{
 	public Player getPlayer4() {
 		return playerList.get(3);
 	}
-
-
-
-	
 }

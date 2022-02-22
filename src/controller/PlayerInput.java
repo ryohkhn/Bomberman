@@ -16,9 +16,4 @@ public class PlayerInput extends KeyAdapter{
 	public void keyPressed(KeyEvent e){
   	  player.keyPressed(e);
     }
-	
-	public void keyReleased(KeyEvent e) {
-		player.keyReleased(e);
-	}	
-	
 }

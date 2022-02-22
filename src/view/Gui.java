@@ -4,7 +4,7 @@ import model.Board;
 
 import javax.swing.*;
 
-public class Gui extends JFrame implements Runnable{
+public class Gui extends JFrame{
     private GuiMenu guiMenu;
     private GuiBar guiBar;
     private GuiBoard guiBoard;
@@ -17,14 +17,9 @@ public class Gui extends JFrame implements Runnable{
         this.guiMenu=new GuiMenu();
         this.guiBar=new GuiBar();
         this.guiBoard=new GuiBoard(board);
-        this.add(guiBoard);
-        setSize(610,630);
+        setSize(610,550);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.add(guiBoard);
         setVisible(true);
-    }
-
-    @Override
-    public void run(){
-        guiBoard.repaint();
     }
 }
