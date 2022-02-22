@@ -70,7 +70,7 @@ public class GamePVP extends Game implements Runnable{
                 Thread.sleep(1000);
             }
             catch(Exception e){
-                System.out.println();
+                System.out.println("kc");
             }
         }
     }

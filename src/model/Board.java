@@ -73,9 +73,7 @@ public class Board{
     			
 				switch(c) {
 	    			case "1":
-						Player p1 = new Player(null, 0, 0, 0);
-						Thread a = new Thread(p1);
-						this.playerList.add(p1);
+						this.playerList.add(new Player(null, 0, 0, 0));
 	    				currentCase.addMovableOnCase(this.playerList.get(0));
 	    				break;
 	    				

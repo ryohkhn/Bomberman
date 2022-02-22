@@ -74,8 +74,8 @@ public class GuiBoard extends JPanel{
     private void paintPlayers(Graphics2D g2) throws IOException{
         for(Player player:players){
             File image=null;
-            float x=player.getPositionX();
-            float y=player.getPositionY();
+            float x=player.getPositionX()-0.4F;
+            float y=player.getPositionY()-0.4F;
             int y_width=this.getWidth()/board.getCases()[0].length;
             int x_height=this.getHeight()/board.getCases().length;
             switch(player.getId()){
@@ -95,7 +95,7 @@ public class GuiBoard extends JPanel{
                     break;
             }
             BufferedImage bufferedImage=ImageIO.read(image);
-            g2.drawImage(ImageIO.read(image),((int)x)*x_height,((int)y)*y_width,x_height,y_width,null);
+            g2.drawImage(ImageIO.read(image),(int)(x*x_height),(int)(y*y_width),x_height,y_width,null);
         }
     }
 }

@@ -1,12 +1,11 @@
 package model;
 
 import java.awt.image.BufferedImage;
-import java.awt.event.KeyEvent;
 
-public class Player extends GameObject implements Movable,Runnable{
+public class Player extends GameObject implements Movable{
     private int id;
     private final float speed = 0.2F;
-    private int keyUp, keyDown, keyLeft, keyRight,keyAction;
+    public int keyUp, keyDown, keyLeft, keyRight,keyAction;
 
     public Player(BufferedImage image,int id,float x,float y) {
         super(image,x,y);
@@ -25,32 +24,11 @@ public class Player extends GameObject implements Movable,Runnable{
 		keyAction = action;
 	}
 
-    public void keyPressed(KeyEvent e) {
-		int k = e.getKeyCode();
-		if(k == keyUp) {
-			detectCollisionUp();
-			System.out.print("Player" + id + "Pressed: " + e.getKeyChar() + "\n");
-		}
-		else if(k == keyDown) {
-			detectCollisionDown();
-			System.out.print("Player" + id + "Pressed: " + e.getKeyChar() + "\n");
-		}
-		else if(k == keyRight) {
-			detectCollisionRight();
-			System.out.print("Player" + id + "Pressed: " + e.getKeyChar() + "\n");
-		}else if(k == keyLeft) {
-			detectCollisionLeft();
-			System.out.print("Player" + id + "Pressed: " + e.getKeyChar() + "\n");
-	    } else if(k == keyAction) {
-			//bomber
-		}
-    }
-
 	public float getSpeed() {
 		return speed;
 	}
 
-    private void detectCollisionDown() {
+    public void detectCollisionDown() {
 		if (position.y % 1 >= 0.75F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -72,7 +50,7 @@ public class Player extends GameObject implements Movable,Runnable{
 		System.out.println(position.y);
 	}
 	
-	private void detectCollisionUp() {
+	public void detectCollisionUp() {
 		if (position.y % 1 <= 0.2F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -91,7 +69,7 @@ public class Player extends GameObject implements Movable,Runnable{
 		System.out.println(position.y);
 	}
 	
-	private void detectCollisionLeft() {
+	public void detectCollisionLeft() {
 		if (position.x % 1 <= 0.2F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -110,7 +88,7 @@ public class Player extends GameObject implements Movable,Runnable{
 		System.out.println(position.x);
 	}
 	
-	private void detectCollisionRight() {
+	public void detectCollisionRight() {
 		if (position.x % 1 >= 0.8F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -134,10 +112,4 @@ public class Player extends GameObject implements Movable,Runnable{
 		this.id = ind;
 		this.setAttributs(a,x,y);
 	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-	}
-
 }
