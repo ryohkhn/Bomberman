@@ -9,8 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Board{
-	// cases.length représente les lignes
-	// cases[0].length représente les colonnes
+	// cases représente les lignes
+	// cases[0] représente les colonnes
     public static Case[][] cases;
     private ArrayList<ArrayList<String>> mapLayout;
 	private BufferedReader bufferedReader;

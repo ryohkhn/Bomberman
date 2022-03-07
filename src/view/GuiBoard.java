@@ -75,8 +75,8 @@ public class GuiBoard extends JPanel{
             File image=null;
             float x=player.getPositionX()-0.4F;
             float y=player.getPositionY()-0.4F;
-            int y_width=this.getWidth()/board.getCases()[0].length;
             int x_height=this.getHeight()/board.getCases().length;
+            int y_width=this.getWidth()/board.getCases()[0].length;
             switch(player.getId()){
                 case 0:
                     image=new File("resources/player_0.png");
@@ -94,7 +94,7 @@ public class GuiBoard extends JPanel{
                     break;
             }
             BufferedImage bufferedImage=ImageIO.read(image);
-            g2.drawImage(bufferedImage,(int)(x*x_height),(int)(y*y_width),x_height,y_width,null);
+            g2.drawImage(ImageIO.read(image),(int)(y*y_width),(int)(x*x_height),y_width,x_height,null);
         }
     }
 }
