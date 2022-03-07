@@ -1,13 +1,17 @@
 package model;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Player extends GameObject implements Movable{
     private int id;
     private final float speed = 0.2F;
     public int keyUp, keyDown, keyLeft, keyRight,keyAction;
+	public ArrayList<Bomb> bombList = new ArrayList<Bomb>();
+	private int nbBomb=1;
 
-    public Player(BufferedImage image,int id,float x,float y) {
+
+	public Player(BufferedImage image,int id,float x,float y) {
         super(image,x,y);
     	this.id = id;
     }
@@ -112,4 +116,13 @@ public class Player extends GameObject implements Movable{
 		this.id = ind;
 		this.setAttributs(a,x,y);
 	}
+
+	public void dropBomb() {
+		if(nbBomb > 0){
+			bombList.add(new Bomb((int)position.x,(int)position.y)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
+
+		}
+	}
+
+
 }

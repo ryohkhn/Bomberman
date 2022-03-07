@@ -38,7 +38,6 @@ public class GuiBoard extends JPanel{
         } catch(IOException e){
             e.printStackTrace();
         }
-        repaint();
     }
 
     private void paintBoard(Graphics2D g2) throws IOException{
@@ -95,7 +94,7 @@ public class GuiBoard extends JPanel{
                     break;
             }
             BufferedImage bufferedImage=ImageIO.read(image);
-            g2.drawImage(ImageIO.read(image),(int)(x*x_height),(int)(y*y_width),x_height,y_width,null);
+            g2.drawImage(bufferedImage,(int)(x*x_height),(int)(y*y_width),x_height,y_width,null);
         }
     }
 }

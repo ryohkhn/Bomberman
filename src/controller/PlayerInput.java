@@ -28,7 +28,7 @@ public class PlayerInput extends KeyAdapter{
 			player.detectCollisionLeft();
 		}
 		else if(k == player.keyAction) {
-			//bomber
+			player.dropBomb();
 		}
 	}
 }

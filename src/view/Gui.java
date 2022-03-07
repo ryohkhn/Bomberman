@@ -3,6 +3,8 @@ package view;
 import model.Board;
 
 import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 
 public class Gui extends JFrame{
     private GuiMenu guiMenu;
@@ -22,4 +24,10 @@ public class Gui extends JFrame{
         this.add(guiBoard);
         setVisible(true);
     }
+
+    protected void paintComponent(Graphics g){
+        //guiBar.paintComponent(g)
+        guiBoard.paintComponent(g);
+    }
+
 }
