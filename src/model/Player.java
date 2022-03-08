@@ -2,25 +2,64 @@ package model;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.awt.event.KeyEvent;
+import view.Gui;
 
 public class Player extends GameObject implements Movable{
     private int id;
-    private final float speed = 0.2F;
-    public int keyUp, keyDown, keyLeft, keyRight,keyAction;
-	public ArrayList<Bomb> bombList = new ArrayList<Bomb>();
-	private int nbBomb=1;
-
-
-	public Player(BufferedImage image,int id,float x,float y) {
+    private int bombCount;
+    private ArrayList<Bomb> bombList = new ArrayList<Bomb>();
+    private HashMap<Bonus,Integer> bonusMap;
+	private boolean alive;
+    private float x;
+    private float y;
+    private float speed = 2;
+    private int centerRow;
+    private int centerCol;
+    private int keyUp, keyDown, keyLeft, keyRight;
+    private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false;
+    private float velz, velq, vels, veld;
+    private BufferedImage[][] walkFrames;
+    private BufferedImage currentFrame;
+    private float preX;
+    private float preY;
+    
+    public Player(BufferedImage image,int id,float x,float y) {
         super(image,x,y);
     	this.id = id;
+    	this.alive = true;
+        this.x = x;
+        this.y = y;
+        centerRow = (int)(((this.getPositionY() + Player.sizeY/2 )/Gui.height)*Board.sizeRow);
+		centerCol = (int)(((this.getPositionX()+ Player.sizeX/2)/Gui.width)*Board.sizeCol);
+		
+		walkFrames = new BufferedImage[2][4];
+		for(int i=0; i<2; i++) {
+			for(int j=0; j<4; j++) {
+				if(image == null) continue;
+				walkFrames[i][j] = image.getSubimage(j*Player.sizeX, i*Player.sizeY, Player.sizeX, Player.sizeY);
+			}
+		}
+        currentFrame = walkFrames[0][0];
     }
     
 	public int getId() {
 		return id;
 	}
 
-    public void bindKeys(int up, int down, int left, int right,int action) {
+	public int getBombCount() {
+		return bombCount;
+	}
+
+	public void setBombCount(int bombCount) {
+		this.bombCount = bombCount;
+	}
+
+	public void setAlive(boolean b) {
+		this.alive = b;
+	}
+    public void bindKeys(int up, int down, int left, int right) {
 		keyUp = up;
 		keyDown = down;
 		keyLeft = left;
@@ -145,6 +184,4 @@ public class Player extends GameObject implements Movable{
 
 		}
 	}
-
-
 }
