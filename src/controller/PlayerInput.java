@@ -14,11 +14,21 @@ public class PlayerInput extends KeyAdapter{
 	}
 	
 	public void keyPressed(KeyEvent e){
-  	  player.keyPressed(e);
-    }
-	
-	public void keyReleased(KeyEvent e) {
-		player.keyReleased(e);
-	}	
-	
+		int k = e.getKeyCode();
+		if(k == player.keyUp) {
+			player.detectCollisionUp();
+		}
+		else if(k == player.keyDown) {
+			player.detectCollisionDown();
+		}
+		else if(k == player.keyRight) {
+			player.detectCollisionRight();
+		}
+		else if(k == player.keyLeft) {
+			player.detectCollisionLeft();
+		}
+		else if(k == player.keyAction) {
+			player.dropBomb();
+		}
+	}
 }

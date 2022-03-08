@@ -4,10 +4,12 @@ import java.awt.geom.Point2D;
 /**
  * Bomb objects that are created by players.
  */
-public class Bomb implements Runnable{
+public class Bomb extends GameObject{
 
     // Original player that placed this bomb
     private Player player;
+    
+    private double startTime;
     
     //Position of the bomb
     private int x;
@@ -96,26 +98,6 @@ public class Bomb implements Runnable{
 		//startTime = -1;
 		board.getCases()[x][y].setBomb(null);
 	}
-
-
-    @Override
-    public void run() {
-        try{
-            placeBomb();
-            System.out.println("bombe placée");
-            Thread.sleep(3000);
-            explode();
-            deleteBomb();
-            System.out.println("bombe explose + supprimée");
-            for(int i=0;i<10;i++){
-                killMovables();
-                Thread.sleep(100);
-                System.out.printf("tour %d ",i);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 
 }
 

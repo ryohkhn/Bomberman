@@ -1,9 +1,10 @@
 package model;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 
 public class GameObject {
-    public static final int sizeX  = 32;
-	public static final int sizeY = 32;
+    protected static int sizeX;
+	protected static int sizeY;
 	
     protected Vector2f position ;
     protected BufferedImage image;
@@ -13,6 +14,14 @@ public class GameObject {
     public GameObject(BufferedImage image, float x, float y) {
     	position = new Vector2f(x,y);
     	this.image = image;
+    }
+
+    public static void setSizeX(int x) {
+        GameObject.sizeX = x;
+    }
+
+    public static void setSizeY(int sizeY) {
+        GameObject.sizeY = sizeY;
     }
 
     public static int getSizeX() {
@@ -43,23 +52,16 @@ public class GameObject {
     	this.position.x = x;
     	this.position.y = y;
     }
-      
-    public void setPosition(Vector2f position) {
-        this.setPosition(position.x, position.y);
-    }
-   
-    public void setPositionY(float y) {
-    	position.y = y;
-    }
-      
-    public void setPositionX(float x) {
-    	position.x = x;
-    }
      
     public BufferedImage getImage() {
     	return image;
     }
 
+    protected void setAttributs(BufferedImage a, float x, float y) {
+        image = a;
+        position.x = x;
+        position.y = y;
+    }
     class Vector2f {
         public float x;
         public float y;

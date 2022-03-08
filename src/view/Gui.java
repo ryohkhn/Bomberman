@@ -1,32 +1,33 @@
 package view;
 
 import model.Board;
-import model.Player;
 
 import javax.swing.*;
-import java.util.ArrayList;
+import java.awt.*;
+import java.io.IOException;
 
-public class Gui extends JFrame implements Runnable{
+public class Gui extends JFrame{
     private GuiMenu guiMenu;
     private GuiBar guiBar;
     private GuiBoard guiBoard;
-    public static int width; // ài modifier selon les cases
-    public static int height; // modifier ici 640 pour 20*32
+    public static int width;
+    public static int height; 
 
     public Gui(Board board){
-        this.width = 610;
-        this.height = 630;
+        width = 610;
+        height = 630;
         this.guiMenu=new GuiMenu();
         this.guiBar=new GuiBar();
         this.guiBoard=new GuiBoard(board);
-        this.add(guiBoard);
-        setSize(610,630);
+        setSize(610,550);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.add(guiBoard);
         setVisible(true);
     }
 
-    @Override
-    public void run(){
-        guiBoard.repaint();
+    protected void paintComponent(Graphics g){
+        //guiBar.paintComponent(g)
+        guiBoard.paintComponent(g);
     }
+
 }
