@@ -105,7 +105,7 @@ public class Player extends GameObject implements Movable{
     public void detectCollisionDown() {
 		pressDown = true;
 		direction = 1;
-		if (roundFloat(position.x % 1)>= 0.6F) {
+		if (roundFloat(position.x % 1)>= 0.4F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextLine=line+1;
@@ -184,7 +184,7 @@ public class Player extends GameObject implements Movable{
 	public void detectCollisionRight() {
 		pressRight = true;
 		direction = 3;
-		if (roundFloat(position.y % 1)>= 0.6F){
+		if (roundFloat(position.y % 1)>= 0.4F){
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextColumn=column+1;
