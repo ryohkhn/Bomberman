@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
-import model.Bomb;
 import view.Gui;
 
 public class GamePVP extends Game implements Runnable{
@@ -17,6 +16,7 @@ public class GamePVP extends Game implements Runnable{
     private Loader loader;
     private Board board;
     private Gui gui;
+    private double timer;
 
     public GamePVP() {
         playerList = new ArrayList<Player>();
@@ -30,14 +30,14 @@ public class GamePVP extends Game implements Runnable{
 			e.printStackTrace();
 		}
 		this.gui=new Gui(board);
-        key1 = new PlayerInput(board.getPlayer1());
+        key1 = new PlayerInput(board.getPlayer(0));
     	gui.addKeyListener(key1);
-        key2 = new PlayerInput(board.getPlayer2());
+        key2 = new PlayerInput(board.getPlayer(1));
     	gui.addKeyListener(key2);
-        key3 = new PlayerInput(board.getPlayer3());
+        key3 = new PlayerInput(board.getPlayer(2));
     	gui.addKeyListener(key3);
-        key4 = new PlayerInput(board.getPlayer4());
-    	gui.addKeyListener(key4);
+        key4 = new PlayerInput(board.getPlayer(3));
+        gui.addKeyListener(key4);
         this.addPlayers();
     }
 
@@ -47,17 +47,18 @@ public class GamePVP extends Game implements Runnable{
             image2 = loader.loadImage("resources/player_1.png");
             image3 = loader.loadImage("resources/player_2.png");
             image4 = loader.loadImage("resources/player_3.png");
-            player1 = board.getPlayer1();
-            player1.setPlayer(image1, 0, 1.4F, 1.4F);
+
+            player1 = board.getPlayer(0);
+            player1.setPlayer(image1, 0, 1.4F, 1.4F,32,48);
             player1.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
-            player2 = board.getPlayer2();
-            player2.setPlayer(image2,1,1.4F,13.4F);
+            player2 = board.getPlayer(1);
+            player2.setPlayer(image2,1,1.4F,13.4F,32,48);
             player2.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_PAUSE);
-            player3 = board.getPlayer3();
-            player3.setPlayer(image3,2,11.4F, 13.4F);
+            player3 = board.getPlayer(2);
+            player3.setPlayer(image3,2,11.4F, 13.4F,32,48);
             player3.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
-            player4 = board.getPlayer4();
-            player4.setPlayer(image4,3,11.4F, 1.4F);
+            player4 = board.getPlayer(3);
+            player4.setPlayer(image4,3,11.4F, 1.4F,32,48);
             player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,6 +86,8 @@ public class GamePVP extends Game implements Runnable{
 
                 bombExplode();
 
+                bombUpdate();
+                playerUpdate();
                 gui.repaint();
 
             }
@@ -96,9 +99,20 @@ public class GamePVP extends Game implements Runnable{
         }
     }
 
+    private void bombUpdate() {
+        for(Player p : playerList){
+            p.bombUpdate();
+        }
+    }
+
+    private void playerUpdate() {
+        for(Player p : playerList){
+            p.update();
+        }
+    }
     private double printTime(double timer2) {
         if(timer >= timer2 + 100){
-            System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");
+            //System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");
             return timer;
         }
         return timer2;
@@ -108,6 +122,8 @@ public class GamePVP extends Game implements Runnable{
     public boolean hasEnded() { // verification de la victoire
         return false;
     }
+
+
 
     public static void main(String[] args){
         GamePVP game=new GamePVP();

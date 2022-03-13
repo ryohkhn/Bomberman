@@ -1,8 +1,9 @@
 package model;
 
-public class Bot extends Player {
+import java.awt.image.BufferedImage;
 
-	public Bot(int id) {
-		super(null,id,0,0);
+public class Bot extends Player {
+	public Bot(BufferedImage image, int id, float x, float y, Board board) {
+		super(image, id, x, y, board);
 	}
 }

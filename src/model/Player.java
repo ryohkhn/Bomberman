@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,8 @@ import view.Gui;
 public class Player extends GameObject implements Movable{
     private int id;
     private int bombCount;
-    private ArrayList<Bomb> bombList = new ArrayList<Bomb>();
+
+    private ArrayList<Bomb> bombList = new ArrayList<>();
     private HashMap<Bonus,Integer> bonusMap;
 	private boolean alive;
     private float x;
@@ -17,15 +19,21 @@ public class Player extends GameObject implements Movable{
     private float speed = 2;
     private int centerRow;
     private int centerCol;
-    private int keyUp, keyDown, keyLeft, keyRight;
+    private int keyUp, keyDown, keyLeft, keyRight, keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false;
     private float velz, velq, vels, veld;
     private BufferedImage[][] walkFrames;
     private BufferedImage currentFrame;
     private float preX;
     private float preY;
-    
-    public Player(BufferedImage image,int id,float x,float y) {
+	private int nbBomb;
+	private int spriteTimer;
+	private int spriteIndex;
+	private int direction;
+
+	private Board board; // utile pour les bombes, possiblement temporaire
+
+    public Player(BufferedImage image,int id,float x,float y, Board board) {
         super(image,x,y);
     	this.id = id;
     	this.alive = true;
@@ -36,12 +44,52 @@ public class Player extends GameObject implements Movable{
 		
 		walkFrames = new BufferedImage[2][4];
 		for(int i=0; i<2; i++) {
-			for(int j=0; j<4; j++) {
-				if(image == null) continue;
-				walkFrames[i][j] = image.getSubimage(j*Player.sizeX, i*Player.sizeY, Player.sizeX, Player.sizeY);
+			for (int j = 0; j < 4; j++) {
+				if (image == null) continue;
+				walkFrames[i][j] = image.getSubimage(j * Player.sizeX, i * Player.sizeY, Player.sizeX, Player.sizeY);
 			}
 		}
-        currentFrame = walkFrames[0][0];
+		this.board=board;
+    }
+
+
+	public void update() {
+		if (alive) {
+			
+			preX = position.x;
+			preY = position.y;
+
+			Board.cases[centerRow][centerCol].deleteMovableOnCase(this);
+			if(pressDown || pressUp || pressLeft || pressRight) {
+
+				if(pressDown){
+					detectCollisionDown();
+				}
+				if(pressUp) {
+					detectCollisionUp();
+				}
+				if(pressLeft) {
+					detectCollisionLeft();
+				}
+				if(pressRight) {
+					detectCollisionRight();
+				}
+				this.translate(velq + veld, velz + vels);
+			}
+			Board.cases[centerRow][centerCol].addMovableOnCase(this);
+
+
+
+			if ((spriteTimer += speed) >= 10) {
+                spriteIndex++;
+                spriteTimer = 0;
+            }
+            if ((!pressUp && !pressDown && !pressLeft && !pressRight) || (this.spriteIndex >= walkFrames[0].length)) {
+                spriteIndex = 0;
+            }
+            image = this.walkFrames[this.direction][this.spriteIndex];
+		}
+		currentFrame = this.walkFrames[0][0];
     }
     
 	public int getId() {
@@ -59,7 +107,7 @@ public class Player extends GameObject implements Movable{
 	public void setAlive(boolean b) {
 		this.alive = b;
 	}
-    public void bindKeys(int up, int down, int left, int right) {
+    public void bindKeys(int up, int down, int left, int right, int action) {
 		keyUp = up;
 		keyDown = down;
 		keyLeft = left;
@@ -168,20 +216,53 @@ public class Player extends GameObject implements Movable{
 		}
 	}
 
-	private float roundFloat(float f){
-		return (float)(Math.round((f)*100.0)/100.0);
-	}
+
 
 	public void setPlayer(BufferedImage a,int ind,float x,float y) {
 		this.image = a;
 		this.id = ind;
 		this.setAttributs(a,x,y);
 	}
+	
+
+	private float roundFloat(float f){
+		return (float)(Math.round((f)*100.0)/100.0);
+	}
+
+	public void setPlayer(BufferedImage spriteSheet,int ind,float x,float y,int spriteWidth,int spriteHeight) {
+		int rows = spriteSheet.getHeight() / spriteHeight;
+        int cols = spriteSheet.getWidth() / spriteWidth;
+        walkFrames = new BufferedImage[rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                walkFrames[row][col] = spriteSheet.getSubimage(col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight);
+            }
+        }
+
+		this.id = ind;
+		this.setAttributs(walkFrames[1][0],x,y);
+	}
+
 
 	public void dropBomb() {
 		if(nbBomb > 0){
-			bombList.add(new Bomb((int)position.x,(int)position.y)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
-
+			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
+			nbBomb += 1;
+			centerCol = (int)(((this.position.x + Player.sizeX/2)/Gui.width)*Board.sizeCol);
 		}
+	}
+
+	public void bombUpdate() {
+		for(Bomb b : bombList){
+			if(System.currentTimeMillis() - b.getStartTime() > 3000){
+				b.explode();
+				b.killMovables();
+				b.deleteBomb();
+			}
+		}
+	}
+
+	public Board getBoard() {
+		return board;
 	}
 }

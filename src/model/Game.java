@@ -12,5 +12,7 @@ public abstract class Game{
     private Board board;
 
     public abstract void gameLoop();
+
     public abstract boolean hasEnded();
+
 }

@@ -73,22 +73,22 @@ public class Board{
     			
 				switch(c) {
 	    			case "1":
-						this.playerList.add(new Player(null, 0, 0, 0));
+						this.playerList.add(new Player(null, 0, 0, 0,this));
 	    				currentCase.addMovableOnCase(this.playerList.get(0));
 	    				break;
 	    				
 	    			case "2":
-						this.playerList.add(new Player(null, 1, 0, 0));
+						this.playerList.add(new Player(null, 1, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(1));
 	    				break;
 	    				
 	    			case "3":
-						this.playerList.add(new Player(null, 2, 0, 0));
+						this.playerList.add(new Player(null, 2, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(2));
 	    				break;
 	    				
 	    			case "4":
-						this.playerList.add(new Player(null, 3, 0, 0));
+						this.playerList.add(new Player(null, 3, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(3));
 	    				break;
 	    				
@@ -151,17 +151,7 @@ public class Board{
 		return cases.length;
 	}
 
-	public Player getPlayer1() {
-		return playerList.get(0);
-	}
-
-	public Player getPlayer2() {
-		return playerList.get(1);
-	}
-	public Player getPlayer3() {
-		return playerList.get(2);
-	}
-	public Player getPlayer4() {
-		return playerList.get(3);
+	public Player getPlayer(int i) {
+		return playerList.get(i);
 	}
 }
