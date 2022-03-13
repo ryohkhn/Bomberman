@@ -43,21 +43,21 @@ public class GamePVP extends Game implements Runnable{
 
     public void addPlayers() {
         try {
-            image1 = loader.loadImage("resources/player_0.png");
-            image2 = loader.loadImage("resources/player_1.png");
-            image3 = loader.loadImage("resources/player_2.png");
-            image4 = loader.loadImage("resources/player_3.png");
+            image1 = loader.loadImage("resources/playersheet_0.png");
+            image2 = loader.loadImage("resources/playersheet_1.png");
+            image3 = loader.loadImage("resources/playersheet_2.png");
+            image4 = loader.loadImage("resources/playersheet_3.png");
             player1 = board.getPlayer1();
-            player1.setPlayer(image1, 0, 1.4F, 1.4F);
+            player1.setPlayer(image1, 0, 1.4F, 1.4F,32,48);
             player1.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
             player2 = board.getPlayer2();
-            player2.setPlayer(image2,1,1.4F,13.4F);
+            player2.setPlayer(image2,1,1.4F,13.4F,32,48);
             player2.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_PAUSE);
             player3 = board.getPlayer3();
-            player3.setPlayer(image3,2,11.4F, 13.4F);
+            player3.setPlayer(image3,2,11.4F, 13.4F,32,48);
             player3.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
             player4 = board.getPlayer4();
-            player4.setPlayer(image4,3,11.4F, 1.4F);
+            player4.setPlayer(image4,3,11.4F, 1.4F,32,48);
             player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,10 +84,16 @@ public class GamePVP extends Game implements Runnable{
                 delta--;
 
                 bombExplode();
-
+                playerUpdate();
                 gui.repaint();
 
             }
+        }
+    }
+
+    private void playerUpdate() {
+        for(Player p : playerList){
+            p.update();
         }
     }
 
@@ -98,7 +104,7 @@ public class GamePVP extends Game implements Runnable{
 
     private double printTime(double timer2) {
         if(timer >= timer2 + 100){
-            System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");
+            //System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");
             return timer;
         }
         return timer2;
