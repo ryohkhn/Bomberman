@@ -14,14 +14,11 @@ public class Player extends GameObject implements Movable{
     private ArrayList<Bomb> bombList = new ArrayList<>();
     private HashMap<Bonus,Integer> bonusMap;
 	private boolean alive;
-    private float x;
-    private float y;
     private float speed = 2;
     private int centerRow;
     private int centerCol;
     private int keyUp, keyDown, keyLeft, keyRight, keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false;
-    private float velz, velq, vels, veld;
     private BufferedImage[][] walkFrames;
     private BufferedImage currentFrame;
     private float preX;
@@ -37,8 +34,8 @@ public class Player extends GameObject implements Movable{
         super(image,x,y);
     	this.id = id;
     	this.alive = true;
-        this.x = x;
-        this.y = y;
+        position.x = x;
+        position.y = y;
         centerRow = (int)(((this.getPositionY() + Player.sizeY/2 )/Gui.height)*Board.sizeRow);
 		centerCol = (int)(((this.getPositionX()+ Player.sizeX/2)/Gui.width)*Board.sizeCol);
 		
@@ -51,35 +48,10 @@ public class Player extends GameObject implements Movable{
 		}
 		this.board=board;
     }
-
+	
 
 	public void update() {
 		if (alive) {
-			
-			preX = position.x;
-			preY = position.y;
-
-			Board.cases[centerRow][centerCol].deleteMovableOnCase(this);
-			if(pressDown || pressUp || pressLeft || pressRight) {
-
-				if(pressDown){
-					detectCollisionDown();
-				}
-				if(pressUp) {
-					detectCollisionUp();
-				}
-				if(pressLeft) {
-					detectCollisionLeft();
-				}
-				if(pressRight) {
-					detectCollisionRight();
-				}
-				this.translate(velq + veld, velz + vels);
-			}
-			Board.cases[centerRow][centerCol].addMovableOnCase(this);
-
-
-
 			if ((spriteTimer += speed) >= 10) {
                 spriteIndex++;
                 spriteTimer = 0;
@@ -89,9 +61,8 @@ public class Player extends GameObject implements Movable{
             }
             image = this.walkFrames[this.direction][this.spriteIndex];
 		}
-		currentFrame = this.walkFrames[0][0];
-    }
-    
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -108,6 +79,7 @@ public class Player extends GameObject implements Movable{
 		this.alive = b;
 	}
     public void bindKeys(int up, int down, int left, int right, int action) {
+
 		keyUp = up;
 		keyDown = down;
 		keyLeft = left;
@@ -119,7 +91,40 @@ public class Player extends GameObject implements Movable{
 		return speed;
 	}
 
+	public int getKeyUp() {
+		return keyUp;
+	}
+	public int getKeyDown() {
+		return keyDown;
+	}
+	public int getKeyLeft() {
+		return keyLeft;
+	}
+	public int getKeyRight() {
+		return keyRight;
+	}
+
+	public int getKeyAction() {
+		return keyAction;
+	}
+
+	public void setPressDown() {
+		this.pressDown = false;
+	}
+	public void setPressUp() {
+		this.pressUp = false;
+	}
+	public void setPressLeft() {
+		this.pressLeft = false;
+	}
+	public void setPressRight() {
+		this.pressRight = false;
+	}
+
+
     public void detectCollisionDown() {
+		pressDown = true;
+		direction = 1;
 		if (roundFloat(position.x % 1)>= 0.6F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -143,6 +148,8 @@ public class Player extends GameObject implements Movable{
 	}
 
 	public void detectCollisionUp() {
+		pressUp = true;
+		direction = 0;
 		if (roundFloat(position.x % 1)<= 0.4F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -168,6 +175,8 @@ public class Player extends GameObject implements Movable{
 	}
 	
 	public void detectCollisionLeft() {
+		pressLeft = true;
+		direction = 2;
 		if (roundFloat(position.y % 1)<= 0.4F) {
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -193,6 +202,8 @@ public class Player extends GameObject implements Movable{
 	}
 	
 	public void detectCollisionRight() {
+		pressRight = true;
+		direction = 3;
 		if (roundFloat(position.y % 1)>= 0.6F){
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -218,17 +229,6 @@ public class Player extends GameObject implements Movable{
 
 
 
-	public void setPlayer(BufferedImage a,int ind,float x,float y) {
-		this.image = a;
-		this.id = ind;
-		this.setAttributs(a,x,y);
-	}
-
-
-	private float roundFloat(float f){
-		return (float)(Math.round((f)*100.0)/100.0);
-	}
-
 	public void setPlayer(BufferedImage spriteSheet,int ind,float x,float y,int spriteWidth,int spriteHeight) {
 		int rows = spriteSheet.getHeight() / spriteHeight;
         int cols = spriteSheet.getWidth() / spriteWidth;
@@ -244,12 +244,19 @@ public class Player extends GameObject implements Movable{
 	}
 
 
+	private float roundFloat(float f){
+		return (float)(Math.round((f)*100.0)/100.0);
+	}
+
+
 	public void dropBomb() {
+		/*
 		if(nbBomb > 0){
 			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			nbBomb += 1;
 			centerCol = (int)(((this.position.x + Player.sizeX/2)/Gui.width)*Board.sizeCol);
 		}
+		*/
 	}
 
 	public void bombUpdate() {

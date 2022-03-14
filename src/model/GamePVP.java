@@ -43,11 +43,10 @@ public class GamePVP extends Game implements Runnable{
 
     public void addPlayers() {
         try {
-            image1 = loader.loadImage("resources/player_0.png");
-            image2 = loader.loadImage("resources/player_1.png");
-            image3 = loader.loadImage("resources/player_2.png");
-            image4 = loader.loadImage("resources/player_3.png");
-
+            image1 = loader.loadImage("resources/playersheet_0.png");
+            image2 = loader.loadImage("resources/playersheet_1.png");
+            image3 = loader.loadImage("resources/playersheet_2.png");
+            image4 = loader.loadImage("resources/playersheet_3.png");
             player1 = board.getPlayer(0);
             player1.setPlayer(image1, 0, 1.4F, 1.4F,32,48);
             player1.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
@@ -85,12 +84,17 @@ public class GamePVP extends Game implements Runnable{
                 delta--;
 
                 bombExplode();
-
                 bombUpdate();
                 playerUpdate();
                 gui.repaint();
 
             }
+        }
+    }
+
+    private void playerUpdate() {
+        for(Player p : playerList){
+            p.update();
         }
     }
 
@@ -105,11 +109,6 @@ public class GamePVP extends Game implements Runnable{
         }
     }
 
-    private void playerUpdate() {
-        for(Player p : playerList){
-            p.update();
-        }
-    }
     private double printTime(double timer2) {
         if(timer >= timer2 + 100){
             //System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");

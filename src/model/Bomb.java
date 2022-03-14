@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
  * Bomb objects that are created by players.
  */
 public class Bomb extends GameObject{
+
     // Original player that placed this bomb
     private Player player;
 
