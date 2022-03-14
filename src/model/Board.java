@@ -97,6 +97,9 @@ public class Board{
 	    				int r = rand.nextInt(101);
 	        			if(r<81) {
 	        				currentCase.setWall(new Wall(true));
+	        				if(r<61) {
+	        					currentCase.setBonus(new Bonus(Bonus.randomBonus()));
+	        				}
 	        			}
 	    				break;
 	    			

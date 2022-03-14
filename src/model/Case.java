@@ -27,6 +27,10 @@ public class Case{
 	public Bonus getBonus() {
 		return bonus;
 	}
+	
+	public void setBonus(Bonus bonus) {
+		this.bonus = bonus;
+	}
 
 	public Wall getWall() {
 		return wall;

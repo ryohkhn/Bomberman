@@ -277,4 +277,33 @@ public class Player extends GameObject implements Movable{
 		return board;
 	}
 
+	private int ammo = 1;
+    private boolean kick = false;
+    private boolean pierce = false;
+    private int firepower = 1; //max 6
+    
+    public void addFirepower(boolean max) {
+    	this.firepower = (max)?6:this.firepower+1;
+    }
+    
+    public void addAmmo() {
+    	this.ammo += 1;
+    }
+    
+    public void addSpeed() {
+    	this.speed += 1;
+    }
+    
+
+	public void setPierce(boolean pierce) {
+		this.pierce = pierce;
+	}
+
+	public void setKick(boolean kick) {
+		this.kick = kick;
+	}
+
+	public void reduceTimer(int time) {
+		
+	}
 }

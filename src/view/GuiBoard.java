@@ -49,7 +49,13 @@ public class GuiBoard extends JPanel{
         for(Case[] line : cases) {
             for(Case c : line) {
                 if(c.getWall() == null) {
-                    File image=new File("resources/block.png");
+                	File image = null;
+                	if(c.getBonus() != null) {
+                        image=new File(c.getBonus().getSprite());
+                	}
+                	else {
+                        image=new File("resources/block.png");
+                	}
                     BufferedImage bufferedImage=ImageIO.read(image);
                     g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
                 }
