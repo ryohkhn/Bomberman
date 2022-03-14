@@ -66,6 +66,7 @@ public class Bomb extends GameObject{
                 }
             }
 		}
+        System.out.println("bombe explode (destroy wall)");
 	}
 
     public void killMovables() {
@@ -76,6 +77,7 @@ public class Bomb extends GameObject{
 	        	current.killMoveables();
 	        }
 		}
+        System.out.println("bomb kill movables");
     }
     
     public void setKicked(boolean kicked, KickDirection kickDirection) {
@@ -95,11 +97,7 @@ public class Bomb extends GameObject{
    /*
     * Deletes the bomb after explosion
 	*/
-	public void deleteBomb(){
-		player.setBombCount(player.getBombCount()-1);
-		//startTime = -1;
-		board.getCases()[(int)position.x][(int)position.y].setBomb(null);
-	}
+
 
     // setter et getter :
 

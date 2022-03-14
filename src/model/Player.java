@@ -23,7 +23,6 @@ public class Player extends GameObject implements Movable{
     private BufferedImage currentFrame;
     private float preX;
     private float preY;
-	private int nbBomb;
 	private int spriteTimer;
 	private int spriteIndex;
 	private int direction;
@@ -48,7 +47,7 @@ public class Player extends GameObject implements Movable{
 		}
 		this.board=board;
     }
-	
+
 
 	public void update() {
 		if (alive) {
@@ -250,26 +249,32 @@ public class Player extends GameObject implements Movable{
 
 
 	public void dropBomb() {
-		/*
-		if(nbBomb > 0){
+		if(bombCount <= 0){
 			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
-			nbBomb += 1;
+			bombCount += 1;
 			centerCol = (int)(((this.position.x + Player.sizeX/2)/Gui.width)*Board.sizeCol);
+		}else{
+			System.out.println("vous avez deja posé une bombe");
 		}
-		*/
 	}
 
 	public void bombUpdate() {
+		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
 			if(System.currentTimeMillis() - b.getStartTime() > 3000){
 				b.explode();
 				b.killMovables();
-				b.deleteBomb();
+				valueToRemove.add(b);
+				bombCount -= 1;
+				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
+				System.out.println("bomb delete");
 			}
 		}
+		bombList.removeAll(valueToRemove);
 	}
 
 	public Board getBoard() {
 		return board;
 	}
+
 }
