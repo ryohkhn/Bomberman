@@ -33,15 +33,6 @@ public class Player extends GameObject implements Movable{
     	this.alive = true;
         position.x = x;
         position.y = y;
-
-		walkFrames = new BufferedImage[2][4];
-		for(int i=0; i<2; i++) {
-			for (int j = 0; j < 4; j++) {
-				if (image == null) continue;
-				walkFrames[i][j] = image.getSubimage(j * Player.sizeX, i * Player.sizeY, Player.sizeX, Player.sizeY);
-			}
-		}
-		currentFrame = walkFrames[0][0];
 		this.board=board;
     }
 
@@ -266,6 +257,7 @@ public class Player extends GameObject implements Movable{
 
 		this.id = ind;
 		this.setAttributs(walkFrames[1][0],x,y);
+		this.direction = 1;
 	}
 
 
