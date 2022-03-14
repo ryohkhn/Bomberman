@@ -45,6 +45,7 @@ public class Player extends GameObject implements Movable{
 				walkFrames[i][j] = image.getSubimage(j * Player.sizeX, i * Player.sizeY, Player.sizeX, Player.sizeY);
 			}
 		}
+		currentFrame = walkFrames[0][0];
 		this.board=board;
     }
 
