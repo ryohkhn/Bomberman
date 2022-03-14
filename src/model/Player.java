@@ -18,7 +18,6 @@ public class Player extends GameObject implements Movable{
     private int keyUp, keyDown, keyLeft, keyRight,keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false;
     private BufferedImage[][] walkFrames;
-    private BufferedImage currentFrame;
     private float preX;
     private float preY;
 	private int spriteTimer;
@@ -39,7 +38,7 @@ public class Player extends GameObject implements Movable{
 
 	public void update(double deltaTime) {
 		if (alive) {
-			if ((spriteTimer += speed) >= 10) {
+			if ((spriteTimer += speed) >= 25) {
                 spriteIndex++;
                 spriteTimer = 0;
             }
