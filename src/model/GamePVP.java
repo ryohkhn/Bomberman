@@ -85,16 +85,16 @@ public class GamePVP extends Game implements Runnable{
 
                 bombExplode();
                 bombUpdate();
-                playerUpdate();
+                playerUpdate(loopTimeInterval);
                 gui.repaint();
 
             }
         }
     }
 
-    private void playerUpdate() {
+    private void playerUpdate(double deltaTime) {
         for(Player p : playerList){
-            p.update();
+            p.update(deltaTime);
         }
     }
 

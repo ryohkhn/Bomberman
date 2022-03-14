@@ -16,24 +16,6 @@ public class PlayerInput extends KeyAdapter{
 	public void keyPressed(KeyEvent e){
 		int k = e.getKeyCode();
 		if(k == player.getKeyUp()) {
-			player.detectCollisionUp();
-		}
-		else if(k == player.getKeyDown()) {
-			player.detectCollisionDown();
-		}
-		else if(k == player.getKeyRight()) {
-			player.detectCollisionRight();
-		}
-		else if(k == player.getKeyLeft()) {
-			player.detectCollisionLeft();
-		}
-		else if(k == player.getKeyAction()) {
-			player.dropBomb();
-		}
-	}
-	public void keyReleased(KeyEvent e){
-		int k = e.getKeyCode();
-		if(k == player.getKeyUp()) {
 			player.setPressUp();
 		}
 		else if(k == player.getKeyDown()) {
@@ -44,6 +26,24 @@ public class PlayerInput extends KeyAdapter{
 		}
 		else if(k == player.getKeyLeft()) {
 			player.setPressLeft();
+		}
+		else if(k == player.getKeyAction()) {
+			player.dropBomb();
+		}
+	}
+	public void keyReleased(KeyEvent e){
+		int k = e.getKeyCode();
+		if(k == player.getKeyUp()) {
+			player.setReleasedUp();
+		}
+		else if(k == player.getKeyDown()) {
+			player.setReleasedDown();
+		}
+		else if(k == player.getKeyRight()) {
+			player.setReleasedRight();
+		}
+		else if(k == player.getKeyLeft()) {
+			player.setReleasedLeft();
 		}
 		else if(k == player.getKeyAction()) {
 			player.dropBomb();

@@ -1,11 +1,11 @@
 package model;
 
+import view.Gui;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.awt.event.KeyEvent;
-import view.Gui;
 
 public class Player extends GameObject implements Movable{
     private int id;
@@ -14,10 +14,8 @@ public class Player extends GameObject implements Movable{
     private ArrayList<Bomb> bombList = new ArrayList<>();
     private HashMap<Bonus,Integer> bonusMap;
 	private boolean alive;
-    private float speed = 2;
-    private int centerRow;
-    private int centerCol;
-    private int keyUp, keyDown, keyLeft, keyRight, keyAction;
+    private float speed = 5F;
+    private int keyUp, keyDown, keyLeft, keyRight,keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false;
     private BufferedImage[][] walkFrames;
     private BufferedImage currentFrame;
@@ -35,9 +33,7 @@ public class Player extends GameObject implements Movable{
     	this.alive = true;
         position.x = x;
         position.y = y;
-        centerRow = (int)(((this.getPositionY() + Player.sizeY/2 )/Gui.height)*Board.sizeRow);
-		centerCol = (int)(((this.getPositionX()+ Player.sizeX/2)/Gui.width)*Board.sizeCol);
-		
+
 		walkFrames = new BufferedImage[2][4];
 		for(int i=0; i<2; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -50,7 +46,7 @@ public class Player extends GameObject implements Movable{
     }
 
 
-	public void update() {
+	public void update(double deltaTime) {
 		if (alive) {
 			if ((spriteTimer += speed) >= 10) {
                 spriteIndex++;
@@ -60,6 +56,19 @@ public class Player extends GameObject implements Movable{
                 spriteIndex = 0;
             }
             image = this.walkFrames[this.direction][this.spriteIndex];
+
+			if(pressUp){
+				detectCollisionUp(deltaTime);
+			}
+			else if(pressDown){
+				detectCollisionDown(deltaTime);
+			}
+			else if(pressRight){
+				detectCollisionRight(deltaTime);
+			}
+			else if(pressLeft){
+				detectCollisionLeft(deltaTime);
+			}
 		}
 	}
 
@@ -108,22 +117,34 @@ public class Player extends GameObject implements Movable{
 		return keyAction;
 	}
 
-	public void setPressDown() {
+	public void setReleasedDown() {
 		this.pressDown = false;
 	}
-	public void setPressUp() {
+	public void setReleasedUp() {
 		this.pressUp = false;
 	}
-	public void setPressLeft() {
+	public void setReleasedLeft() {
 		this.pressLeft = false;
 	}
-	public void setPressRight() {
+	public void setReleasedRight() {
 		this.pressRight = false;
 	}
 
+	public void setPressDown() {
+		this.pressDown = true;
+	}
+	public void setPressUp() {
+		this.pressUp = true;
+	}
+	public void setPressLeft() {
+		this.pressLeft = true;
+	}
+	public void setPressRight() {
+		this.pressRight = true;
+	}
 
-    public void detectCollisionDown() {
-		pressDown = true;
+    public void detectCollisionDown(double deltaTime) {
+		double speedDelta=speed/deltaTime;
 		direction = 1;
 		if (roundFloat(position.x % 1)>= 0.6F) {
 			int line= (int)position.x;
@@ -133,7 +154,7 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case suivante ligne: "+nextLine+" colonne: "+column);
 			if(nextLine<Board.cases.length-1) {
 				if(Board.cases[nextLine][column].getWall()==null){
-					position.x+=speed;
+					position.x+=speedDelta;
 					Board.cases[line][column].deleteMovableOnCase(this);
 					Board.cases[nextLine][column].addMovableOnCase(this);
 				}
@@ -142,13 +163,13 @@ public class Player extends GameObject implements Movable{
 				}
 			}
 		}else {
-			position.x+=speed;
+			position.x+=speedDelta;
 			position.x=roundFloat(position.x);
 		}
 	}
 
-	public void detectCollisionUp() {
-		pressUp = true;
+	public void detectCollisionUp(double deltaTime) {
+		double speedDelta=speed/deltaTime;
 		direction = 0;
 		if (roundFloat(position.x % 1)<= 0.4F) {
 			int line= (int)position.x;
@@ -158,7 +179,8 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case suivante ligne: "+nextLine+" colonne: "+column);
 			if (nextLine>0) {
 				if(Board.cases[nextLine][column].getWall()==null){
-					position.x-=speed;
+					position.x-=speedDelta;
+					position.y=roundFloat(position.y);
 					Board.cases[line][column].deleteMovableOnCase(this);
 					Board.cases[nextLine][column].addMovableOnCase(this);
 				}
@@ -168,14 +190,14 @@ public class Player extends GameObject implements Movable{
 			}
 			//System.out.println(position.x);
 		}else {
-			position.x-=speed;
-			position.x=roundFloat(position.x);
+			position.x-=speedDelta;
+			//position.x=roundFloat(position.x);
 		}
 		//System.out.println(position.x);
 	}
 	
-	public void detectCollisionLeft() {
-		pressLeft = true;
+	public void detectCollisionLeft(double deltaTime){
+		double speedDelta=speed/deltaTime;
 		direction = 2;
 		if (roundFloat(position.y % 1)<= 0.4F) {
 			int line= (int)position.x;
@@ -185,7 +207,8 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case suivante ligne: "+line+" colonne: "+nextColumn);
 			if (nextColumn>0){
 				if(Board.cases[line][nextColumn].getWall()==null){
-					position.y-=speed;
+					position.y-=speedDelta;
+					position.y=roundFloat(position.y);
 					Board.cases[line][column].deleteMovableOnCase(this);
 					Board.cases[line][nextColumn].addMovableOnCase(this);
 				}
@@ -195,14 +218,15 @@ public class Player extends GameObject implements Movable{
 			}
 			//System.out.println(position.y);
 		}else {
-			position.y-=speed;
-			position.y=roundFloat(position.y);
+			position.y-=speedDelta;
+			//position.y=roundFloat(position.y);
 		}
-		//System.out.println(position.y);
+		System.out.println(position.y);
 	}
 	
-	public void detectCollisionRight() {
-		pressRight = true;
+	public void detectCollisionRight(double deltaTime) {
+		double speedDelta=speed/deltaTime;
+		System.out.println(speedDelta);
 		direction = 3;
 		if (roundFloat(position.y % 1)>= 0.6F){
 			int line= (int)position.x;
@@ -212,7 +236,8 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case suivante ligne: "+line+" colonne: "+nextColumn);
 			if(nextColumn<Board.cases[0].length-1) {
 				if(Board.cases[line][nextColumn].getWall()==null){
-					position.y+=speed;
+					position.y+=speedDelta;
+					position.y=roundFloat(position.y);
 					Board.cases[line][column].deleteMovableOnCase(this);
 					Board.cases[line][nextColumn].addMovableOnCase(this);
 				}
@@ -222,7 +247,7 @@ public class Player extends GameObject implements Movable{
 			}
 			//System.out.println(position.y);
 		}else {
-			position.y+=speed;
+			position.y+=speedDelta;
 			position.y=roundFloat(position.y);
 		}
 	}
@@ -253,7 +278,6 @@ public class Player extends GameObject implements Movable{
 		if(bombCount <= 0){
 			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			bombCount += 1;
-			centerCol = (int)(((this.position.x + Player.sizeX/2)/Gui.width)*Board.sizeCol);
 		}else{
 			System.out.println("vous avez deja posé une bombe");
 		}
