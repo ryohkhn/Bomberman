@@ -223,7 +223,7 @@ public class Player extends GameObject implements Movable{
 		this.id = ind;
 		this.setAttributs(a,x,y);
 	}
-	
+
 
 	private float roundFloat(float f){
 		return (float)(Math.round((f)*100.0)/100.0);
