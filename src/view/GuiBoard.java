@@ -49,14 +49,15 @@ public class GuiBoard extends JPanel{
         for(Case[] line : cases) {
             for(Case c : line) {
                 if(c.getWall() == null) {
-                	File image = null;
+                    File image=new File("resources/block.png");
                 	if(c.getBonus() != null) {
                         image=new File(c.getBonus().getSprite());
                 	}
-                	else {
-                        image=new File("resources/block.png");
-                	}
-                    BufferedImage bufferedImage=ImageIO.read(image);
+                	if(c.getBomb()!=null){
+                        image=new File("resources/bonus_pierce.png");
+
+                    }
+                    BufferedImage bufferedImage=ImageIO.read(image); // TODO: 15/03/2022 resolve error  
                     g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
                 }
                 else if(c.getWall().isBreakable()){
@@ -76,33 +77,30 @@ public class GuiBoard extends JPanel{
         }
     }
 
-    private void paintPlayers(Graphics2D g2) throws IOException{
-        for(Player player:players){
-            float x=player.getPositionX()-0.4F;
-            float y=player.getPositionY()-0.4F;
-            int x_height=this.getHeight()/board.getCases().length;
-            int y_width=this.getWidth()/board.getCases()[0].length;
-            BufferedImage image = player.getImage();
-            if (image == null) {
-                switch(player.getId()){
-                    case 0:
-                        image=loader.loadImage("resources/player_0.png");
-                        break;
-                    case 1:
-                        image=loader.loadImage("resources/player_1.png");
-                        break;
-                    case 2:
-                        image=loader.loadImage("resources/player_2.png");
-                        break;
-                    case 3:
-                        image=loader.loadImage("resources/player_3.png");
-                        break;
-                    default:
-                        break;
-                }
+    private void paintPlayers(Graphics2D g2) throws IOException {
+        for (Player player : players) {
+            File image = null;
+            float x = player.getPositionX() - 0.4F;
+            float y = player.getPositionY() - 0.4F;
+            int x_height = this.getHeight() / board.getCases().length;
+            int y_width = this.getWidth() / board.getCases()[0].length;
+            switch (player.getId()) {
+                case 0:
+                    image = new File("resources/player_0.png");
+                    break;
+                case 1:
+                    image = new File("resources/player_1.png");
+                    break;
+                case 2:
+                    image = new File("resources/player_2.png");
+                    break;
+                case 3:
+                    image = new File("resources/player_3.png");
+                    break;
+                default:
+                    break;
             }
-            assert(image != null);
-            g2.drawImage(image,(int)(y*y_width),(int)(x*x_height),y_width,x_height,null);
+            g2.drawImage(ImageIO.read(image), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
         }
     }
 }

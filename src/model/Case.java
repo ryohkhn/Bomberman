@@ -45,10 +45,11 @@ public class Case{
 		else this.bomb = bomb;
 	}
 
-	public void killMoveables() {
+	public void killMoveables(Board board) {
 		for(Movable m : this.movablesOnCase) {
 			if(m instanceof Player) {
 				((Player)m).setAlive(false);
+				board.getPlayerList().remove(m);
 			}
 		}
 	}
