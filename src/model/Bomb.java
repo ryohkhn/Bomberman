@@ -1,6 +1,10 @@
 package model;
 
+import javax.imageio.ImageIO;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 /**
  * Bomb objects that are created by players.
  */
@@ -60,8 +64,11 @@ public class Bomb extends GameObject{
         int destroyColumnStart = Math.max((int)position.y - firepower, 1);
         int destroyColumnEnd = Math.min((int) position.y + firepower, c[(int) position.x].length - 2);
         boolean end= false;
-        for(int i = (int)position.y; i >= destroyColumnStart && !end; i-- ){
-            Case current = c[(int)position.x][(int)position.y+i];
+        for(int i = (int)position.x; i >= destroyColumnStart && !end; i-- ){
+
+            System.out.println(" boucle 1 : " +(int)position.x + " " + i);
+
+            Case current = c[(int)position.x][i];
             if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
                 end = true;
                 if(current.getWall().isBreakable()){
@@ -69,9 +76,14 @@ public class Bomb extends GameObject{
                 }
             }
         }
+        System.out.println();
+
         end = false;
-        for(int i = (int)position.y; i <= destroyColumnEnd && !end; i++ ){
-            Case current = c[(int)position.x][(int)position.y+i];
+        for(int i = (int)position.x; i <= destroyColumnEnd && !end; i++ ){
+
+            System.out.println(" boucle 2 : " +(int)position.x + " " + i);
+
+            Case current = c[(int)position.x][i];
             if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
                 if(current.getWall().isBreakable()){
                     current.setWall(null);
@@ -79,12 +91,16 @@ public class Bomb extends GameObject{
                 }
             }
         }
+        System.out.println();
 
         int destroyLineStart = Math.max((int)position.x - firepower, 1);
         int destroyLineEnd = Math.min((int) position.x + firepower, c[(int) position.y].length - 2);
         end= false;
         for(int i = (int)position.y; i >= destroyLineStart && !end; i-- ){
-            Case current = c[(int)position.x+i][(int)position.y];
+
+            System.out.println(" boucle 3 : " + i + " " + (int)position.y);
+
+            Case current = c[i][(int)position.y];
             if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
                 if(current.getWall().isBreakable()){
                     current.setWall(null);
@@ -92,9 +108,13 @@ public class Bomb extends GameObject{
                 }
             }
         }
+        System.out.println();
         end = false;
-        for(int i = (int)position.x; i <= destroyLineEnd && !end; i++ ){
-            Case current = c[(int)position.x + i][(int)position.y];
+        for(int i = (int)position.y; i <= destroyLineEnd && !end; i++ ){
+
+            System.out.println(" boucle 4 : " + i + " " + (int)position.y);
+
+            Case current = c[i][(int)position.y];
             if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
                 if(current.getWall().isBreakable()){
                     current.setWall(null);
@@ -113,7 +133,7 @@ public class Bomb extends GameObject{
         int killColumnStart = Math.max((int)position.y - firepower, 1);
     	int killColumnEnd = Math.min((int) position.y + firepower, c[(int) position.x].length - 2);
         for(int i= killColumnStart ;i <= killColumnEnd; i++ ){
-			Case current = c[(int)position.x][(int)position.y+i];
+			Case current = c[(int)position.x][i];
 	    	if(current!=null && current.getMovablesOnCase().size() > 0) {
 	        	current.killMoveables(board);
 	        }
@@ -121,7 +141,7 @@ public class Bomb extends GameObject{
         int killLineStart = Math.max((int)position.x - firepower, 1);
         int killLineEnd = Math.min((int) position.x + firepower, c[(int) position.y].length - 2);
         for(int j=killLineStart; j <= killLineEnd; j++ ){
-            Case current = c[(int)position.x+j][(int)position.y];
+            Case current = c[j][(int)position.y];
             if(current!=null && current.getMovablesOnCase().size() > 0) {
                 current.killMoveables(board);
             }

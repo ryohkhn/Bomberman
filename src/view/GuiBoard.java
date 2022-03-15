@@ -44,8 +44,10 @@ public class GuiBoard extends JPanel{
         Case[][] cases=board.getCases();
         int x_pos=0;
         int y_pos=0;
-        int y_width=this.getWidth()/cases[0].length;
         int x_height=this.getHeight()/cases.length;
+        int y_width=this.getWidth()/cases[0].length;
+        System.out.println("x_h "+x_height);
+        System.out.println("y_w "+y_width);
         for(Case[] line : cases) {
             for(Case c : line) {
                 if(c.getWall() == null) {
@@ -57,23 +59,29 @@ public class GuiBoard extends JPanel{
                         image=new File("resources/bonus_pierce.png");
 
                     }
-                    BufferedImage bufferedImage=ImageIO.read(image); // TODO: 15/03/2022 resolve error  
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
+                    BufferedImage bufferedImage=ImageIO.read(image); // TODO: 15/03/2022 resolve error :
+                    /*
+                    javax.imageio.IIOException: Can't read input file!
+	                at java.desktop/javax.imageio.ImageIO.read(ImageIO.java:1310)
+	                at view.GuiBoard.paintBoard(GuiBoard.java:60)
+                	at view.GuiBoard.paintComponent(GuiBoard.java:36)
+                     */
+                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
                 }
                 else if(c.getWall().isBreakable()){
                     File image=new File("resources/block_breakable.png");
                     BufferedImage bufferedImage=ImageIO.read(image);
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
+                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
                 }
                 else{
                     File image=new File("resources/block_unbreakable.png");
                     BufferedImage bufferedImage=ImageIO.read(image);
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,x_height,y_width,null);
+                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
                 }
-                x_pos+=x_height;
+                x_pos+=y_width;
             }
             x_pos=0;
-            y_pos+=y_width;
+            y_pos+=x_height;
         }
     }
 
@@ -100,7 +108,7 @@ public class GuiBoard extends JPanel{
                 default:
                     break;
             }
-            g2.drawImage(ImageIO.read(image), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            g2.drawImage(ImageIO.read(image), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
         }
     }
 }

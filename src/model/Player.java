@@ -209,14 +209,14 @@ public class Player extends GameObject implements Movable{
 			//System.out.println(position.y);
 		}else {
 			position.y-=speedDelta;
-			//position.y=roundFloat(position.y);
+			position.y=roundFloat(position.y);
 		}
-		System.out.println(position.y);
+		//System.out.println(position.y);
 	}
 	
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
-		System.out.println(speedDelta);
+		//System.out.println(speedDelta);
 		direction = 3;
 		if (roundFloat(position.y % 1)>= 0.6F){
 			int line= (int)position.x;
