@@ -14,8 +14,8 @@ public class Gui extends JFrame{
     public static int height; 
 
     public Gui(Board board){
-        width = 610;
-        height = 630;
+        width = 600;
+        height = 553;
         this.guiMenu=new GuiMenu();
         this.guiBar=new GuiBar();
         this.guiBoard=new GuiBoard(board);
