@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,28 +86,30 @@ public class GuiBoard extends JPanel{
 
     private void paintPlayers(Graphics2D g2) throws IOException {
         for (Player player : players) {
-            File image = null;
+            BufferedImage image = player.getImage();
             float x = player.getPositionX() - 0.4F;
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
-            switch (player.getId()) {
-                case 0:
-                    image = new File("resources/player_0.png");
-                    break;
-                case 1:
-                    image = new File("resources/player_1.png");
-                    break;
-                case 2:
-                    image = new File("resources/player_2.png");
-                    break;
-                case 3:
-                    image = new File("resources/player_3.png");
-                    break;
-                default:
-                    break;
+            if (image == null) {
+                switch (player.getId()) {
+                    case 0:
+                        image = loader.loadImage("resources/player_0.png");
+                        break;
+                    case 1:
+                        image = loader.loadImage("resources/player_1.png");
+                        break;
+                    case 2:
+                        image = loader.loadImage("resources/player_2.png");
+                        break;
+                    case 3:
+                        image = loader.loadImage("resources/player_3.png");
+                        break;
+                    default:
+                        break;
+                }
             }
-            g2.drawImage(ImageIO.read(image), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+            g2.drawImage(image, (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
         }
     }
 }
