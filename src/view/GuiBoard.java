@@ -42,6 +42,9 @@ public class GuiBoard extends JPanel{
     }
 
     private void paintBoard(Graphics2D g2) throws IOException{
+        System.out.println(this.getY());
+        System.out.println("W "+this.getWidth());
+        System.out.println("H "+(this.getHeight()+getInsets().top));
         Case[][] cases=board.getCases();
         int x_pos=0;
         int y_pos=0;
