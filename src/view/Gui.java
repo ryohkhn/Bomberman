@@ -19,7 +19,7 @@ public class Gui extends JFrame{
         this.guiMenu=new GuiMenu();
         this.guiBar=new GuiBar();
         this.guiBoard=new GuiBoard(board);
-        setSize(610,300);
+        setSize(610,550);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(guiBoard);
         setVisible(true);

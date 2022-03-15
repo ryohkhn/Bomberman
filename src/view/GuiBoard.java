@@ -46,8 +46,6 @@ public class GuiBoard extends JPanel{
         int y_pos=0;
         int x_height=this.getHeight()/cases.length;
         int y_width=this.getWidth()/cases[0].length;
-        System.out.println("x_h "+x_height);
-        System.out.println("y_w "+y_width);
         for(Case[] line : cases) {
             for(Case c : line) {
                 if(c.getWall() == null) {
