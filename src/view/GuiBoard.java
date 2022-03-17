@@ -80,6 +80,7 @@ public class GuiBoard extends JPanel{
 
     private void paintPlayers(Graphics2D g2) throws IOException {
         for (Player player : players) {
+        	if(!player.isAlive()) continue;
             BufferedImage image = player.getImage();
             float x = player.getPositionX() - 0.4F;
             float y = player.getPositionY() - 0.4F;

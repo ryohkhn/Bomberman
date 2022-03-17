@@ -49,7 +49,6 @@ public class Case{
 		for(Movable m : this.movablesOnCase) {
 			if(m instanceof Player) {
 				((Player)m).setAlive(false);
-				board.getPlayerList().remove(m);
 			}
 		}
 	}

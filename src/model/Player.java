@@ -338,4 +338,9 @@ public class Player extends GameObject implements Movable{
 	public void reduceTimer(int time) {
 		
 	}
+
+
+	public boolean isAlive() {
+		return this.alive;
+	}
 }
