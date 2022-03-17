@@ -54,7 +54,7 @@ public class Bonus{
         },
 
         // Reduces time for bomb to detonate
-        Timer() {
+        Timer("resources/bonus_kick.png") {
             @Override
             protected void grantBonus(Player player) {
                 player.reduceTimer(15);

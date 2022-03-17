@@ -58,13 +58,7 @@ public class GuiBoard extends JPanel{
                         image=new File("resources/bonus_pierce.png");
 
                     }
-                    BufferedImage bufferedImage=ImageIO.read(image); // TODO: 15/03/2022 resolve error :
-                    /*
-                    javax.imageio.IIOException: Can't read input file!
-	                at java.desktop/javax.imageio.ImageIO.read(ImageIO.java:1310)
-	                at view.GuiBoard.paintBoard(GuiBoard.java:60)
-                	at view.GuiBoard.paintComponent(GuiBoard.java:36)
-                     */
+                    BufferedImage bufferedImage=ImageIO.read(image); 
                     g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
                 }
                 else if(c.getWall().isBreakable()){
