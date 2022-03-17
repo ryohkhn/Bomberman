@@ -143,6 +143,10 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
 			//System.out.println("Case suivante ligne: "+nextLine+" colonne: "+column);
 			if(nextLine<Board.cases.length-1) {
+				if(Board.cases[nextLine][column].getBonus()!=null) {
+					Board.cases[nextLine][column].getBonus().grantBonus(this);
+					Board.cases[nextLine][column].setBonus(null);
+				}
 				if(Board.cases[nextLine][column].getWall()==null){
 					position.x+=speedDelta;
 					Board.cases[line][column].deleteMovableOnCase(this);
@@ -168,6 +172,10 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
 			//System.out.println("Case suivante ligne: "+nextLine+" colonne: "+column);
 			if (nextLine>0) {
+				if(Board.cases[nextLine][column].getBonus()!=null) {
+					Board.cases[nextLine][column].getBonus().grantBonus(this);
+					Board.cases[nextLine][column].setBonus(null);
+				}
 				if(Board.cases[nextLine][column].getWall()==null){
 					position.x-=speedDelta;
 					position.y=roundFloat(position.y);
@@ -196,6 +204,10 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
 			//System.out.println("Case suivante ligne: "+line+" colonne: "+nextColumn);
 			if (nextColumn>0){
+				if(Board.cases[line][nextColumn].getBonus()!=null) {
+					Board.cases[line][nextColumn].getBonus().grantBonus(this);
+					Board.cases[line][nextColumn].setBonus(null);
+				}
 				if(Board.cases[line][nextColumn].getWall()==null){
 					position.y-=speedDelta;
 					position.y=roundFloat(position.y);
@@ -225,6 +237,10 @@ public class Player extends GameObject implements Movable{
 			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
 			//System.out.println("Case suivante ligne: "+line+" colonne: "+nextColumn);
 			if(nextColumn<Board.cases[0].length-1) {
+				if(Board.cases[line][nextColumn].getBonus()!=null) {
+					Board.cases[line][nextColumn].getBonus().grantBonus(this);
+					Board.cases[line][nextColumn].setBonus(null);
+				}
 				if(Board.cases[line][nextColumn].getWall()==null){
 					position.y+=speedDelta;
 					position.y=roundFloat(position.y);
