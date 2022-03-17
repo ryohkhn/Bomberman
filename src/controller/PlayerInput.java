@@ -14,6 +14,7 @@ public class PlayerInput extends KeyAdapter{
 	}
 	
 	public void keyPressed(KeyEvent e){
+		if(!player.isAlive()) return;
 		int k = e.getKeyCode();
 		if(k == player.getKeyUp()) {
 			player.setPressUp();
@@ -32,6 +33,7 @@ public class PlayerInput extends KeyAdapter{
 		}
 	}
 	public void keyReleased(KeyEvent e){
+		if(!player.isAlive()) return;
 		int k = e.getKeyCode();
 		if(k == player.getKeyUp()) {
 			player.setReleasedUp();
