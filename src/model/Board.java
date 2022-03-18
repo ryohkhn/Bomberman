@@ -78,7 +78,8 @@ public class Board{
 	    				break;
 	    				
 	    			case "2":
-						this.playerList.add(new Player(null, 1, 0, 0, this));
+						//this.playerList.add(new Player(null, 1, 0, 0, this));
+						this.playerList.add(new Bot(null, 1, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(1));
 	    				break;
 	    				

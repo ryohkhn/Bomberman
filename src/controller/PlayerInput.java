@@ -14,7 +14,6 @@ public class PlayerInput extends KeyAdapter{
 	}
 	
 	public void keyPressed(KeyEvent e){
-		if(!player.isAlive()) return;
 		int k = e.getKeyCode();
 		if(k == player.getKeyUp()) {
 			player.setPressUp();
@@ -29,11 +28,10 @@ public class PlayerInput extends KeyAdapter{
 			player.setPressLeft();
 		}
 		else if(k == player.getKeyAction()) {
-			player.dropBomb();
+			player.setAction();
 		}
 	}
 	public void keyReleased(KeyEvent e){
-		if(!player.isAlive()) return;
 		int k = e.getKeyCode();
 		if(k == player.getKeyUp()) {
 			player.setReleasedUp();
@@ -48,7 +46,7 @@ public class PlayerInput extends KeyAdapter{
 			player.setReleasedLeft();
 		}
 		else if(k == player.getKeyAction()) {
-			player.dropBomb();
+			player.setReleasedAction();
 		}
 	}
 

@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.lang.model.util.ElementScanner7;
+
 public class Player extends GameObject implements Movable{
     private int id;
     private int bombCount;
@@ -16,10 +18,11 @@ public class Player extends GameObject implements Movable{
 	private boolean alive;
     private float speed = 5F;
     private int keyUp, keyDown, keyLeft, keyRight,keyAction;
-    private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false;
+    private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false, pressAction = false;
     private BufferedImage[][] walkFrames;
     private float preX;
     private float preY;
+	boolean ai;
 	private int spriteTimer;
 	//private int deathTimer;
 	private int spriteIndex;
@@ -35,7 +38,6 @@ public class Player extends GameObject implements Movable{
         position.y = y;
 		this.board=board;
     }
-
 
 	public void update(double deltaTime) {
 		if (alive) {
@@ -59,6 +61,8 @@ public class Player extends GameObject implements Movable{
 			}
 			else if(pressLeft){
 				detectCollisionLeft(deltaTime);
+			} else if (pressAction){
+				dropBomb();
 			}
 		} else {
 			if (spriteTimer++ >= 15) {
@@ -66,8 +70,10 @@ public class Player extends GameObject implements Movable{
                 if (spriteIndex < walkFrames[4].length) {
                     image = walkFrames[4][spriteIndex];
                     spriteTimer = 0;
-                }
-            }
+                } else {
+					image = null;
+				}
+			}
 		}
 	}
 
@@ -120,6 +126,10 @@ public class Player extends GameObject implements Movable{
 		return keyAction;
 	}
 
+	public void setAction() {
+		pressAction = true;
+	}
+
 	public void setReleasedDown() {
 		this.pressDown = false;
 	}
@@ -131,6 +141,10 @@ public class Player extends GameObject implements Movable{
 	}
 	public void setReleasedRight() {
 		this.pressRight = false;
+	}
+
+	public void setReleasedAction() {
+		this.pressAction = false;
 	}
 
 	public void setPressDown() {
@@ -351,7 +365,6 @@ public class Player extends GameObject implements Movable{
 	public void reduceTimer(int time) {
 		
 	}
-
 
 	public boolean isAlive() {
 		return this.alive;
