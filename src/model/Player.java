@@ -21,6 +21,7 @@ public class Player extends GameObject implements Movable{
     private float preX;
     private float preY;
 	private int spriteTimer;
+	//private int deathTimer;
 	private int spriteIndex;
 	private int direction;
 
@@ -59,6 +60,14 @@ public class Player extends GameObject implements Movable{
 			else if(pressLeft){
 				detectCollisionLeft(deltaTime);
 			}
+		} else {
+			if (spriteTimer++ >= 15) {
+                spriteIndex++;
+                if (spriteIndex < walkFrames[4].length) {
+                    image = walkFrames[4][spriteIndex];
+                    spriteTimer = 0;
+                }
+            }
 		}
 	}
 
@@ -75,6 +84,10 @@ public class Player extends GameObject implements Movable{
 	}
 
 	public void setAlive(boolean b) {
+		if (!b) {
+			spriteIndex = 0; 
+			//deathTimer = 0;
+		}
 		this.alive = b;
 	}
     public void bindKeys(int up, int down, int left, int right, int action) {

@@ -80,13 +80,12 @@ public class GuiBoard extends JPanel{
 
     private void paintPlayers(Graphics2D g2) throws IOException {
         for (Player player : players) {
-        	if(!player.isAlive()) continue;
             BufferedImage image = player.getImage();
             float x = player.getPositionX() - 0.4F;
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
-            if (image == null) {
+            if (image == null && player.isAlive()) {
                 switch (player.getId()) {
                     case 0:
                         image = loader.loadImage("resources/player_0.png");
@@ -104,7 +103,9 @@ public class GuiBoard extends JPanel{
                         break;
                 }
             }
-            g2.drawImage(image, (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
-        }
+            if (image != null){
+                g2.drawImage(image, (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+            }
+        }   
     }
 }
