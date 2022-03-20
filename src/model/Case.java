@@ -20,6 +20,7 @@ public class Case{
 	public void deleteMovableOnCase(Movable movable) {
 		this.movablesOnCase.remove(movable);
 	}
+
 	public ArrayList<Movable> getMovablesOnCase(){
 		return this.movablesOnCase;
 	}
@@ -59,5 +60,16 @@ public class Case{
 
 	public void setExploding(boolean exploding) {
 		this.exploding = exploding;
+	}
+
+	@Override
+	public String toString() {
+		return "Case{" +
+				"movablesOnCase=" + movablesOnCase +
+				", wall=" + wall +
+				", bonus=" + bonus +
+				", bomb=" + bomb +
+				", exploding=" + exploding +
+				'}';
 	}
 }

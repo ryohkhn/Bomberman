@@ -164,6 +164,7 @@ public class Player extends GameObject implements Movable{
 		double speedDelta=speed/deltaTime;
 		direction = 1;
 		if (roundFloat(position.x % 1)>= 0.6F) {
+			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextLine=line+1;
@@ -176,13 +177,13 @@ public class Player extends GameObject implements Movable{
 				}
 				if(Board.cases[nextLine][column].getWall()==null){
 					position.x+=speedDelta;
-					Board.cases[line][column].deleteMovableOnCase(this);
-					Board.cases[nextLine][column].addMovableOnCase(this);
+					position.x=roundFloat(position.x);
 				}
 				else{
-					System.out.println("Mur !");
+					//System.out.println("Mur !");
 				}
 			}
+			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 		}else {
 			position.x+=speedDelta;
 			position.x=roundFloat(position.x);
@@ -193,6 +194,8 @@ public class Player extends GameObject implements Movable{
 		double speedDelta=speed/deltaTime;
 		direction = 0;
 		if (roundFloat(position.x % 1)<= 0.4F) {
+			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
+
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextLine=line-1;
@@ -205,18 +208,17 @@ public class Player extends GameObject implements Movable{
 				}
 				if(Board.cases[nextLine][column].getWall()==null){
 					position.x-=speedDelta;
-					position.y=roundFloat(position.y);
-					Board.cases[line][column].deleteMovableOnCase(this);
-					Board.cases[nextLine][column].addMovableOnCase(this);
+					position.x=roundFloat(position.x);
 				}
 				else{
-					System.out.println("Mur !");
+					//System.out.println("Mur !");
 				}
 			}
+			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 			//System.out.println(position.x);
 		}else {
 			position.x-=speedDelta;
-			//position.x=roundFloat(position.x);
+			position.x=roundFloat(position.x);
 		}
 		//System.out.println(position.x);
 	}
@@ -225,6 +227,8 @@ public class Player extends GameObject implements Movable{
 		double speedDelta=speed/deltaTime;
 		direction = 2;
 		if (roundFloat(position.y % 1)<= 0.4F) {
+			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
+
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextColumn=column-1;
@@ -238,13 +242,12 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[line][nextColumn].getWall()==null){
 					position.y-=speedDelta;
 					position.y=roundFloat(position.y);
-					Board.cases[line][column].deleteMovableOnCase(this);
-					Board.cases[line][nextColumn].addMovableOnCase(this);
 				}
 				else{
-					System.out.println("Mur !");
+					//System.out.println("Mur !");
 				}
 			}
+			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 			//System.out.println(position.y);
 		}else {
 			position.y-=speedDelta;
@@ -258,6 +261,8 @@ public class Player extends GameObject implements Movable{
 		//System.out.println(speedDelta);
 		direction = 3;
 		if (roundFloat(position.y % 1)>= 0.6F){
+			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
+
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextColumn=column+1;
@@ -271,13 +276,12 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[line][nextColumn].getWall()==null){
 					position.y+=speedDelta;
 					position.y=roundFloat(position.y);
-					Board.cases[line][column].deleteMovableOnCase(this);
-					Board.cases[line][nextColumn].addMovableOnCase(this);
 				}
 				else{
-					System.out.println("Mur !");
+					//System.out.println("Mur !");
 				}
 			}
+			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 			//System.out.println(position.y);
 		}else {
 			position.y+=speedDelta;
@@ -308,7 +312,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 
-	public void dropBomb() {
+	public void dropBomb() { // TODO: 20/03/2022 faire en sorte qu'on ne puisse pas poser une bombe avant un certain temps (a chaque fois qu'on appuie sur la touche, ça appelle la fonction 6-7 fois, le temps qu'un enleve le doigt 
 		if(bombCount <= 0){
 			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			bombCount += 1;
@@ -322,7 +326,6 @@ public class Player extends GameObject implements Movable{
 		for(Bomb b : bombList){
 			if(System.currentTimeMillis() - b.getStartTime() > 3000){
 				b.explode();
-				b.killMovables();
 				valueToRemove.add(b);
 				bombCount -= 1;
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
@@ -368,5 +371,12 @@ public class Player extends GameObject implements Movable{
 
 	public boolean isAlive() {
 		return this.alive;
+	}
+
+	@Override
+	public String toString() {
+		return "Player{" +
+				"id=" + id +
+				'}';
 	}
 }

@@ -59,94 +59,83 @@ public class Bomb extends GameObject{
 
     }
     
-    public void explode() {
-    	Case [][] c = board.getCases();
-        int destroyColumnStart = Math.max((int)position.y - firepower, 1);
-        int destroyColumnEnd = Math.min((int) position.y + firepower, c[(int) position.x].length - 2);
-        boolean end= false;
-        for(int i = (int)position.x; i >= destroyColumnStart && !end; i-- ){
 
-            System.out.println(" boucle 1 : " +(int)position.x + " " + i);
-
-            Case current = c[(int)position.x][i];
-            if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
-                end = true;
-                if(current.getWall().isBreakable()){
-                    current.setWall(null);
-                }
-            }
-        }
-        System.out.println();
-
-        end = false;
-        for(int i = (int)position.x; i <= destroyColumnEnd && !end; i++ ){
-
-            System.out.println(" boucle 2 : " +(int)position.x + " " + i);
-
-            Case current = c[(int)position.x][i];
-            if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
-                if(current.getWall().isBreakable()){
-                    current.setWall(null);
-                    end = true;
-                }
-            }
-        }
-        System.out.println();
-
-        int destroyLineStart = Math.max((int)position.x - firepower, 1);
-        int destroyLineEnd = Math.min((int) position.x + firepower, c[(int) position.y].length - 2);
-        end= false;
-        for(int i = (int)position.y; i >= destroyLineStart && !end; i-- ){
-
-            System.out.println(" boucle 3 : " + i + " " + (int)position.y);
-
-            Case current = c[i][(int)position.y];
-            if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
-                if(current.getWall().isBreakable()){
-                    current.setWall(null);
-                    end = true;
-                }
-            }
-        }
-        System.out.println();
-        end = false;
-        for(int i = (int)position.y; i <= destroyLineEnd && !end; i++ ){
-
-            System.out.println(" boucle 4 : " + i + " " + (int)position.y);
-
-            Case current = c[i][(int)position.y];
-            if(current!=null && current.getWall() != null){ // Destroy wall near the bomb
-                if(current.getWall().isBreakable()){
-                    current.setWall(null);
-                    end = true;
-                }
-            }
-        }
-        System.out.println("bombe explode (destroy wall)");
-	}
 
     /**
      * Function that kills players in a cross-shaped area (with each extension of length firepower)
+     * and destroy wall (if allowed)
      */
-    public void killMovables() {
+    public void explode() {
     	Case [][] c = board.getCases();
-        int killColumnStart = Math.max((int)position.y - firepower, 1);
-    	int killColumnEnd = Math.min((int) position.y + firepower, c[(int) position.x].length - 2);
-        for(int i= killColumnStart ;i <= killColumnEnd; i++ ){
+        int lineLeft = (int)position.y - firepower;
+        int lineRight = (int)position.y + firepower;
+        int columnDown = (int)position.x + firepower;
+        int columnTop = (int)position.x - firepower;
+        boolean end = false;
+        for(int i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
 			Case current = c[(int)position.x][i];
-	    	if(current!=null && current.getMovablesOnCase().size() > 0) {
-	        	current.killMoveables(board);
-	        }
+            if (current.getWall() != null) {
+                if(current.getWall().isBreakable()) {
+                    current.setWall(null);
+                }
+                //System.out.println("right stop at " + (int)position.x + "/" + i + " where there are " + current);
+                //System.out.println("start at y=" + (int)position.y + " stop at y=" + lineRight + "\n" );
+
+                end = true;
+            } else {
+                //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
+                current.killMoveables(board);
+            }
 		}
-        int killLineStart = Math.max((int)position.x - firepower, 1);
-        int killLineEnd = Math.min((int) position.x + firepower, c[(int) position.y].length - 2);
-        for(int j=killLineStart; j <= killLineEnd; j++ ){
-            Case current = c[j][(int)position.y];
-            if(current!=null && current.getMovablesOnCase().size() > 0) {
+        end = false;
+        for(int i = (int)position.y - 1 ;i >= lineLeft && !end; i-- ){
+            Case current = c[(int)position.x][i];
+            if (current.getWall() != null) {
+                if(current.getWall().isBreakable()) {
+                    current.setWall(null);
+                }
+                //System.out.println("left stop at " + (int)position.x + "/" + i + " where there are " + current);
+                //System.out.println("start at y=" + (int)position.y + " stop at y=" + lineLeft + "\n" );
+                end = true;
+            } else {
+                //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
                 current.killMoveables(board);
             }
         }
-        System.out.println("bomb kill movables");
+        end = false;
+        for(int i = (int)position.x - 1 ; i >= columnTop && !end; i-- ){
+            Case current = c[i][(int)position.y];
+            if (current.getWall() != null) {
+                if(current.getWall().isBreakable()) {
+                    current.setWall(null);
+                }
+                //System.out.println("top stop at " + i + "/" + (int)position.y + " where there are " + current);
+                //System.out.println("start at x=" + (int)position.x + " stop at x=" + columnTop + "\n" );
+
+                end = true;
+            } else {
+                //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
+                current.killMoveables(board);
+            }
+        }
+        end = false;
+        for(int i = (int)position.x ; i <= columnDown && !end; i++ ){
+            Case current = c[i][(int)position.y];
+            if (current.getWall() != null) {
+
+                if(current.getWall().isBreakable()) {
+                    current.setWall(null);
+
+                }
+                //System.out.println("down stop at " + i + "/" + (int)position.y + " where there are " + current);
+                //System.out.println("start at x=" + (int)position.x + " stop at x=" + columnTop + "\n" );
+                end = true;
+            } else {
+                //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
+                current.killMoveables(board);
+            }
+        }
+        System.out.println("bomb killed movables and destroyed wall");
     }
     
     public void setKicked(boolean kicked, KickDirection kickDirection) {
