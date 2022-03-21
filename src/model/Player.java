@@ -292,7 +292,7 @@ public class Player extends GameObject implements Movable{
 
 
 	public void dropBomb() { // TODO: 20/03/2022 faire en sorte qu'on ne puisse pas poser une bombe avant un certain temps (a chaque fois qu'on appuie sur la touche, ça appelle la fonction 6-7 fois, le temps qu'un enleve le doigt 
-		if(bombCount <= 0){
+		if(bombCount < this.ammo){
 			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			bombCount += 1;
 		}else{
