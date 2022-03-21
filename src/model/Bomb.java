@@ -2,6 +2,7 @@ package model;
 
 import javax.imageio.ImageIO;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -152,6 +153,10 @@ public class Bomb extends GameObject{
         this.kickDirection = KickDirection.Nothing;
     }
 
+    public KickDirection getKick() {
+    	return this.kickDirection;
+    }
+    
    /*
     * Deletes the bomb after explosion
 	*/
@@ -163,6 +168,12 @@ public class Bomb extends GameObject{
         return startTime;
     }
 
+
+
+	public Player getPlayer() {
+		return player;
+	}
+
 }
 
 /**
@@ -171,10 +182,10 @@ public class Bomb extends GameObject{
  */
 enum KickDirection {
 
-    FromTop(new Point2D.Float(0, 6)),
-    FromBottom(new Point2D.Float(0, -6)),
-    FromLeft(new Point2D.Float(6, 0)),
-    FromRight(new Point2D.Float(-6, 0)),
+    FromTop(new Point2D.Float(1, 0)),
+    FromBottom(new Point2D.Float(-1, 0)),
+    FromLeft(new Point2D.Float(0, 1)),
+    FromRight(new Point2D.Float(0, -1)),
     Nothing(new Point2D.Float(0, 0));
 
     private Point2D.Float velocity;
@@ -183,7 +194,9 @@ enum KickDirection {
         this.velocity = velocity;
     }
 
-    public Point2D.Float getVelocity() {
+
+
+	public Point2D.Float getVelocity() {
         return this.velocity;
     }
 

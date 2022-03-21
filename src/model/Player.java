@@ -165,6 +165,9 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextLine=line+1;
 			if(nextLine<Board.cases.length-1) {
+				if(Board.cases[nextLine][column].getBomb()!=null && this.kick) {
+					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
+				}
 				if(Board.cases[nextLine][column].getBonus()!=null) {
 					Board.cases[nextLine][column].getBonus().grantBonus(this);
 					Board.cases[nextLine][column].setBonus(null);
@@ -190,6 +193,9 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextLine=line-1;
 			if (nextLine>0) {
+				if(Board.cases[nextLine][column].getBomb()!=null && this.kick) {
+					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
+				}
 				if(Board.cases[nextLine][column].getBonus()!=null) {
 					Board.cases[nextLine][column].getBonus().grantBonus(this);
 					Board.cases[nextLine][column].setBonus(null);
@@ -215,6 +221,9 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextColumn=column-1;
 			if (nextColumn>0){
+				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick) {
+					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromRight);
+				}
 				if(Board.cases[line][nextColumn].getBonus()!=null) {
 					Board.cases[line][nextColumn].getBonus().grantBonus(this);
 					Board.cases[line][nextColumn].setBonus(null);
@@ -240,6 +249,9 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextColumn=column+1;
 			if(nextColumn<Board.cases[0].length-1) {
+				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick) {
+					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
+				}
 				if(Board.cases[line][nextColumn].getBonus()!=null) {
 					Board.cases[line][nextColumn].getBonus().grantBonus(this);
 					Board.cases[line][nextColumn].setBonus(null);
@@ -298,6 +310,28 @@ public class Player extends GameObject implements Movable{
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				System.out.println("bomb delete");
 			}
+			if(b.isKicked()) {
+				if((int)(b.position.x + b.getKick().getVelocity().x) >= 13 || (int)(b.position.y + b.getKick().getVelocity().y) >= 15) {
+					b.stopKick();
+				}
+				else {
+					if(board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getWall()!=null) {
+						b.stopKick();
+					}
+					if(board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size()>0 && (board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size()!=1 || !board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
+						b.explode();
+						valueToRemove.add(b);
+						bombCount -= 1;
+						board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
+						System.out.println("bomb delete");
+					}
+					else if((int) b.position.x + b.getKick().getVelocity().x !=  (int) b.position.x|| (int) b.position.y + b.getKick().getVelocity().y !=  (int) b.position.y) {
+						board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
+						board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].setBomb(b);
+					}
+					b.setPosition(b.position.x + b.getKick().getVelocity().x, + b.position.y + b.getKick().getVelocity().y);
+				}
+			}
 		}
 		bombList.removeAll(valueToRemove);
 	}
@@ -307,7 +341,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	private int ammo = 1;
-    private boolean kick = false;
+    private boolean kick = true;
     private boolean pierce = false;
     private int firepower = 1; //max 6
     
