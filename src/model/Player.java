@@ -1,13 +1,9 @@
 package model;
 
-import view.Gui;
-
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.lang.model.util.ElementScanner7;
 
 public class Player extends GameObject implements Movable{
     private int id;
@@ -163,24 +159,19 @@ public class Player extends GameObject implements Movable{
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 1;
-		if (roundFloat(position.x % 1)>= 0.6F) {
+		if (roundFloat(position.x % 1)>= 0.4F) {
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextLine=line+1;
-			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
-			//System.out.println("Case suivante ligne: "+nextLine+" colonne: "+column);
 			if(nextLine<Board.cases.length-1) {
 				if(Board.cases[nextLine][column].getBonus()!=null) {
 					Board.cases[nextLine][column].getBonus().grantBonus(this);
 					Board.cases[nextLine][column].setBonus(null);
 				}
-				if(Board.cases[nextLine][column].getWall()==null){
+				if(Board.cases[nextLine][column].getWall()==null && roundFloat(position.y%1)<=0.4F){
 					position.x+=speedDelta;
 					position.x=roundFloat(position.x);
-				}
-				else{
-					//System.out.println("Mur !");
 				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
@@ -195,32 +186,24 @@ public class Player extends GameObject implements Movable{
 		direction = 0;
 		if (roundFloat(position.x % 1)<= 0.4F) {
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
-
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextLine=line-1;
-			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
-			//System.out.println("Case suivante ligne: "+nextLine+" colonne: "+column);
 			if (nextLine>0) {
 				if(Board.cases[nextLine][column].getBonus()!=null) {
 					Board.cases[nextLine][column].getBonus().grantBonus(this);
 					Board.cases[nextLine][column].setBonus(null);
 				}
-				if(Board.cases[nextLine][column].getWall()==null){
+				if(Board.cases[nextLine][column].getWall()==null && roundFloat(position.y%1)<=0.4F){
 					position.x-=speedDelta;
 					position.x=roundFloat(position.x);
 				}
-				else{
-					//System.out.println("Mur !");
-				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
-			//System.out.println(position.x);
 		}else {
 			position.x-=speedDelta;
 			position.x=roundFloat(position.x);
 		}
-		//System.out.println(position.x);
 	}
 	
 	public void detectCollisionLeft(double deltaTime){
@@ -228,61 +211,45 @@ public class Player extends GameObject implements Movable{
 		direction = 2;
 		if (roundFloat(position.y % 1)<= 0.4F) {
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
-
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextColumn=column-1;
-			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
-			//System.out.println("Case suivante ligne: "+line+" colonne: "+nextColumn);
 			if (nextColumn>0){
 				if(Board.cases[line][nextColumn].getBonus()!=null) {
 					Board.cases[line][nextColumn].getBonus().grantBonus(this);
 					Board.cases[line][nextColumn].setBonus(null);
 				}
-				if(Board.cases[line][nextColumn].getWall()==null){
+				if(Board.cases[line][nextColumn].getWall()==null && roundFloat(position.x%1)<=0.4F){
 					position.y-=speedDelta;
 					position.y=roundFloat(position.y);
 				}
-				else{
-					//System.out.println("Mur !");
-				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
-			//System.out.println(position.y);
 		}else {
 			position.y-=speedDelta;
 			position.y=roundFloat(position.y);
 		}
-		//System.out.println(position.y);
 	}
 	
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
-		//System.out.println(speedDelta);
 		direction = 3;
-		if (roundFloat(position.y % 1)>= 0.6F){
+		if (roundFloat(position.y % 1)>= 0.4F){
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
-
 			int line= (int)position.x;
 			int column= (int)position.y;
 			int nextColumn=column+1;
-			//System.out.println("Case actuelle ligne: "+line+" colonne: "+column);
-			//System.out.println("Case suivante ligne: "+line+" colonne: "+nextColumn);
 			if(nextColumn<Board.cases[0].length-1) {
 				if(Board.cases[line][nextColumn].getBonus()!=null) {
 					Board.cases[line][nextColumn].getBonus().grantBonus(this);
 					Board.cases[line][nextColumn].setBonus(null);
 				}
-				if(Board.cases[line][nextColumn].getWall()==null){
+				if(Board.cases[line][nextColumn].getWall()==null && roundFloat(position.x%1)<=0.4F){
 					position.y+=speedDelta;
 					position.y=roundFloat(position.y);
 				}
-				else{
-					//System.out.println("Mur !");
-				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
-			//System.out.println(position.y);
 		}else {
 			position.y+=speedDelta;
 			position.y=roundFloat(position.y);

@@ -16,7 +16,7 @@ public class GamePVP extends Game implements Runnable{
     private Loader loader;
     private Board board;
     private Gui gui;
-    private double timer;
+    public static double timer;
 
     public GamePVP() {
         playerList = new ArrayList<Player>();
@@ -86,7 +86,7 @@ public class GamePVP extends Game implements Runnable{
                 bombExplode();
                 bombUpdate();
                 playerUpdate(loopTimeInterval);
-                gui.repaint();
+                gui.repaintGui();
 
             }
         }

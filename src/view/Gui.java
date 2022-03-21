@@ -4,7 +4,6 @@ import model.Board;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class Gui extends JFrame{
     private GuiMenu guiMenu;
@@ -17,17 +16,22 @@ public class Gui extends JFrame{
         width = 600;
         height = 553;
         this.guiMenu=new GuiMenu();
-        this.guiBar=new GuiBar();
+        this.guiBar=new GuiBar(board.getPlayerList());
         this.guiBoard=new GuiBoard(board);
+
         setSize(600,553);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.add(guiBoard);
+
+        this.setLayout(new BorderLayout());
+        guiBar.setPreferredSize(new Dimension(this.getHeight()/15,this.getWidth()/15));
+
+        this.add(guiBar,BorderLayout.NORTH);
+        this.add(guiBoard,BorderLayout.CENTER);
         setVisible(true);
     }
 
-    protected void paintComponent(Graphics g){
-        //guiBar.paintComponent(g)
-        guiBoard.paintComponent(g);
+    public void repaintGui(){
+        guiBar.repaint();
+        guiBoard.repaint();
     }
-
 }
