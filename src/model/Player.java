@@ -341,12 +341,13 @@ public class Player extends GameObject implements Movable{
 	}
 
 	private int ammo = 1;
-    private boolean kick = true;
+    private boolean kick = false;
     private boolean pierce = false;
     private int firepower = 1; //max 6
     
     public void addFirepower(boolean max) {
     	this.firepower = (max)?6:this.firepower+1;
+    	if(this.firepower>6)this.firepower=6;
     }
     
     public void addAmmo() {
@@ -360,6 +361,10 @@ public class Player extends GameObject implements Movable{
 
 	public void setPierce(boolean pierce) {
 		this.pierce = pierce;
+	}
+	
+	public boolean getPierce() {
+		return this.pierce;
 	}
 
 	public void setKick(boolean kick) {
@@ -379,5 +384,9 @@ public class Player extends GameObject implements Movable{
 		return "Player{" +
 				"id=" + id +
 				'}';
+	}
+
+	public int getFirepower() {
+		return this.firepower;
 	}
 }

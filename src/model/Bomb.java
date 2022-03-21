@@ -68,21 +68,24 @@ public class Bomb extends GameObject{
      */
     public void explode() {
     	Case [][] c = board.getCases();
-        int lineLeft = (int)position.y - firepower;
-        int lineRight = (int)position.y + firepower;
-        int columnDown = (int)position.x + firepower;
-        int columnTop = (int)position.x - firepower;
+        int lineLeft = ((int)position.y - this.player.getFirepower())>=0?(int)position.y - this.player.getFirepower():0;
+        int lineRight = ((int)position.y + this.player.getFirepower())>14?14:(int)position.y + this.player.getFirepower();
+        int columnDown = ((int)position.x + this.player.getFirepower())>12?12:(int)position.x + this.player.getFirepower();
+        int columnTop = ((int)position.x - this.player.getFirepower())>=0?(int)position.x - this.player.getFirepower():0;
         boolean end = false;
         for(int i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
 			Case current = c[(int)position.x][i];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    end = (!this.player.getPierce());
+                }
+                else {
+                	end = true;
                 }
                 //System.out.println("right stop at " + (int)position.x + "/" + i + " where there are " + current);
                 //System.out.println("start at y=" + (int)position.y + " stop at y=" + lineRight + "\n" );
 
-                end = true;
             } else {
                 //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
                 current.killMoveables(board);
@@ -94,10 +97,11 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    end = (!this.player.getPierce());
                 }
-                //System.out.println("left stop at " + (int)position.x + "/" + i + " where there are " + current);
-                //System.out.println("start at y=" + (int)position.y + " stop at y=" + lineLeft + "\n" );
-                end = true;
+                else {
+                	end = true;
+                }
             } else {
                 //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
                 current.killMoveables(board);
@@ -109,11 +113,11 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    end = (!this.player.getPierce());
                 }
-                //System.out.println("top stop at " + i + "/" + (int)position.y + " where there are " + current);
-                //System.out.println("start at x=" + (int)position.x + " stop at x=" + columnTop + "\n" );
-
-                end = true;
+                else {
+                	end = true;
+                }
             } else {
                 //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
                 current.killMoveables(board);
@@ -121,20 +125,23 @@ public class Bomb extends GameObject{
         }
         end = false;
         for(int i = (int)position.x ; i <= columnDown && !end; i++ ){
+        	System.out.println(i);
             Case current = c[i][(int)position.y];
+            System.out.println(current.getWall() != null);
             if (current.getWall() != null) {
 
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-
+                    end = (!this.player.getPierce());
                 }
-                //System.out.println("down stop at " + i + "/" + (int)position.y + " where there are " + current);
-                //System.out.println("start at x=" + (int)position.x + " stop at x=" + columnTop + "\n" );
-                end = true;
+                else {
+                	end = true;
+                }
             } else {
                 //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
                 current.killMoveables(board);
             }
+            System.out.println(i + " " + columnDown);
         }
         System.out.println("bomb killed movables and destroyed wall");
     }
