@@ -83,7 +83,6 @@ public class GamePVP extends Game implements Runnable{
             if (delta >= 1) {
                 delta--;
 
-                bombExplode();
                 bombUpdate();
                 playerUpdate(loopTimeInterval);
                 gui.repaint();
@@ -98,10 +97,6 @@ public class GamePVP extends Game implements Runnable{
         }
     }
 
-    private void bombExplode() {
-        for(Player p : playerList){
-        }
-    }
 
     private void bombUpdate() {
         for(Player p : playerList){

@@ -50,30 +50,38 @@ public class GuiBoard extends JPanel{
             for(Case c : line) {
                 if(c.getWall() == null) {
                     File image=new File("resources/block.png");
-                	if(c.getBonus() != null) {
+                    g2.drawImage(ImageIO.read(image), x_pos, y_pos, y_width, x_height, null); // on affiche l'herbe
+                    if(c.getBonus() != null) {
                         image=new File(c.getBonus().getSprite());
                 	}
-                	if(c.getBomb()!=null){
-                        image=new File("resources/bonus_pierce.png");
-
+                	if(c.getBomb()!=null) {
+                        image = getBombImageState(cases,c);
                     }
-                    BufferedImage bufferedImage=ImageIO.read(image); 
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
+                    g2.drawImage(ImageIO.read(image), x_pos, y_pos, y_width, x_height, null); // on affiche l'élément par dessus
                 }
                 else if(c.getWall().isBreakable()){
                     File image=new File("resources/block_breakable.png");
-                    BufferedImage bufferedImage=ImageIO.read(image);
                     g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
                 }
                 else{
                     File image=new File("resources/block_unbreakable.png");
-                    BufferedImage bufferedImage=ImageIO.read(image);
                     g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
                 }
                 x_pos+=y_width;
             }
             x_pos=0;
             y_pos+=x_height;
+        }
+    }
+
+    private File getBombImageState(Case[][] cases, Case c) {
+        switch (c.getBomb().getSpriteIndex()){
+            case 0: return new File("resources/explosion/explosion_mid_0.png");
+            case 1: return new File("resources/explosion/explosion_mid_1.png");
+            case 2: return new File("resources/explosion/explosion_mid_2.png");
+            case 3: return new File("resources/explosion/explosion_mid_3.png");
+            case 4: return new File("resources/explosion/explosion_mid_4.png");
+            default: return new File("resources/bonus_pierce.png");
         }
     }
 

@@ -303,33 +303,60 @@ public class Player extends GameObject implements Movable{
 	public void bombUpdate() {
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
-			if(System.currentTimeMillis() - b.getStartTime() > 3000){
-				b.explode();
-				valueToRemove.add(b);
-				bombCount -= 1;
+			if(System.currentTimeMillis() - b.getStartTime() > 4700) {
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
+				valueToRemove.add(b);
 				System.out.println("bomb delete");
 			}
-			if(b.isKicked()) {
-				if((int)(b.position.x + b.getKick().getVelocity().x) >= 13 || (int)(b.position.y + b.getKick().getVelocity().y) >= 15) {
+			else if(System.currentTimeMillis() - b.getStartTime() > 4600){
+				b.setSpriteIndex(0);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 4400){
+				b.setSpriteIndex(1);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 4200){
+				b.setSpriteIndex(2);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 4000){
+				b.setSpriteIndex(3);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3800){
+				b.setSpriteIndex(4);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3600){
+				b.setSpriteIndex(3);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3400){
+				b.setSpriteIndex(2);
+
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3200){
+				b.setSpriteIndex(1);
+
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3000){
+				b.explode();
+				b.setSpriteIndex(0);
+				bombCount -= 1;
+			}
+			if(b.isKicked()) { // TODO: 22/03/2022 intégrer animation bombe avec le kick (placer la bombe dans la case ou elle explose et modifer son startTime pour utiliser la méthode deja existante /// ou alors creer une méthode pour la situation kick) 
+				if ((int) (b.position.x + b.getKick().getVelocity().x) >= 13 || (int) (b.position.y + b.getKick().getVelocity().y) >= 15) {
 					b.stopKick();
-				}
-				else {
-					if(board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getWall()!=null) {
+				} else {
+					if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getWall() != null) {
 						b.stopKick();
 					}
-					if(board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size()>0 && (board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size()!=1 || !board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
+					if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() > 0 && (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() != 1 || !board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
 						b.explode();
 						valueToRemove.add(b);
 						bombCount -= 1;
-						board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
+						board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
 						System.out.println("bomb delete");
+					} else if ((int) b.position.x + b.getKick().getVelocity().x != (int) b.position.x || (int) b.position.y + b.getKick().getVelocity().y != (int) b.position.y) {
+						board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
+						board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].setBomb(b);
 					}
-					else if((int) b.position.x + b.getKick().getVelocity().x !=  (int) b.position.x|| (int) b.position.y + b.getKick().getVelocity().y !=  (int) b.position.y) {
-						board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
-						board.getCases()[(int)(b.position.x + b.getKick().getVelocity().x)][(int)(b.position.y + b.getKick().getVelocity().y)].setBomb(b);
-					}
-					b.setPosition(b.position.x + b.getKick().getVelocity().x, + b.position.y + b.getKick().getVelocity().y);
+					b.setPosition(b.position.x + b.getKick().getVelocity().x, +b.position.y + b.getKick().getVelocity().y);
 				}
 			}
 		}

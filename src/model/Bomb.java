@@ -29,8 +29,7 @@ public class Bomb extends GameObject{
     private KickDirection kickDirection;
 
 
-    private int spriteTimer;
-    private int spriteIndex;
+    private int spriteIndex = -1;
 
 
     /**
@@ -176,11 +175,17 @@ public class Bomb extends GameObject{
     }
 
 
-
 	public Player getPlayer() {
 		return player;
 	}
 
+    public int getSpriteIndex() {
+        return spriteIndex;
+    }
+
+    public void setSpriteIndex(int spriteIndex) {
+        this.spriteIndex = spriteIndex;
+    }
 }
 
 /**
