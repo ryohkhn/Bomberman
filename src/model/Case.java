@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Case{
     private ArrayList<Movable> movablesOnCase = new ArrayList<Movable>();
@@ -47,9 +48,13 @@ public class Case{
 	}
 
 	public void killMoveables(Board board) {
-		for(Movable m : this.movablesOnCase) {
-			if(m instanceof Player) {
+		//bonus = null; devrait effacer le bonus si celui-ci est sur la portée des bombes.
+		Iterator<Movable> iterator = movablesOnCase.iterator();
+		while(iterator.hasNext()) {
+			Movable m = iterator.next();
+			if (m instanceof Player) {
 				((Player)m).setAlive(false);
+				iterator.remove();
 			}
 		}
 	}

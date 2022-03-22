@@ -169,13 +169,13 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[nextLine][column].getBomb()!=null && this.kick) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
 				}
-				if(Board.cases[nextLine][column].getBonus()!=null) {
-					Board.cases[nextLine][column].getBonus().grantBonus(this);
-					Board.cases[nextLine][column].setBonus(null);
-				}
-				if(Board.cases[nextLine][column].getWall()==null && roundFloat(position.y%1)<=0.4F){
+				if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null && roundFloat(position.y%1)<=0.4F){
 					position.x+=speedDelta;
 					position.x=roundFloat(position.x);
+					if(Board.cases[nextLine][column].getBonus()!=null) {
+						Board.cases[nextLine][column].getBonus().grantBonus(this);
+						Board.cases[nextLine][column].setBonus(null);
+					}
 				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
@@ -197,13 +197,13 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[nextLine][column].getBomb()!=null && this.kick) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
 				}
-				if(Board.cases[nextLine][column].getBonus()!=null) {
-					Board.cases[nextLine][column].getBonus().grantBonus(this);
-					Board.cases[nextLine][column].setBonus(null);
-				}
-				if(Board.cases[nextLine][column].getWall()==null && roundFloat(position.y%1)<=0.4F){
+				if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null && roundFloat(position.y%1)<=0.4F){
 					position.x-=speedDelta;
 					position.x=roundFloat(position.x);
+					if(Board.cases[nextLine][column].getBonus()!=null) {
+						Board.cases[nextLine][column].getBonus().grantBonus(this);
+						Board.cases[nextLine][column].setBonus(null);
+					}
 				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
@@ -225,13 +225,13 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromRight);
 				}
-				if(Board.cases[line][nextColumn].getBonus()!=null) {
-					Board.cases[line][nextColumn].getBonus().grantBonus(this);
-					Board.cases[line][nextColumn].setBonus(null);
-				}
-				if(Board.cases[line][nextColumn].getWall()==null && roundFloat(position.x%1)<=0.4F){
+				if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null && roundFloat(position.x%1)<=0.4F){
 					position.y-=speedDelta;
 					position.y=roundFloat(position.y);
+					if(Board.cases[line][nextColumn].getBonus()!=null) {
+						Board.cases[line][nextColumn].getBonus().grantBonus(this);
+						Board.cases[line][nextColumn].setBonus(null);
+					}
 				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
@@ -253,13 +253,13 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
 				}
-				if(Board.cases[line][nextColumn].getBonus()!=null) {
-					Board.cases[line][nextColumn].getBonus().grantBonus(this);
-					Board.cases[line][nextColumn].setBonus(null);
-				}
-				if(Board.cases[line][nextColumn].getWall()==null && roundFloat(position.x%1)<=0.4F){
+				if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null && roundFloat(position.x%1)<=0.4F){
 					position.y+=speedDelta;
 					position.y=roundFloat(position.y);
+					if(Board.cases[line][nextColumn].getBonus()!=null) {
+						Board.cases[line][nextColumn].getBonus().grantBonus(this);
+						Board.cases[line][nextColumn].setBonus(null);
+					}
 				}
 			}
 			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
