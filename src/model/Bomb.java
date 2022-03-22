@@ -124,9 +124,7 @@ public class Bomb extends GameObject{
         }
         end = false;
         for(int i = (int)position.x ; i <= columnDown && !end; i++ ){
-        	System.out.println(i);
             Case current = c[i][(int)position.y];
-            System.out.println(current.getWall() != null);
             if (current.getWall() != null) {
 
                 if(current.getWall().isBreakable()) {
@@ -140,7 +138,6 @@ public class Bomb extends GameObject{
                 //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
                 current.killMoveables(board);
             }
-            System.out.println(i + " " + columnDown);
         }
         System.out.println("bomb killed movables and destroyed wall");
     }
@@ -185,6 +182,10 @@ public class Bomb extends GameObject{
 
     public void setSpriteIndex(int spriteIndex) {
         this.spriteIndex = spriteIndex;
+    }
+    
+    public void setStartTime(double time) {
+    	this.startTime = time;
     }
 }
 

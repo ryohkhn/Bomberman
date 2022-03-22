@@ -166,7 +166,7 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextLine=line+1;
 			if(nextLine<Board.cases.length-1) {
-				if(Board.cases[nextLine][column].getBomb()!=null && this.kick) {
+				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
 				}
 				if(Board.cases[nextLine][column].getBonus()!=null) {
@@ -200,7 +200,7 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextLine=line-1;
 			if (nextLine>0) {
-				if(Board.cases[nextLine][column].getBomb()!=null && this.kick) {
+				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
 				}
 				if(Board.cases[nextLine][column].getBonus()!=null) {
@@ -234,7 +234,7 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextColumn=column-1;
 			if (nextColumn>0){
-				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick) {
+				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromRight);
 				}
 				if(Board.cases[line][nextColumn].getBonus()!=null) {
@@ -268,7 +268,7 @@ public class Player extends GameObject implements Movable{
 			int column= (int)position.y;
 			int nextColumn=column+1;
 			if(nextColumn<Board.cases[0].length-1) {
-				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick) {
+				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
 				}
 				if(Board.cases[line][nextColumn].getBonus()!=null) {
@@ -318,6 +318,7 @@ public class Player extends GameObject implements Movable{
 
 	public void dropBomb() { // TODO: 20/03/2022 faire en sorte qu'on ne puisse pas poser une bombe avant un certain temps (a chaque fois qu'on appuie sur la touche, ça appelle la fonction 6-7 fois, le temps qu'un enleve le doigt 
 		if(bombCount < this.ammo && (this.board.getCases()[(int)position.x][(int)position.y].getBomb()==null)){
+			System.out.println("Ammo " + this.ammo + " Bombs " + bombCount);
 			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			bombCount += 1;
 		}else{
@@ -328,41 +329,40 @@ public class Player extends GameObject implements Movable{
 	public void bombUpdate() {
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
-			if(System.currentTimeMillis() - b.getStartTime() > 4700) {
+			if(System.currentTimeMillis() - b.getStartTime() > 3800) {
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
 				System.out.println("bomb delete");
+				bombCount -= 1;
+				//TODO: bomb not disappearing after kick
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 4600){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3700){
 				b.setSpriteIndex(0);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 4400){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3600){
 				b.setSpriteIndex(1);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 4200){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3500){
 				b.setSpriteIndex(2);
-			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 4000){
-				b.setSpriteIndex(3);
-			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3800){
-				b.setSpriteIndex(4);
-			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3600){
-				b.setSpriteIndex(3);
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 3400){
-				b.setSpriteIndex(2);
-
+				b.setSpriteIndex(3);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3300){
+				b.setSpriteIndex(4);
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 3200){
+				b.setSpriteIndex(3);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3100){
+				b.setSpriteIndex(2);
+			}
+			else if(System.currentTimeMillis() - b.getStartTime() > 3100){
 				b.setSpriteIndex(1);
-
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 3000){
 				b.explode();
 				b.setSpriteIndex(0);
-				bombCount -= 1;
 			}
 			if(b.isKicked()) {
 				if ((int) (b.position.x + b.getKick().getVelocity().x) >= 13 || (int) (b.position.y + b.getKick().getVelocity().y) >= 15) {
@@ -372,11 +372,10 @@ public class Player extends GameObject implements Movable{
 						b.stopKick();
 					}
 					if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() > 0 && (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() != 1 || !board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
-						b.explode();
-						valueToRemove.add(b);
-						bombCount -= 1;
-						board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
-						System.out.println("bomb delete");
+						
+						b.setStartTime(System.currentTimeMillis() - 3000);
+						//board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
+						//System.out.println("bomb delete");
 					} else if ((int) b.position.x + b.getKick().getVelocity().x != (int) b.position.x || (int) b.position.y + b.getKick().getVelocity().y != (int) b.position.y) {
 						board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
 						board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].setBomb(b);
@@ -397,7 +396,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	private int ammo = 1;
-    private boolean kick = true;
+    private boolean kick = false;
     private boolean pierce = false;
     private int firepower = 1; //max 6
     
