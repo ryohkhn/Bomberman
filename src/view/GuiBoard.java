@@ -134,24 +134,22 @@ public class GuiBoard extends JPanel{
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
-            if (player.getImage() != null) playerImagesList.set(player.getId(), player.getImage());
-            if (player.isAlive()) {
-                switch (player.getId()) {
-                    case 0:
-                        g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
-                        break;
-                    case 1:
-                        g2.drawImage(playerImagesList.get(1), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
-                        break;
-                    case 2:
-                        g2.drawImage(playerImagesList.get(2), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
-                        break;
-                    case 3:
-                        g2.drawImage(playerImagesList.get(3), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
-                        break;
-                    default:
-                        break;
-                }
+            playerImagesList.set(player.getId(), player.getImage());
+            switch (player.getId()) {
+                case 0:
+                    g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    break;
+                case 1:
+                    g2.drawImage(playerImagesList.get(1), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    break;
+                case 2:
+                    g2.drawImage(playerImagesList.get(2), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    break;
+                case 3:
+                    g2.drawImage(playerImagesList.get(3), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    break;
+                default:
+                    break;
             }
         }
     }
