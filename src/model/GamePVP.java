@@ -67,7 +67,7 @@ public class GamePVP extends Game implements Runnable{
     @Override
     public void gameLoop() {
 
-        double loopTimeInterval = 1000 / 120;
+        double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
         double currentTime;
 
