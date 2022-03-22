@@ -1,10 +1,6 @@
 package view;
 
-import model.Board;
-import model.Case;
-import model.GameObject;
-import model.Loader;
-import model.Player;
+import model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,11 +9,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 public class GuiBoard extends JPanel{
     private Board board;
     private ArrayList<Player> players;
-    Loader loader;
+    private BufferedImage block;
+    private BufferedImage breakableBlock;
+    private BufferedImage unbreakableBlock;
+    private HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
+    private LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
+    private LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
 
     public GuiBoard(Board board){
         this.board=board;
@@ -25,7 +29,46 @@ public class GuiBoard extends JPanel{
         GameObject.setSizeY(this.getHeight());
         GameObject.setSizeX(this.getWidth());
         setBackground(Color.WHITE);
-        loader = new Loader();
+        loadImages();
+    }
+
+    private void loadImages(){
+        try{
+            loadExplosionImages();
+            loadBonusImages();
+            loadPlayerImages();
+            block=ImageIO.read(new File("resources/block.png"));
+            unbreakableBlock=ImageIO.read(new File("resources/block_unbreakable.png"));
+            breakableBlock=ImageIO.read(new File("resources/block_breakable.png"));
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void loadExplosionImages() throws IOException{
+        explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_0.png")));
+        explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_1.png")));
+        explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_2.png")));
+        explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_3.png")));
+        explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_4.png")));
+        explosionMidList.add(ImageIO.read(new File("resources/bomb.png")));
+    }
+
+    private void loadBonusImages() throws IOException{
+        bonusMap.put(Bonus.Type.Bomb,ImageIO.read(new File("resources/bonus_bomb.png")));
+        bonusMap.put(Bonus.Type.Firemax,ImageIO.read(new File("resources/bonus_firemax.png")));
+        bonusMap.put(Bonus.Type.Fireup,ImageIO.read(new File("resources/bonus_fireup.png")));
+        bonusMap.put(Bonus.Type.Kick,ImageIO.read(new File("resources/bonus_kick.png")));
+        bonusMap.put(Bonus.Type.Pierce,ImageIO.read(new File("resources/bonus_pierce.png")));
+        bonusMap.put(Bonus.Type.Speed,ImageIO.read(new File("resources/bonus_speed.png")));
+        bonusMap.put(Bonus.Type.Timer,ImageIO.read(new File("resources/bonus_timer.png")));
+    }
+
+    private void loadPlayerImages() throws IOException{
+        playerImagesList.add(ImageIO.read(new File("resources/player_0.png")));
+        playerImagesList.add(ImageIO.read(new File("resources/player_1.png")));
+        playerImagesList.add(ImageIO.read(new File("resources/player_2.png")));
+        playerImagesList.add(ImageIO.read(new File("resources/player_3.png")));
     }
 
     @Override
@@ -49,23 +92,19 @@ public class GuiBoard extends JPanel{
         for(Case[] line : cases) {
             for(Case c : line) {
                 if(c.getWall() == null) {
-                    File image=new File("resources/block.png");
-                    g2.drawImage(ImageIO.read(image), x_pos, y_pos, y_width, x_height, null); // on affiche l'herbe
+                    g2.drawImage(block, x_pos, y_pos, y_width, x_height, null); // on affiche l'herbe
                     if(c.getBonus() != null) {
-                        image=new File(c.getBonus().getSprite());
+                        g2.drawImage(bonusMap.get(c.getBonus().getType()), x_pos, y_pos, y_width, x_height, null); // on affiche le bonus
                 	}
                 	if(c.getBomb()!=null) {
-                        image = getBombImageState(cases,c);
+                        g2.drawImage(getBombImageState(cases,c), x_pos, y_pos, y_width, x_height, null); // on affiche l'image de l'état de la bombe
                     }
-                    g2.drawImage(ImageIO.read(image), x_pos, y_pos, y_width, x_height, null); // on affiche l'élément par dessus
                 }
                 else if(c.getWall().isBreakable()){
-                    File image=new File("resources/block_breakable.png");
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
+                    g2.drawImage(breakableBlock,x_pos,y_pos,y_width,x_height,null);
                 }
                 else{
-                    File image=new File("resources/block_unbreakable.png");
-                    g2.drawImage(ImageIO.read(image),x_pos,y_pos,y_width,x_height,null);
+                    g2.drawImage(unbreakableBlock,x_pos,y_pos,y_width,x_height,null);
                 }
                 x_pos+=y_width;
             }
@@ -74,45 +113,41 @@ public class GuiBoard extends JPanel{
         }
     }
 
-    private File getBombImageState(Case[][] cases, Case c) {
+    private BufferedImage getBombImageState(Case[][] cases, Case c) {
         switch (c.getBomb().getSpriteIndex()){
-            case 0: return new File("resources/explosion/explosion_mid_0.png");
-            case 1: return new File("resources/explosion/explosion_mid_1.png");
-            case 2: return new File("resources/explosion/explosion_mid_2.png");
-            case 3: return new File("resources/explosion/explosion_mid_3.png");
-            case 4: return new File("resources/explosion/explosion_mid_4.png");
-            default: return new File("resources/bonus_pierce.png");
+            case 0: return explosionMidList.get(0);
+            case 1: return explosionMidList.get(1);
+            case 2: return explosionMidList.get(2);
+            case 3: return explosionMidList.get(3);
+            case 4: return explosionMidList.get(4);
+            default: return explosionMidList.get(5);
         }
     }
 
     private void paintPlayers(Graphics2D g2) throws IOException {
         for (Player player : players) {
-            BufferedImage image = player.getImage();
             float x = player.getPositionX() - 0.4F;
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
-            if (image == null && player.isAlive()) {
+            if (player.isAlive()) {
                 switch (player.getId()) {
                     case 0:
-                        image = loader.loadImage("resources/player_0.png");
+                        g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
                         break;
                     case 1:
-                        image = loader.loadImage("resources/player_1.png");
+                        g2.drawImage(playerImagesList.get(1), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
                         break;
                     case 2:
-                        image = loader.loadImage("resources/player_2.png");
+                        g2.drawImage(playerImagesList.get(2), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
                         break;
                     case 3:
-                        image = loader.loadImage("resources/player_3.png");
+                        g2.drawImage(playerImagesList.get(3), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
                         break;
                     default:
                         break;
                 }
             }
-            if (image != null){
-                g2.drawImage(image, (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
-            }
-        }   
+        }
     }
 }

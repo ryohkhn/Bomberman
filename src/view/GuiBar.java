@@ -6,16 +6,22 @@ import model.Player;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class GuiBar extends JPanel{
     private ArrayList<Player> players;
+    private BufferedImage barImage;
 
     public GuiBar(ArrayList<Player> playerList){
         this.players=playerList;
-        this.setLayout(new FlowLayout());
+        try{
+            barImage=ImageIO.read(new File("resources/bar.png"));
+        } catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -34,8 +40,7 @@ public class GuiBar extends JPanel{
     }
 
     private void paintBar(Graphics2D g2) throws IOException{
-        File barImage=new File("resources/bar.png");
-        g2.drawImage(ImageIO.read(barImage),0,0,this.getWidth(),this.getHeight(),null);
+        g2.drawImage(barImage,0,0,this.getWidth(),this.getHeight(),null);
     }
 
     private void drawValues(Graphics2D g2) throws IOException{
