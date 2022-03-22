@@ -364,7 +364,7 @@ public class Player extends GameObject implements Movable{
 				b.setSpriteIndex(0);
 				bombCount -= 1;
 			}
-			if(b.isKicked()) { // TODO: 22/03/2022 intégrer animation bombe avec le kick (placer la bombe dans la case ou elle explose et modifer son startTime pour utiliser la méthode deja existante /// ou alors creer une méthode pour la situation kick) 
+			if(b.isKicked()) {
 				if ((int) (b.position.x + b.getKick().getVelocity().x) >= 13 || (int) (b.position.y + b.getKick().getVelocity().y) >= 15) {
 					b.stopKick();
 				} else {
