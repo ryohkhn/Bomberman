@@ -67,33 +67,22 @@ public class GamePVP extends Game implements Runnable{
     @Override
     public void gameLoop() {
 
-        double loopTimeInterval = 1000 / FPS;
-        /*
-        double delta = 0;
+        double loopTimeInterval = 1000 / 120;
         double lastTime = System.currentTimeMillis();
         double currentTime;
-        double timerComparatif=0;
-
-         */
 
         while(!this.hasEnded()){
             long startLoopTime = System.currentTimeMillis();
-
-            /*
             currentTime = System.currentTimeMillis();
-            delta += (currentTime - lastTime) / loopTimeInterval;
             timer += (currentTime - lastTime);
             lastTime = currentTime;
 
-            timerComparatif = printTime(timerComparatif);
-            if (delta >= 1) {
-                delta--;
-
-             */
-
+            //début des instructions de jeu
             bombUpdate();
             playerUpdate(loopTimeInterval);
             gui.repaint();
+            //fin des instructions de jeu
+
             long endLoopTime = System.currentTimeMillis();
             try{
                 Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
