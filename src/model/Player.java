@@ -23,6 +23,7 @@ public class Player extends GameObject implements Movable{
 	//private int deathTimer;
 	private int spriteIndex;
 	private int direction;
+	private int points=0;
 
 	private Board board; // utile pour les bombes, possiblement temporaire
 
@@ -415,5 +416,9 @@ public class Player extends GameObject implements Movable{
 
 	public int getFirepower() {
 		return this.firepower;
+	}
+
+	public int getPoints(){
+		return points;
 	}
 }
