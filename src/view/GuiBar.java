@@ -14,12 +14,14 @@ import java.util.ArrayList;
 public class GuiBar extends JPanel{
     private ArrayList<Player> players;
     private BufferedImage barImage;
+    private Font font;
 
     public GuiBar(ArrayList<Player> playerList){
         this.players=playerList;
         try{
+            font=Font.createFont(Font.TRUETYPE_FONT,new File("resources/retro.ttf")).deriveFont(12F);
             barImage=ImageIO.read(new File("resources/bar.png"));
-        } catch(IOException e){
+        } catch(IOException|FontFormatException e){
             e.printStackTrace();
         }
     }
@@ -29,12 +31,11 @@ public class GuiBar extends JPanel{
         super.paintComponent(g);
         Graphics2D g2= (Graphics2D) g;
         try{
-            Font font=Font.createFont(Font.TRUETYPE_FONT,new File("resources/retro.ttf")).deriveFont(12F);
             g2.setFont(font);
             g2.setColor(Color.WHITE);
             paintBar(g2);
             drawValues(g2);
-        } catch(IOException|FontFormatException e){
+        } catch(IOException e){
             e.printStackTrace();
         }
     }

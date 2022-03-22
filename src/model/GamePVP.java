@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 import controller.PlayerInput;
 import view.Gui;
 
-public class GamePVP extends Game implements Runnable{
+public class GamePVP extends Game{
     private ArrayList<Player> playerList;
     private PlayerInput key1,key2,key3,key4;
     private Player player1,player2,player3,player4;
@@ -122,12 +122,7 @@ public class GamePVP extends Game implements Runnable{
 
     public static void main(String[] args){
         GamePVP game=new GamePVP();
-        game.run();
-    }
-
-    @Override
-    public void run() {
-        init();
-        gameLoop();
+        game.init();
+        game.gameLoop();
     }
 }

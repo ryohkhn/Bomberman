@@ -12,7 +12,7 @@ public class Player extends GameObject implements Movable{
     private ArrayList<Bomb> bombList = new ArrayList<>();
     private HashMap<Bonus,Integer> bonusMap;
 	private boolean alive;
-    private float speed = 5F;
+    private float speed = 2F;
     private int keyUp, keyDown, keyLeft, keyRight,keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false, pressAction = false;
     private BufferedImage[][] walkFrames;

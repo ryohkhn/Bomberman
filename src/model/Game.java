@@ -6,7 +6,7 @@ import java.util.Timer;
 
 public abstract class Game{
     public double timer = 0;
-    public int FPS = 30;
+    public int FPS = 60;
     private ArrayList<Player> players;
     private File boardTemplate;
     private Board board;
