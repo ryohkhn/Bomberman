@@ -73,23 +73,23 @@ public class Board{
     			
 				switch(c) {
 	    			case "1":
-						this.playerList.add(new Player(null, 0, 0, 0,this));
+						this.playerList.add(new Player(0, 0, 0,this));
 	    				currentCase.addMovableOnCase(this.playerList.get(0));
 	    				break;
 	    				
 	    			case "2":
-						this.playerList.add(new Player(null, 1, 0, 0, this));
+						this.playerList.add(new Player(1, 0, 0, this));
 						//this.playerList.add(new Bot(null, 1, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(1));
 	    				break;
 	    				
 	    			case "3":
-						this.playerList.add(new Player(null, 2, 0, 0, this));
+						this.playerList.add(new Player(2, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(2));
 	    				break;
 	    				
 	    			case "4":
-						this.playerList.add(new Player(null, 3, 0, 0, this));
+						this.playerList.add(new Player(3, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(3));
 	    				break;
 	    				

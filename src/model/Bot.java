@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 public class Bot extends Player {
 
 	//minimal ai
-	public Bot(BufferedImage image, int id, float x, float y, Board board) {
-		super(image, id, x, y, board);
+	public Bot(int id, float x, float y, Board board) {
+		super(id, x, y, board);
 		super.ai = true;
 	}
 	private int thinkTime=75;

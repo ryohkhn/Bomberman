@@ -7,13 +7,9 @@ public class GameObject {
 	protected static int sizeY;
 	
     protected Vector2f position ;
-    protected BufferedImage image;
       
-    protected Loader loader = new Loader();
-      
-    public GameObject(BufferedImage image, float x, float y) {
+    public GameObject(float x, float y) {
     	position = new Vector2f(x,y);
-    	this.image = image;
     }
 
     public static void setSizeX(int x) {
@@ -53,13 +49,8 @@ public class GameObject {
     	this.position.x = x;
     	this.position.y = y;
     }
-     
-    public BufferedImage getImage() {
-    	return image;
-    }
 
-    protected void setAttributs(BufferedImage a, float x, float y) {
-        image = a;
+    protected void setAttributs(float x, float y) {
         position.x = x;
         position.y = y;
     }

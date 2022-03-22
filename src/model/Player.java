@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,25 +11,24 @@ public class Player extends GameObject implements Movable{
     private int bombCount;
 
     private ArrayList<Bomb> bombList = new ArrayList<>();
-    private HashMap<Bonus,Integer> bonusMap;
 	private boolean alive;
-    private float speed = 2F;
+    private float speed = 1F;
     private int keyUp, keyDown, keyLeft, keyRight,keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false, pressAction = false;
     private BufferedImage[][] walkFrames;
-    private float preX;
-    private float preY;
 	boolean ai;
 	private int spriteTimer;
 	//private int deathTimer;
 	private int spriteIndex;
 	private int direction;
 	private int points=0;
+	private BufferedImage image = null;
+
 
 	private Board board; // utile pour les bombes, possiblement temporaire
 
-    public Player(BufferedImage image,int id,float x,float y, Board board) {
-        super(image,x,y);
+    public Player(int id,float x,float y, Board board) {
+        super(x,y);
     	this.id = id;
     	this.alive = true;
         position.x = x;
@@ -38,7 +38,7 @@ public class Player extends GameObject implements Movable{
 
 	public void update(double deltaTime) {
 		if (alive) {
-			if ((spriteTimer += speed) >= 25) {
+			if ((spriteTimer += speed) >= 20) {
                 spriteIndex++;
                 spriteTimer = 0;
             }
@@ -304,9 +304,9 @@ public class Player extends GameObject implements Movable{
                 walkFrames[row][col] = spriteSheet.getSubimage(col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight);
             }
         }
-
+		image = walkFrames[1][0];
 		this.id = ind;
-		this.setAttributs(walkFrames[1][0],x,y);
+		this.setAttributs(x,y);
 		this.direction = 1;
 	}
 
@@ -390,6 +390,10 @@ public class Player extends GameObject implements Movable{
 
 	public Board getBoard() {
 		return board;
+	}
+
+	public BufferedImage getImage() {
+		return image;
 	}
 
 	private int ammo = 1;

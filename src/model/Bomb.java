@@ -39,7 +39,7 @@ public class Bomb extends GameObject{
      * @param player Original player that placed this bomb
      */
     public Bomb(int x, int y, int firepower, boolean pierce, Player player, Board board) {
-        super(null,x,y);
+        super(x,y);
 
     	this.board = board;
     	

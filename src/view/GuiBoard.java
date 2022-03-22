@@ -53,7 +53,6 @@ public class GuiBoard extends JPanel{
         explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_4.png")));
         explosionMidList.add(ImageIO.read(new File("resources/bomb.png")));
     }
-
     private void loadBonusImages() throws IOException{
         bonusMap.put(Bonus.Type.Bomb,ImageIO.read(new File("resources/bonus_bomb.png")));
         bonusMap.put(Bonus.Type.Firemax,ImageIO.read(new File("resources/bonus_firemax.png")));
@@ -69,6 +68,11 @@ public class GuiBoard extends JPanel{
         playerImagesList.add(ImageIO.read(new File("resources/player_1.png")));
         playerImagesList.add(ImageIO.read(new File("resources/player_2.png")));
         playerImagesList.add(ImageIO.read(new File("resources/player_3.png")));
+    }
+
+    private void resetPlayerImages() throws IOException{
+        playerImagesList.clear();
+        loadPlayerImages();
     }
 
     @Override
@@ -130,6 +134,7 @@ public class GuiBoard extends JPanel{
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
+            if (player.getImage() != null) playerImagesList.set(player.getId(), player.getImage());
             if (player.isAlive()) {
                 switch (player.getId()) {
                     case 0:
