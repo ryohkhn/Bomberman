@@ -54,10 +54,10 @@ public class GamePVP extends Game{
             player2.setPlayer(image2,1,1.4F,13.4F,32,48);
             player2.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_ALT_GRAPH);
             player3 = board.getPlayer(2);
-            player3.setPlayer(image3,2,11.4F, 13.4F,32,48);
+            player3.setPlayer(image3,2,11.4F, 1.4F,32,48);
             player3.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
             player4 = board.getPlayer(3);
-            player4.setPlayer(image4,3,11.4F, 1.4F,32,48);
+            player4.setPlayer(image4,3,11.4F, 13.4F,32,48);
             player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
         } catch (Exception e) {
             e.printStackTrace();
