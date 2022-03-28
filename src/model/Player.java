@@ -171,10 +171,6 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
 				}
-				if(Board.cases[nextLine][column].getBonus()!=null && Board.cases[nextLine][column].getWall()==null ) {
-					Board.cases[nextLine][column].getBonus().grantBonus(this);
-					Board.cases[nextLine][column].setBonus(null);
-				}
 				if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null && roundFloat(position.y%1)<=0.4F){
 					position.x+=speedDelta;
 					position.x=roundFloat(position.x);
@@ -206,10 +202,6 @@ public class Player extends GameObject implements Movable{
 			if (nextLine>0) {
 				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
-				}
-				if(Board.cases[nextLine][column].getBonus()!=null && Board.cases[nextLine][column].getWall()==null ) {
-					Board.cases[nextLine][column].getBonus().grantBonus(this);
-					Board.cases[nextLine][column].setBonus(null);
 				}
 				if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null && roundFloat(position.y%1)<=0.4F){
 					position.x-=speedDelta;
@@ -243,10 +235,6 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromRight);
 				}
-				if(Board.cases[line][nextColumn].getBonus()!=null && Board.cases[line][nextColumn].getWall()==null ) {
-					Board.cases[line][nextColumn].getBonus().grantBonus(this);
-					Board.cases[line][nextColumn].setBonus(null);
-				}
 				if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null && roundFloat(position.x%1)<=0.4F){
 					position.y-=speedDelta;
 					position.y=roundFloat(position.y);
@@ -278,10 +266,6 @@ public class Player extends GameObject implements Movable{
 			if(nextColumn<Board.cases[0].length-1) {
 				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
-				}
-				if(Board.cases[line][nextColumn].getBonus()!=null && Board.cases[line][nextColumn].getWall()==null ) {
-					Board.cases[line][nextColumn].getBonus().grantBonus(this);
-					Board.cases[line][nextColumn].setBonus(null);
 				}
 				if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null && roundFloat(position.x%1)<=0.4F){
 					position.y+=speedDelta;
