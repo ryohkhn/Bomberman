@@ -162,7 +162,7 @@ public class Player extends GameObject implements Movable{
 		direction = 1;
 		if (roundFloat(position.x % 1)>= 0.4F) {
 			System.out.println("Kick :" + this.kick);
-			System.out.println("Firepower :" + this.firepower);
+			System.out.println("Pierce :" + this.pierce);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -198,7 +198,7 @@ public class Player extends GameObject implements Movable{
 		direction = 0;
 		if (roundFloat(position.x % 1)<= 0.4F) {
 			System.out.println("Kick :" + this.kick);
-			System.out.println("Firepower :" + this.firepower);
+			System.out.println("Pierce :" + this.pierce);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -234,7 +234,7 @@ public class Player extends GameObject implements Movable{
 		direction = 2;
 		if (roundFloat(position.y % 1)<= 0.4F) {
 			System.out.println("Kick :" + this.kick);
-			System.out.println("Firepower :" + this.firepower);
+			System.out.println("Pierce :" + this.pierce);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -270,7 +270,7 @@ public class Player extends GameObject implements Movable{
 		direction = 3;
 		if (roundFloat(position.y % 1)>= 0.4F){
 			System.out.println("Kick :" + this.kick);
-			System.out.println("Firepower :" + this.firepower);
+			System.out.println("Pierce :" + this.pierce);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -406,7 +406,7 @@ public class Player extends GameObject implements Movable{
 	private int ammo = 1;
     private boolean kick = false;
     private boolean pierce = false;
-    private int firepower = 1; //max 6
+    private int firepower = 6; //max 6
     
     public void addFirepower(boolean max) {
     	this.firepower = (max)?6:this.firepower+1;

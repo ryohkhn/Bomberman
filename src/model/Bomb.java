@@ -67,10 +67,11 @@ public class Bomb extends GameObject{
      */
     public void explode() {
     	Case [][] c = board.getCases();
-        int lineLeft = ((int)position.y - this.player.getFirepower())>=0?(int)position.y - this.player.getFirepower():0;
-        int lineRight = ((int)position.y + this.player.getFirepower())>14?14:(int)position.y + this.player.getFirepower();
-        int columnDown = ((int)position.x + this.player.getFirepower())>12?12:(int)position.x + this.player.getFirepower();
-        int columnTop = ((int)position.x - this.player.getFirepower())>=0?(int)position.x - this.player.getFirepower():0;
+    	int firepower = (this.player.getPierce())?this.player.getFirepower():1;
+        int lineLeft = ((int)position.y - firepower)>=0?(int)position.y - firepower:0;
+        int lineRight = ((int)position.y + firepower)>14?14:(int)position.y + firepower;
+        int columnDown = ((int)position.x + firepower)>12?12:(int)position.x + firepower;
+        int columnTop = ((int)position.x - firepower)>=0?(int)position.x - firepower:0;
         boolean end = false;
         for(int i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
 			Case current = c[(int)position.x][i];
