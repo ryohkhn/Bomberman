@@ -51,15 +51,18 @@ public class Bonus{
             protected void grantBonus(Player player) {
                 player.setKick(true);
             }
-        },
+        };
+        /*
 
         // Reduces time for bomb to detonate
+        
         Timer(){
             @Override
             protected void grantBonus(Player player) {
                 player.reduceTimer(15);
             }
         };
+        */
         protected abstract void grantBonus(Player player);
 
     }

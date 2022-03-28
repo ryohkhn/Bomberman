@@ -161,6 +161,8 @@ public class Player extends GameObject implements Movable{
 		double speedDelta=speed/deltaTime;
 		direction = 1;
 		if (roundFloat(position.x % 1)>= 0.4F) {
+			System.out.println("Kick :" + this.kick);
+			System.out.println("Firepower :" + this.firepower);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -169,7 +171,7 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
 				}
-				if(Board.cases[nextLine][column].getBonus()!=null) {
+				if(Board.cases[nextLine][column].getBonus()!=null && Board.cases[nextLine][column].getWall()==null ) {
 					Board.cases[nextLine][column].getBonus().grantBonus(this);
 					Board.cases[nextLine][column].setBonus(null);
 				}
@@ -195,6 +197,8 @@ public class Player extends GameObject implements Movable{
 		double speedDelta=speed/deltaTime;
 		direction = 0;
 		if (roundFloat(position.x % 1)<= 0.4F) {
+			System.out.println("Kick :" + this.kick);
+			System.out.println("Firepower :" + this.firepower);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -203,7 +207,7 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
 				}
-				if(Board.cases[nextLine][column].getBonus()!=null) {
+				if(Board.cases[nextLine][column].getBonus()!=null && Board.cases[nextLine][column].getWall()==null ) {
 					Board.cases[nextLine][column].getBonus().grantBonus(this);
 					Board.cases[nextLine][column].setBonus(null);
 				}
@@ -229,6 +233,8 @@ public class Player extends GameObject implements Movable{
 		double speedDelta=speed/deltaTime;
 		direction = 2;
 		if (roundFloat(position.y % 1)<= 0.4F) {
+			System.out.println("Kick :" + this.kick);
+			System.out.println("Firepower :" + this.firepower);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -237,7 +243,7 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromRight);
 				}
-				if(Board.cases[line][nextColumn].getBonus()!=null) {
+				if(Board.cases[line][nextColumn].getBonus()!=null && Board.cases[line][nextColumn].getWall()==null ) {
 					Board.cases[line][nextColumn].getBonus().grantBonus(this);
 					Board.cases[line][nextColumn].setBonus(null);
 				}
@@ -263,6 +269,8 @@ public class Player extends GameObject implements Movable{
 		double speedDelta=speed/deltaTime;
 		direction = 3;
 		if (roundFloat(position.y % 1)>= 0.4F){
+			System.out.println("Kick :" + this.kick);
+			System.out.println("Firepower :" + this.firepower);
 			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 			int line= (int)position.x;
 			int column= (int)position.y;
@@ -271,7 +279,7 @@ public class Player extends GameObject implements Movable{
 				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
 				}
-				if(Board.cases[line][nextColumn].getBonus()!=null) {
+				if(Board.cases[line][nextColumn].getBonus()!=null && Board.cases[line][nextColumn].getWall()==null ) {
 					Board.cases[line][nextColumn].getBonus().grantBonus(this);
 					Board.cases[line][nextColumn].setBonus(null);
 				}
