@@ -73,9 +73,11 @@ public class GamePVP extends Game{
 
         while(!this.hasEnded()){
             long startLoopTime = System.currentTimeMillis();
-            currentTime = System.currentTimeMillis();
-            timer += (currentTime - lastTime);
-            lastTime = currentTime;
+
+            //instructions timer
+            timer += (startLoopTime - lastTime);
+            lastTime = startLoopTime;
+            // fin timer
 
             //début des instructions de jeu
             bombUpdate();

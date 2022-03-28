@@ -14,7 +14,7 @@ public class GameObject {
 
     public static void setSizeX(int x) {
         GameObject.sizeX = x;
-        System.out.println(x);
+        //System.out.println(x);
     }
 
     public static void setSizeY(int sizeY) {

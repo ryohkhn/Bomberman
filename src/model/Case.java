@@ -1,15 +1,16 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Case{
     private ArrayList<Movable> movablesOnCase = new ArrayList<Movable>();
     private Wall wall;
     private Bonus bonus;
     private Bomb bomb;
-    private boolean exploding;
-    
+
 	public void setWall(Wall wall) {
 		this.wall = wall;
 	}
@@ -59,13 +60,6 @@ public class Case{
 		}
 	}
 
-	public boolean isExploding() {
-		return exploding;
-	}
-
-	public void setExploding(boolean exploding) {
-		this.exploding = exploding;
-	}
 
 	@Override
 	public String toString() {
@@ -74,7 +68,6 @@ public class Case{
 				", wall=" + wall +
 				", bonus=" + bonus +
 				", bomb=" + bomb +
-				", exploding=" + exploding +
 				'}';
 	}
 }

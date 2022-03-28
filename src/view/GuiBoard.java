@@ -19,9 +19,18 @@ public class GuiBoard extends JPanel{
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
-    private HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
-    private LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
-    private LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
+    private final HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
+    private final LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
+    private final LinkedList<BufferedImage> explosionWidthList=new LinkedList<>();
+    private final LinkedList<BufferedImage> explosionHeightList=new LinkedList<>();
+    private final LinkedList<BufferedImage> explosionLeftList=new LinkedList<>();
+    private final LinkedList<BufferedImage> explosionRightList=new LinkedList<>();
+    private final LinkedList<BufferedImage> explosionTopList=new LinkedList<>();
+    private final LinkedList<BufferedImage> explosionDownList=new LinkedList<>();
+    private BufferedImage bombImage;
+
+    private final LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
+
 
     public GuiBoard(Board board){
         this.board=board;
@@ -46,12 +55,44 @@ public class GuiBoard extends JPanel{
     }
 
     private void loadExplosionImages() throws IOException{
+        bombImage = ImageIO.read(new File("resources/bomb.png"));
+
         explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_0.png")));
         explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_1.png")));
         explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_2.png")));
         explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_3.png")));
         explosionMidList.add(ImageIO.read(new File("resources/explosion/explosion_mid_4.png")));
-        explosionMidList.add(ImageIO.read(new File("resources/bomb.png")));
+
+        explosionHeightList.add(ImageIO.read(new File("resources/explosion/explosion_hauteur_1.png")));
+        explosionHeightList.add(ImageIO.read(new File("resources/explosion/explosion_hauteur_2.png")));
+        explosionHeightList.add(ImageIO.read(new File("resources/explosion/explosion_hauteur_3.png")));
+        explosionHeightList.add(ImageIO.read(new File("resources/explosion/explosion_hauteur_4.png")));
+
+        explosionWidthList.add(ImageIO.read(new File("resources/explosion/explosion_largeur_1.png")));
+        explosionWidthList.add(ImageIO.read(new File("resources/explosion/explosion_largeur_2.png")));
+        explosionWidthList.add(ImageIO.read(new File("resources/explosion/explosion_largeur_3.png")));
+        explosionWidthList.add(ImageIO.read(new File("resources/explosion/explosion_largeur_4.png")));
+
+        explosionLeftList.add(ImageIO.read(new File("resources/explosion/explosion_gauche_1.png")));
+        explosionLeftList.add(ImageIO.read(new File("resources/explosion/explosion_gauche_2.png")));
+        explosionLeftList.add(ImageIO.read(new File("resources/explosion/explosion_gauche_3.png")));
+        explosionLeftList.add(ImageIO.read(new File("resources/explosion/explosion_gauche_4.png")));
+
+        explosionRightList.add(ImageIO.read(new File("resources/explosion/explosion_droite_1.png")));
+        explosionRightList.add(ImageIO.read(new File("resources/explosion/explosion_droite_2.png")));
+        explosionRightList.add(ImageIO.read(new File("resources/explosion/explosion_droite_3.png")));
+        explosionRightList.add(ImageIO.read(new File("resources/explosion/explosion_droite_4.png")));
+
+        explosionTopList.add(ImageIO.read(new File("resources/explosion/explosion_top_1.png")));
+        explosionTopList.add(ImageIO.read(new File("resources/explosion/explosion_top_2.png")));
+        explosionTopList.add(ImageIO.read(new File("resources/explosion/explosion_top_3.png")));
+        explosionTopList.add(ImageIO.read(new File("resources/explosion/explosion_top_4.png")));
+
+        explosionDownList.add(ImageIO.read(new File("resources/explosion/explosion_bas_1.png")));
+        explosionDownList.add(ImageIO.read(new File("resources/explosion/explosion_bas_2.png")));
+        explosionDownList.add(ImageIO.read(new File("resources/explosion/explosion_bas_3.png")));
+        explosionDownList.add(ImageIO.read(new File("resources/explosion/explosion_bas_4.png")));
+
     }
     private void loadBonusImages() throws IOException{
         bonusMap.put(Bonus.Type.Bomb,ImageIO.read(new File("resources/bonus_bomb.png")));
@@ -87,44 +128,224 @@ public class GuiBoard extends JPanel{
         }
     }
 
-    private void paintBoard(Graphics2D g2) throws IOException{
+    private void paintBoard(Graphics2D g2) throws IOException{ // attention dans les appels a g2.drawImage, la hauteur et la largeur sont inversés
         Case[][] cases=board.getCases();
-        int x_pos=0;
-        int y_pos=0;
-        int x_height=this.getHeight()/cases.length;
-        int y_width=this.getWidth()/cases[0].length;
-        for(Case[] line : cases) {
-            for(Case c : line) {
-                if(c.getWall() == null) {
-                    g2.drawImage(block, x_pos, y_pos, y_width, x_height, null); // on affiche l'herbe
-                    if(c.getBonus() != null) {
-                        g2.drawImage(bonusMap.get(c.getBonus().getType()), x_pos, y_pos, y_width, x_height, null); // on affiche le bonus
-                	}
-                	if(c.getBomb()!=null) {
-                        g2.drawImage(getBombImageState(cases,c), x_pos, y_pos, y_width, x_height, null); // on affiche l'image de l'état de la bombe
+        int height=this.getHeight()/cases.length;
+        int width=this.getWidth()/cases[0].length;
+        for(int x = 0; x < cases.length; x++){
+            for(int y = 0; y < cases[x].length; y++){
+                if(cases[x][y].getWall() == null) {
+                    g2.drawImage(block, y * width, x * height, width, height, null); // on affiche l'herbe
+                    if(cases[x][y].getBonus() != null) {
+                        g2.drawImage(bonusMap.get(cases[x][y].getBonus().getType()), y * width, x * height, width, height, null); // on affiche le bonus
+                    }
+                    if(cases[x][y].getBomb()!=null) {
+                        paintBomb(board, g2, x, y, width, height);
                     }
                 }
-                else if(c.getWall().isBreakable()){
-                    g2.drawImage(breakableBlock,x_pos,y_pos,y_width,x_height,null);
+                else if(cases[x][y].getWall().isBreakable()){
+                    g2.drawImage(breakableBlock,y * width,x * height,width,height,null);
                 }
                 else{
-                    g2.drawImage(unbreakableBlock,x_pos,y_pos,y_width,x_height,null);
+                    g2.drawImage(unbreakableBlock,y * width,x * height,width,height,null);
                 }
-                x_pos+=y_width;
             }
-            x_pos=0;
-            y_pos+=x_height;
         }
     }
 
-    private BufferedImage getBombImageState(Case[][] cases, Case c) {
-        switch (c.getBomb().getSpriteIndex()){
-            case 0: return explosionMidList.get(0);
-            case 1: return explosionMidList.get(1);
-            case 2: return explosionMidList.get(2);
-            case 3: return explosionMidList.get(3);
-            case 4: return explosionMidList.get(4);
-            default: return explosionMidList.get(5);
+    private void paintBomb(Board board,Graphics2D g2, int x, int y, int width, int height) {
+        Case current = board.getCases()[x][y];
+        Bomb bomb = board.getCases()[x][y].getBomb();
+        int spriteIndex = bomb.getSpriteIndex();
+        if(spriteIndex == -1){
+            g2.drawImage(bombImage, width * y, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+            return;
+        }
+        if(spriteIndex == 0){
+            g2.drawImage(explosionMidList.get(0), width * y, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+            return;
+        }
+        g2.drawImage(getBombImageState("mid",spriteIndex), width * y, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+
+        //left
+        int i = y - 1;
+
+        while(i > bomb.getStopLeft() && board.getCases()[x][i].getWall() == null) {
+            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+            i -= 1;
+
+        }
+        if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable()) {
+            g2.drawImage(getBombImageState("left", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+        }
+        //top
+         i = x - 1;
+
+        while(i > bomb.getStopTop() && board.getCases()[i][y].getWall() == null) {
+            g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+            i -= 1;
+
+        }
+        if(board.getCases()[i][y].getWall() == null || board.getCases()[i][y].getWall().isBreakable()) {
+            g2.drawImage(getBombImageState("top", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+        }
+
+        //right
+        i = y + 1;
+
+        while(i < bomb.getStopRight() && board.getCases()[x][i].getWall() == null) {
+            System.out.println("i avant augmentation : " + i);
+            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * (x-1), width, height, null); // on affiche l'image de l'état de la bombe
+            i += 1;
+            System.out.println("i apres augmentation : " + i);
+
+        }
+        if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable()) {
+            g2.drawImage(getBombImageState("right", spriteIndex), width * i, height * (x-1), width, height, null); // on affiche l'image de l'état de la bombe
+        }
+
+        //down
+        i = x + 1;
+
+        while(i < bomb.getStopDown() && board.getCases()[i][y].getWall() == null) {
+            g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+            i += 1;
+
+        }
+        if(board.getCases()[i][y].getWall() == null || board.getCases()[i][y].getWall().isBreakable()) {
+            g2.drawImage(getBombImageState("down", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+        }
+
+        //right
+
+        /*
+        HashMap<String, Integer> explosionRange = getExplosionRange(board, x, y);
+        System.out.println(" explo range left = " + explosionRange.get("left") + " explo range right = " + explosionRange.get("right") );
+
+        //left
+        for(int i = y - 1; i > explosionRange.get("left"); i--){
+            g2.drawImage(getBombImageState("largeur",board.getCases()[x][y]), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+        }
+        if(board.getCases()[x][explosionRange.get("left")].getWall() == null) {
+            g2.drawImage(getBombImageState("gauche", board.getCases()[x][y]), width * explosionRange.get("left"), height * x, width, height, null); // on affiche l'image de l'état de la bombe
+        }
+
+        //right
+        for(int i = y + 1; i < explosionRange.get("right"); i++){
+            g2.drawImage(getBombImageState("largeur",board.getCases()[x][y]), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+        }
+        if(board.getCases()[x][explosionRange.get("right")].getWall() == null) {
+            g2.drawImage(getBombImageState("droite", board.getCases()[x][y]), width * explosionRange.get("right"), height * x, width, height, null); // on affiche l'image de l'état de la bombe
+        }
+
+
+
+ */
+
+    }
+
+/*
+    private HashMap<String, Integer> getExplosionRange(Board board, int x, int y) {
+        int explosionRangeLeft = y;
+        int explosionRangeRight = y;
+        int explosionRangeTop = x;
+        int explosionRangeDown = x;
+        boolean wall = false;
+        while (!wall && y - board.getCases()[x][y].getBomb().getFirepower() < explosionRangeLeft) { // itère tant qu'il n'y a pas de case et que explosionRange ne dépasse pas firepower - 1
+            explosionRangeLeft -= 1;
+            if (board.getCases()[x][explosionRangeLeft].getWall() != null) {
+                wall = true;
+            }
+        }
+
+        wall = false;
+
+        while (!wall && y + board.getCases()[x][y].getBomb().getFirepower() > explosionRangeRight) {
+            explosionRangeRight += 1;
+            if (board.getCases()[x][explosionRangeRight].getWall() != null) {
+                wall = true;
+            }
+        }
+        wall = false;
+
+        while (!wall && x - board.getCases()[x][y].getBomb().getFirepower() < explosionRangeTop) {
+            explosionRangeTop -= 1;
+            if (board.getCases()[explosionRangeTop][y].getWall() != null) {
+                wall = true;
+            }
+        }
+        wall = false;
+
+        while (!wall && x + board.getCases()[x][y].getBomb().getFirepower() > explosionRangeDown) {
+            explosionRangeDown += 1;
+            if (board.getCases()[explosionRangeDown][y].getWall() != null) {
+                wall = true;
+            }
+        }
+
+        HashMap<String, Integer> explosionRange = new HashMap<>();
+        explosionRange.put("left", explosionRangeLeft);
+        explosionRange.put("right", explosionRangeRight);
+        explosionRange.put("top", explosionRangeTop);
+        explosionRange.put("down", explosionRangeDown);
+
+        return explosionRange;
+    }
+
+ */
+
+    private BufferedImage getBombImageState(String explosion, int spriteIndex) {
+        switch (explosion) {
+            case "mid" : return switch (spriteIndex) {
+                case 1 -> explosionMidList.get(1);
+                case 2 -> explosionMidList.get(2);
+                case 3 -> explosionMidList.get(3);
+                case 4 -> explosionMidList.get(4);
+                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            };
+            case "height" : return switch (spriteIndex) {
+                case 1 -> explosionHeightList.get(0);
+                case 2 -> explosionHeightList.get(1);
+                case 3 -> explosionHeightList.get(2);
+                case 4 -> explosionHeightList.get(3);
+                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            };
+            case "width" : return switch (spriteIndex) {
+                case 1 -> explosionWidthList.get(0);
+                case 2 -> explosionWidthList.get(1);
+                case 3 -> explosionWidthList.get(2);
+                case 4 -> explosionWidthList.get(3);
+                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            };
+            case "down" : return switch (spriteIndex) {
+                case 1 -> explosionDownList.get(0);
+                case 2 -> explosionDownList.get(1);
+                case 3 -> explosionDownList.get(2);
+                case 4 -> explosionDownList.get(3);
+                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            };
+            case "top" : return switch (spriteIndex) {
+                case 1 -> explosionTopList.get(0);
+                case 2 -> explosionTopList.get(1);
+                case 3 -> explosionTopList.get(2);
+                case 4 -> explosionTopList.get(3);
+                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            };
+            case "right" : return switch (spriteIndex) {
+                case 1 -> explosionRightList.get(0);
+                case 2 -> explosionRightList.get(1);
+                case 3 -> explosionRightList.get(2);
+                case 4 -> explosionRightList.get(3);
+                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            };
+            case "left" : return switch (spriteIndex) {
+                case 1 -> explosionLeftList.get(0);
+                case 2 -> explosionLeftList.get(1);
+                case 3 -> explosionLeftList.get(2);
+                case 4 -> explosionLeftList.get(3);
+                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            };
+            default : throw new IllegalStateException("Unexpected value: " + explosion);
         }
     }
 
@@ -137,16 +358,16 @@ public class GuiBoard extends JPanel{
             playerImagesList.set(player.getId(), player.getImage()); // pourquoi ajouter ça dans la liste à chaque itération ?
             switch (player.getId()) {
                 case 0:
-                    g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 case 1:
-                    g2.drawImage(playerImagesList.get(1), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    g2.drawImage(playerImagesList.get(1), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 case 2:
-                    g2.drawImage(playerImagesList.get(2), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    g2.drawImage(playerImagesList.get(2), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 case 3:
-                    g2.drawImage(playerImagesList.get(3), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);
+                    g2.drawImage(playerImagesList.get(3), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 default:
                     break;

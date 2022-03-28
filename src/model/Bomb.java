@@ -1,6 +1,7 @@
 package model;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Float;
 import java.awt.image.BufferedImage;
@@ -8,44 +9,48 @@ import java.io.File;
 
 /**
  * Bomb objects that are created by players.
+ * firepower Strength of the bomb explosionContact
+ * pierce Whether or not the explosions will pierce soft walls
  */
 public class Bomb extends GameObject{
 
     // Original player that placed this bomb
-    private Player player;
+    private final Player player;
 
     private double startTime;
-    
 
     //Position of the bomb
-    private Board board;
+    private final Board board;
     
     // Stats
-    private int firepower;
-    private boolean pierce;
+    private final int firepower;
+    private final boolean pierce;
     
     // Kicking bomb
     private boolean kicked;
     private KickDirection kickDirection;
 
-
     private int spriteIndex = -1;
+    private boolean hasExploded = false;
+    private int stopTop;
+    private int stopDown;
+    private int stopLeft;
+    private int stopRight;
 
 
     /**
      * Constructs a bomb object with values passed in by a player object.
-     * @param firepower Strength of the bomb explosionContact
-     * @param pierce Whether or not the explosions will pierce soft walls
+
      * @param player Original player that placed this bomb
      */
-    public Bomb(int x, int y, int firepower, boolean pierce, Player player, Board board) {
+    public Bomb(int x, int y, Player player, Board board) {
         super(x,y);
 
     	this.board = board;
     	
         // Stats
-        this.firepower = firepower;
-        this.pierce = pierce;
+        this.firepower = player.getFirepower();
+        this.pierce = player.getPierce();
         this.player = player;
         // Kicking bomb
         this.kicked = false;
@@ -66,18 +71,22 @@ public class Bomb extends GameObject{
      * and destroy wall (if allowed)
      */
     public void explode() {
+        if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
+        hasExploded = true;
     	Case [][] c = board.getCases();
-        int lineLeft = ((int)position.y - this.player.getFirepower())>=0?(int)position.y - this.player.getFirepower():0;
-        int lineRight = ((int)position.y + this.player.getFirepower())>14?14:(int)position.y + this.player.getFirepower();
-        int columnDown = ((int)position.x + this.player.getFirepower())>12?12:(int)position.x + this.player.getFirepower();
-        int columnTop = ((int)position.x - this.player.getFirepower())>=0?(int)position.x - this.player.getFirepower():0;
+        int lineLeft = Math.max(((int) position.y - firepower), 0);
+        int lineRight = Math.min(((int) position.y + firepower), 14);
+        int columnTop = Math.max(((int) position.x - firepower), 0);
+        int columnDown = Math.min(((int) position.x + firepower), 12);
         boolean end = false;
-        for(int i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
-			Case current = c[(int)position.x][i];
+        Case current = null;
+        int i;
+        for(i = (int)position.y + 1 ;i < lineRight && !end; i++ ){
+            current = c[(int)position.x][i];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    end = (!this.player.getPierce());
+                    end = (!pierce);
                 }
                 else {
                 	end = true;
@@ -90,13 +99,15 @@ public class Bomb extends GameObject{
                 current.killMoveables(board);
             }
 		}
+        assert current != null;
+        stopRight = i;
         end = false;
-        for(int i = (int)position.y - 1 ;i >= lineLeft && !end; i-- ){
-            Case current = c[(int)position.x][i];
+        for(i = (int)position.y - 1 ;i > lineLeft && !end; i-- ){
+            current = c[(int)position.x][i];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    end = (!this.player.getPierce());
+                    end = (!pierce);
                 }
                 else {
                 	end = true;
@@ -106,13 +117,16 @@ public class Bomb extends GameObject{
                 current.killMoveables(board);
             }
         }
+        stopLeft = i;
+        System.out.println("stop left = " + i + "    and lineLeft is = " + lineLeft);
+
         end = false;
-        for(int i = (int)position.x - 1 ; i >= columnTop && !end; i-- ){
-            Case current = c[i][(int)position.y];
+        for(i = (int)position.x - 1 ; i > columnTop && !end; i-- ){
+            current = c[i][(int)position.y];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    end = (!this.player.getPierce());
+                    end = (!pierce);
                 }
                 else {
                 	end = true;
@@ -122,14 +136,15 @@ public class Bomb extends GameObject{
                 current.killMoveables(board);
             }
         }
+        stopTop = i;
         end = false;
-        for(int i = (int)position.x ; i <= columnDown && !end; i++ ){
-            Case current = c[i][(int)position.y];
+        for(i = (int)position.x ; i < columnDown && !end; i++ ){ // commence a x et pas x + 1 pour tuer les joueurs sur l'emplacement de la bombe
+            current = c[i][(int)position.y];
             if (current.getWall() != null) {
 
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    end = (!this.player.getPierce());
+                    end = (!pierce);
                 }
                 else {
                 	end = true;
@@ -139,6 +154,7 @@ public class Bomb extends GameObject{
                 current.killMoveables(board);
             }
         }
+        stopDown = i;
         System.out.println("bomb killed movables and destroyed wall");
     }
     
@@ -186,6 +202,37 @@ public class Bomb extends GameObject{
     
     public void setStartTime(double time) {
     	this.startTime = time;
+    }
+
+    public int getFirepower() {
+        return firepower;
+    }
+
+    public int getStopDown() {
+        return stopDown;
+    }
+
+    public int getStopLeft() {
+        return stopLeft;
+    }
+
+    public int getStopRight() {
+        return stopRight;
+    }
+
+    public int getStopTop() {
+        return stopTop;
+    }
+
+    @Override
+    public String toString() {
+        return "Bomb{" +
+                "player=" + player +
+                ", firepower=" + firepower +
+                ", pierce=" + pierce +
+                ", spriteIndex=" + spriteIndex +
+                ", hasExploded=" + hasExploded +
+                '}';
     }
 }
 

@@ -26,6 +26,12 @@ public class Player extends GameObject implements Movable{
 	private float hitboxHeightBottom=0.55F;
 	private BufferedImage image = null;
 
+	private int ammo = 1;
+	private boolean kick = false;
+	private boolean pierce = false;
+	private int firepower = 3; //max 6
+
+
 
 	private Board board; // utile pour les bombes, possiblement temporaire
 
@@ -334,45 +340,43 @@ public class Player extends GameObject implements Movable{
 	}
 
 
-	public void dropBomb() { // TODO: 20/03/2022 faire en sorte qu'on ne puisse pas poser une bombe avant un certain temps (a chaque fois qu'on appuie sur la touche, ça appelle la fonction 6-7 fois, le temps qu'un enleve le doigt 
+	public void dropBomb() {
 		if(bombCount < this.ammo && (this.board.getCases()[(int)position.x][(int)position.y].getBomb()==null)){
 			System.out.println("Ammo " + this.ammo + " Bombs " + bombCount);
-			bombList.add(new Bomb((int)position.x,(int)position.y, 1, false, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
+			bombList.add(new Bomb((int)position.x,(int)position.y, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			bombCount += 1;
-		}else{
-			System.out.println("vous avez deja posé une bombe");
 		}
 	}
 
 	public void bombUpdate() {
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
-			if(System.currentTimeMillis() - b.getStartTime() > 3800) {
+			if(System.currentTimeMillis() - b.getStartTime() > 3900) {
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
 				System.out.println("bomb delete");
 				bombCount -= 1;
 				//TODO: bomb not disappearing after kick
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3700){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3800){
 				b.setSpriteIndex(0);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3600){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3700){
 				b.setSpriteIndex(1);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3500){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3600){
 				b.setSpriteIndex(2);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3400){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3500){
 				b.setSpriteIndex(3);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3300){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3400){
 				b.setSpriteIndex(4);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3200){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3300){
 				b.setSpriteIndex(3);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3100){
+			else if(System.currentTimeMillis() - b.getStartTime() > 3200){
 				b.setSpriteIndex(2);
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 3100){
@@ -412,11 +416,6 @@ public class Player extends GameObject implements Movable{
 	public BufferedImage getImage() {
 		return image;
 	}
-
-	private int ammo = 1;
-    private boolean kick = false;
-    private boolean pierce = false;
-    private int firepower = 6; //max 6
     
     public void addFirepower(boolean max) {
     	this.firepower = (max)?6:this.firepower+1;
