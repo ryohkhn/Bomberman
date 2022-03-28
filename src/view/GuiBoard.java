@@ -134,7 +134,7 @@ public class GuiBoard extends JPanel{
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
-            playerImagesList.set(player.getId(), player.getImage());
+            playerImagesList.set(player.getId(), player.getImage()); // pourquoi ajouter ça dans la liste à chaque itération ?
             switch (player.getId()) {
                 case 0:
                     g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), x_height,y_width, null);

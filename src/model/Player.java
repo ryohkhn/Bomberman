@@ -1,9 +1,7 @@
 package model;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class Player extends GameObject implements Movable{
@@ -22,6 +20,10 @@ public class Player extends GameObject implements Movable{
 	private int spriteIndex;
 	private int direction;
 	private int points=0;
+	private float hitboxWidthLeft=0.4F;
+	private float hitboxWidthRight=0.4F;
+	private float hitboxHeightTop=0.38F;
+	private float hitboxHeightBottom=0.55F;
 	private BufferedImage image = null;
 
 
@@ -160,132 +162,156 @@ public class Player extends GameObject implements Movable{
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 1;
-		if (roundFloat(position.x % 1)>= 0.4F) {
-			System.out.println("Kick :" + this.kick);
-			System.out.println("Pierce :" + this.pierce);
-			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
-			int line= (int)position.x;
-			int column= (int)position.y;
-			int nextLine=line+1;
-			if(nextLine<Board.cases.length-1) {
-				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
-					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
-				}
-				if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null && roundFloat(position.y%1)<=0.4F){
-					position.x+=speedDelta;
-					position.x=roundFloat(position.x);
-					if(Board.cases[nextLine][column].getBonus()!=null) {
-						Board.cases[nextLine][column].getBonus().grantBonus(this);
-						Board.cases[nextLine][column].setBonus(null);
-					}
-				}
-			}
-			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
-		}else {
+		System.out.println("Kick :" + this.kick);
+		System.out.println("Pierce :" + this.pierce);
+		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
+		int line= (int)position.x;
+		int column= (int)position.y;
+		int nextLine=line+1;
+		double nextX=position.x+speedDelta;
+		// detect if player stay in the same case after moving
+		if((nextX+hitboxHeightBottom)<nextLine){
 			position.x+=speedDelta;
 			position.x=roundFloat(position.x);
 		}
-		System.out.println("x: "+position.x);
-		System.out.println("y: "+position.y);
+		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
+			if(detectDiagonalCollisionUpDown(nextLine,column)){
+				position.x+=speedDelta;
+				position.x=roundFloat(position.x);
+			}
+			if(Board.cases[nextLine][column].getBonus()!=null) {
+				Board.cases[nextLine][column].getBonus().grantBonus(this);
+				Board.cases[nextLine][column].setBonus(null);
+			}
+		}
+		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
+			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
+		}
+		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 0;
-		if (roundFloat(position.x % 1)<= 0.4F) {
-			System.out.println("Kick :" + this.kick);
-			System.out.println("Pierce :" + this.pierce);
-			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
-			int line= (int)position.x;
-			int column= (int)position.y;
-			int nextLine=line-1;
-			if (nextLine>0) {
-				if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
-					Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
-				}
-				if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null && roundFloat(position.y%1)<=0.4F){
-					position.x-=speedDelta;
-					position.x=roundFloat(position.x);
-					if(Board.cases[nextLine][column].getBonus()!=null) {
-						Board.cases[nextLine][column].getBonus().grantBonus(this);
-						Board.cases[nextLine][column].setBonus(null);
-					}
-				}
-			}
-			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
-		}else {
+		System.out.println("Kick :" + this.kick);
+		System.out.println("Pierce :" + this.pierce);
+		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
+		int line= (int)position.x;
+		int column= (int)position.y;
+		int nextLine=line-1;
+		double nextX=position.x-speedDelta;
+		if((nextX-hitboxHeightTop)>line){
 			position.x-=speedDelta;
 			position.x=roundFloat(position.x);
 		}
-		System.out.println("x: "+position.x);
-		System.out.println("y: "+position.y);
+		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
+			if(detectDiagonalCollisionUpDown(nextLine,column)){
+				position.x-=speedDelta;
+				position.x=roundFloat(position.x);
+			}
+			if(Board.cases[nextLine][column].getBonus()!=null) {
+				Board.cases[nextLine][column].getBonus().grantBonus(this);
+				Board.cases[nextLine][column].setBonus(null);
+			}
+		}
+		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
+			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
+		}
+		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 	
 	public void detectCollisionLeft(double deltaTime){
 		double speedDelta=speed/deltaTime;
-		direction = 2;
-		if (roundFloat(position.y % 1)<= 0.4F) {
-			System.out.println("Kick :" + this.kick);
-			System.out.println("Pierce :" + this.pierce);
-			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
-			int line= (int)position.x;
-			int column= (int)position.y;
-			int nextColumn=column-1;
-			if (nextColumn>0){
-				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
-					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromRight);
-				}
-				if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null && roundFloat(position.x%1)<=0.4F){
-					position.y-=speedDelta;
-					position.y=roundFloat(position.y);
-					if(Board.cases[line][nextColumn].getBonus()!=null) {
-						Board.cases[line][nextColumn].getBonus().grantBonus(this);
-						Board.cases[line][nextColumn].setBonus(null);
-					}
-				}
-			}
-			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
-		}else {
+		System.out.println("Kick :" + this.kick);
+		System.out.println("Pierce :" + this.pierce);
+		direction=2;
+		Board.cases[(int) position.x][(int) position.y].deleteMovableOnCase(this);
+		int line=(int) position.x;
+		int column=(int) position.y;
+		int nextColumn=column-1;
+		double nextY=position.y-speedDelta;
+		if((nextY-hitboxWidthLeft)>column){
 			position.y-=speedDelta;
 			position.y=roundFloat(position.y);
 		}
-		System.out.println("x: "+position.x);
-		System.out.println("y: "+position.y);
+		else if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb()==null){
+			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
+				position.y-=speedDelta;
+				position.y=roundFloat(position.y);
+			}
+			if(Board.cases[line][nextColumn].getBonus()!=null){
+				Board.cases[line][nextColumn].getBonus().grantBonus(this);
+				Board.cases[line][nextColumn].setBonus(null);
+			}
+		}
+		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex()==-1){
+			Board.cases[line][nextColumn].getBomb().setKicked(true, KickDirection.FromRight);
+		}
+		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 	
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 3;
-		if (roundFloat(position.y % 1)>= 0.4F){
-			System.out.println("Kick :" + this.kick);
-			System.out.println("Pierce :" + this.pierce);
-			Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
-			int line= (int)position.x;
-			int column= (int)position.y;
-			int nextColumn=column+1;
-			if(nextColumn<Board.cases[0].length-1) {
-				if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
-					Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
-				}
-				if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null && roundFloat(position.x%1)<=0.4F){
-					position.y+=speedDelta;
-					position.y=roundFloat(position.y);
-					if(Board.cases[line][nextColumn].getBonus()!=null) {
-						Board.cases[line][nextColumn].getBonus().grantBonus(this);
-						Board.cases[line][nextColumn].setBonus(null);
-					}
-				}
-			}
-			Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
-		}else {
+		System.out.println("Kick :" + this.kick);
+		System.out.println("Pierce :" + this.pierce);
+		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
+		int line= (int)position.x;
+		int column= (int)position.y;
+		int nextColumn=column+1;
+		double nextY=position.y+speedDelta;
+		if((nextY+hitboxWidthRight)<nextColumn){
 			position.y+=speedDelta;
 			position.y=roundFloat(position.y);
 		}
-		System.out.println("x: "+position.x);
-		System.out.println("y: "+position.y);
+		else if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null){
+			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
+				position.y+=speedDelta;
+				position.y=roundFloat(position.y);
+			}
+			if(Board.cases[line][nextColumn].getBonus()!=null) {
+				Board.cases[line][nextColumn].getBonus().grantBonus(this);
+				Board.cases[line][nextColumn].setBonus(null);
+			}
+		}
+		else{
+			position.y+=nextColumn-(nextY+hitboxWidthRight);
+			position.y=roundFloat(position.y);
+		}
+		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
+			Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
+		}
+		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
 
+	// detect diagonal collision when player is between two case
+	public boolean detectDiagonalCollisionUpDown(int nextLine,int column){
+		if(position.y%1<hitboxWidthLeft && Board.cases[nextLine][column-1].getWall()==null){
+			return true;
+		}
+		else if(position.y%1>1-hitboxWidthRight && Board.cases[nextLine][column+1].getWall()==null){
+			return true;
+		}
+		else if(position.y%1>hitboxWidthLeft && position.y%1<1-hitboxWidthRight){
+			return true;
+		}
+		return false;
+	}
+
+	// detect diagonal collision when player is between two case
+	public boolean detectDiagonalCollisionRightLeft(int line,int nextColumn){
+		if(position.x%1<hitboxHeightTop && Board.cases[line-1][nextColumn].getWall()==null){
+			return true;
+		}
+		else if(position.x%1>1-hitboxHeightBottom && Board.cases[line+1][nextColumn].getWall()==null){
+			return true;
+		}
+		else if(position.x%1>hitboxHeightTop && position.x%1<1-hitboxHeightBottom){
+			return true;
+		}
+		return false;
+	}
 
 	public void setPlayer(BufferedImage spriteSheet,int ind,float x,float y,int spriteWidth,int spriteHeight) {
 		int rows = spriteSheet.getHeight() / spriteHeight;
@@ -402,7 +428,7 @@ public class Player extends GameObject implements Movable{
     }
     
     public void addSpeed() {
-    	this.speed += 1;
+    	this.speed += 0.5;
     }
     
 
