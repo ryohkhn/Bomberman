@@ -20,8 +20,8 @@ public class Player extends GameObject implements Movable{
 	private int spriteIndex;
 	private int direction;
 	private int points=0;
-	private float hitboxWidthLeft=0.4F;
-	private float hitboxWidthRight=0.4F;
+	private float hitboxWidthLeft=0.38F;
+	private float hitboxWidthRight=0.38F;
 	private float hitboxHeightTop=0.38F;
 	private float hitboxHeightBottom=0.55F;
 	private BufferedImage image = null;
