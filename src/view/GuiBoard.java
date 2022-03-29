@@ -220,55 +220,55 @@ public class GuiBoard extends JPanel{
 
     private BufferedImage getBombImageState(String explosion, int spriteIndex) {
         switch (explosion) {
-            case "mid" : return switch (spriteIndex) {
-                case 1 -> explosionMidList.get(1);
-                case 2 -> explosionMidList.get(2);
-                case 3 -> explosionMidList.get(3);
-                case 4 -> explosionMidList.get(4);
-                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
-            };
-            case "height" : return switch (spriteIndex) {
-                case 1 -> explosionHeightList.get(0);
-                case 2 -> explosionHeightList.get(1);
-                case 3 -> explosionHeightList.get(2);
-                case 4 -> explosionHeightList.get(3);
-                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
-            };
-            case "width" : return switch (spriteIndex) {
-                case 1 -> explosionWidthList.get(0);
-                case 2 -> explosionWidthList.get(1);
-                case 3 -> explosionWidthList.get(2);
-                case 4 -> explosionWidthList.get(3);
-                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
-            };
-            case "down" : return switch (spriteIndex) {
-                case 1 -> explosionDownList.get(0);
-                case 2 -> explosionDownList.get(1);
-                case 3 -> explosionDownList.get(2);
-                case 4 -> explosionDownList.get(3);
-                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
-            };
-            case "top" : return switch (spriteIndex) {
-                case 1 -> explosionTopList.get(0);
-                case 2 -> explosionTopList.get(1);
-                case 3 -> explosionTopList.get(2);
-                case 4 -> explosionTopList.get(3);
-                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
-            };
-            case "right" : return switch (spriteIndex) {
-                case 1 -> explosionRightList.get(0);
-                case 2 -> explosionRightList.get(1);
-                case 3 -> explosionRightList.get(2);
-                case 4 -> explosionRightList.get(3);
-                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
-            };
-            case "left" : return switch (spriteIndex) {
-                case 1 -> explosionLeftList.get(0);
-                case 2 -> explosionLeftList.get(1);
-                case 3 -> explosionLeftList.get(2);
-                case 4 -> explosionLeftList.get(3);
-                default -> throw new IllegalStateException("Unexpected value: " + spriteIndex);
-            };
+            case "mid" : switch (spriteIndex) {
+                case 1 : return explosionMidList.get(1);
+                case 2 : return explosionMidList.get(2);
+                case 3 : return explosionMidList.get(3);
+                case 4 : return explosionMidList.get(4);
+                default : throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            }
+            case "height" : switch (spriteIndex) {
+                case 1 : return explosionHeightList.get(0);
+                case 2 : return explosionHeightList.get(1);
+                case 3 : return explosionHeightList.get(2);
+                case 4 : return explosionHeightList.get(3);
+                default : throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            }
+            case "width" : switch (spriteIndex) {
+                case 1 : return explosionWidthList.get(0);
+                case 2 : return explosionWidthList.get(1);
+                case 3 : return explosionWidthList.get(2);
+                case 4 : return explosionWidthList.get(3);
+                default : throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            }
+            case "down" : switch (spriteIndex) {
+                case 1 : return explosionDownList.get(0);
+                case 2 : return explosionDownList.get(1);
+                case 3 : return explosionDownList.get(2);
+                case 4 : return explosionDownList.get(3);
+                default : throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            }
+            case "top" : switch (spriteIndex) {
+                case 1 : return explosionTopList.get(0);
+                case 2 : return explosionTopList.get(1);
+                case 3 : return explosionTopList.get(2);
+                case 4 : return explosionTopList.get(3);
+                default : throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            }
+            case "right" : switch (spriteIndex) {
+                case 1 : return explosionRightList.get(0);
+                case 2 : return explosionRightList.get(1);
+                case 3 : return explosionRightList.get(2);
+                case 4 : return explosionRightList.get(3);
+                default : throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            }
+            case "left" : switch (spriteIndex) {
+                case 1 : return explosionLeftList.get(0);
+                case 2 : return explosionLeftList.get(1);
+                case 3 : return explosionLeftList.get(2);
+                case 4 : return explosionLeftList.get(3);
+                default : throw new IllegalStateException("Unexpected value: " + spriteIndex);
+            }
             default : throw new IllegalStateException("Unexpected value: " + explosion);
         }
     }
