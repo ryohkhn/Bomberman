@@ -168,8 +168,6 @@ public class Player extends GameObject implements Movable{
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 1;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -199,8 +197,6 @@ public class Player extends GameObject implements Movable{
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 0;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -228,8 +224,6 @@ public class Player extends GameObject implements Movable{
 	
 	public void detectCollisionLeft(double deltaTime){
 		double speedDelta=speed/deltaTime;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
 		direction=2;
 		Board.cases[(int) position.x][(int) position.y].deleteMovableOnCase(this);
 		int line=(int) position.x;
@@ -259,8 +253,6 @@ public class Player extends GameObject implements Movable{
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 3;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;

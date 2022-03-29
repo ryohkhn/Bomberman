@@ -27,6 +27,7 @@ public class Gui extends JFrame{
 
         this.add(guiBar,BorderLayout.NORTH);
         this.add(guiBoard,BorderLayout.CENTER);
+        //setUndecorated(true);
         setVisible(true);
     }
 
