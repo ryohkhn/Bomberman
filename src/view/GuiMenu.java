@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -29,6 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -235,7 +237,25 @@ public class GuiMenu extends JFrame implements ActionListener{
 	    }
 	}
 	
+	public static void setUIFont(javax.swing.plaf.FontUIResource f)
+	{   
+	    java.util.Enumeration keys = UIManager.getDefaults().keys();
+	    while(keys.hasMoreElements())
+	    {
+	        Object key = keys.nextElement();
+	        Object value = UIManager.get(key);
+	        if(value instanceof javax.swing.plaf.FontUIResource) UIManager.put(key, f);
+	    }
+	}
+
+	
 	public static void main(String[] args) {
+
+		try
+		{
+		    setUIFont(new javax.swing.plaf.FontUIResource("Courier",Font.BOLD,12));
+		}
+		catch(Exception e){}
 		new GuiMenu();
 	}
 }
