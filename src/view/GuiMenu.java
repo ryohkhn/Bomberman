@@ -36,19 +36,18 @@ import javax.swing.plaf.basic.BasicButtonUI;
 
 import model.GamePVP;
 
-public class GuiMenu extends JFrame implements ActionListener{
+public class GuiMenu extends JPanel implements ActionListener{
 	private final JPanel buttonPanel = new JPanel();
 	private JButton newGame;
     private JButton settings;
     private JButton quit;
+    private Gui frame;
     
     private int gamemode; // 0 pvp 1 monster
     
-	public GuiMenu() {
-		
-		super("Bomberman");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLayout(new GridLayout(2,1));
+	public GuiMenu(Gui frame) {
+		this.frame = frame;
+		//this.setLayout(new GridLayout(2,1));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
 		// Buttons
@@ -64,12 +63,12 @@ public class GuiMenu extends JFrame implements ActionListener{
 		newGame.addActionListener(newGameAction);
 		settings.addActionListener(settingsAction);
 		quit.addActionListener(quitAction);
-		buttonPanel.setPreferredSize(new Dimension(500,350));
+		//buttonPanel.setPreferredSize(new Dimension(500,350));
 		buttonPanel.add(Box.createRigidArea(new Dimension(0, 120)));
 		buttonPanel.add(newGame);
-		buttonPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+		buttonPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 		buttonPanel.add(settings);
-		buttonPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+		buttonPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 		buttonPanel.add(quit);
 		
 
@@ -85,29 +84,17 @@ public class GuiMenu extends JFrame implements ActionListener{
 		//End of buttons//
 		//////////////////
 		
-		
-		class ImagePanel extends JPanel {
-		    private Image image;
-		    public ImagePanel(Image image) {
-		        this.image = image;
-		    }
-		    @Override
-		    protected void paintComponent(Graphics g) {
-		        super.paintComponent(g);
-		        g.drawImage(image, 0, 0, this);
-		    }
+		try
+		{
+		    setUIFont(new javax.swing.plaf.FontUIResource("Courier",Font.BOLD,12));
 		}
-
-		try {
-			BufferedImage myImage = ImageIO.read(new File("resources/background.jpg"));
-			setContentPane(new ImagePanel(myImage));
-		} catch (IOException e) {}
+		catch(Exception e){}
 		
 		buttonPanel.setOpaque(true);
 		buttonPanel.setBackground(new Color(0,0,0,0));
-		add(buttonPanel, BorderLayout.CENTER);
+		add(buttonPanel);
 		
-        setSize(600,553);
+        //setSize(600,553);
 		setVisible(true);
 	}
 	
@@ -116,8 +103,7 @@ public class GuiMenu extends JFrame implements ActionListener{
      */
     public Action newGameAction = new AbstractAction() {
 	public void actionPerformed(ActionEvent e) {
-	    //dispose();
-	    //Engine.startGame();
+        frame.startGame();
 	}
     };
     /**
@@ -170,7 +156,8 @@ public class GuiMenu extends JFrame implements ActionListener{
 	            public void actionPerformed(ActionEvent e) {
 	                settingPanel.setVisible(false);
 	                remove(settingPanel);
-	                buttonPanel.setVisible(true);
+	                add(buttonPanel);
+	    	        buttonPanel.setVisible(true);
 	                repaint();
 	            }
 	        });
@@ -182,7 +169,7 @@ public class GuiMenu extends JFrame implements ActionListener{
 	        game.add(Box.createRigidArea(new Dimension(0, 10)));
 	        settingPanel.add(game);
 	        settingPanel.add(returnButton);
-
+	        settingPanel.setPreferredSize(new Dimension(500,350));
 	        buttonPanel.setVisible(false);
 	        
 	        JComponent[] comp = {gamePvpButton, gameMonsterButton, game, settingPanel};
@@ -190,8 +177,10 @@ public class GuiMenu extends JFrame implements ActionListener{
 	        	c.setOpaque(true);
 	        	c.setBackground(new Color(0,0,0,0));
 	        }
-	        settingPanel.setVisible(true);
 	        add(settingPanel);
+	        remove(buttonPanel);
+	        settingPanel.setVisible(true);
+	        repaint();
 		}
     };
     /**
@@ -247,15 +236,14 @@ public class GuiMenu extends JFrame implements ActionListener{
 	        if(value instanceof javax.swing.plaf.FontUIResource) UIManager.put(key, f);
 	    }
 	}
-
 	
-	public static void main(String[] args) {
-
-		try
-		{
-		    setUIFont(new javax.swing.plaf.FontUIResource("Courier",Font.BOLD,12));
-		}
-		catch(Exception e){}
-		new GuiMenu();
+	@Override
+    protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		BufferedImage myImage;
+		try {
+			myImage = ImageIO.read(new File("resources/background.jpg"));
+	        g.drawImage(myImage, 0, 0, null);
+		} catch (IOException e) {}
 	}
 }
