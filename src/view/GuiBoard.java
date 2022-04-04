@@ -195,18 +195,18 @@ public class GuiBoard extends JPanel{
 
         while(i < bomb.getStopRight() && board.getCases()[x][i].getWall() == null) {
             System.out.println("i avant augmentation : " + i);
-            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * (x-1), width, height, null); // on affiche l'image de l'état de la bombe
+            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
             i += 1;
             System.out.println("i apres augmentation : " + i);
 
         }
         if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable()) {
-            g2.drawImage(getBombImageState("right", spriteIndex), width * i, height * (x-1), width, height, null); // on affiche l'image de l'état de la bombe
+            g2.drawImage(getBombImageState("right", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
         }
 
         //down
         i = x + 1;
-
+        System.out.println("mpi ; " + i);
         while(i < bomb.getStopDown() && board.getCases()[i][y].getWall() == null) {
             g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
             i += 1;
@@ -219,6 +219,7 @@ public class GuiBoard extends JPanel{
     }
 
     private BufferedImage getBombImageState(String explosion, int spriteIndex) {
+
         switch (explosion) {
             case "mid" : switch (spriteIndex) {
                 case 1 : return explosionMidList.get(1);

@@ -168,8 +168,8 @@ public class Player extends GameObject implements Movable{
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 1;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
+		//System.out.println("Kick :" + this.kick);
+		//System.out.println("Pierce :" + this.pierce);
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -196,11 +196,23 @@ public class Player extends GameObject implements Movable{
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
+	public int getPositionXasInt() {
+		// TODO Auto-generated method stub
+		return (int)super.getPositionX();
+	}
+
+	public int getPositionYasInt() {
+		// TODO Auto-generated method stub
+		return (int)super.getPositionY();
+	}
+
+	
+
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 0;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
+		//System.out.println("Kick :" + this.kick);
+		//System.out.println("Pierce :" + this.pierce);
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -228,8 +240,8 @@ public class Player extends GameObject implements Movable{
 	
 	public void detectCollisionLeft(double deltaTime){
 		double speedDelta=speed/deltaTime;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
+		//System.out.println("Kick :" + this.kick);
+		//System.out.println("Pierce :" + this.pierce);
 		direction=2;
 		Board.cases[(int) position.x][(int) position.y].deleteMovableOnCase(this);
 		int line=(int) position.x;
@@ -259,8 +271,8 @@ public class Player extends GameObject implements Movable{
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 3;
-		System.out.println("Kick :" + this.kick);
-		System.out.println("Pierce :" + this.pierce);
+		//System.out.println("Kick :" + this.kick);
+		//System.out.println("Pierce :" + this.pierce);
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -342,10 +354,14 @@ public class Player extends GameObject implements Movable{
 
 	public void dropBomb() {
 		if(bombCount < this.ammo && (this.board.getCases()[(int)position.x][(int)position.y].getBomb()==null)){
-			System.out.println("Ammo " + this.ammo + " Bombs " + bombCount);
+			//System.out.println("Ammo " + this.ammo + " Bombs " + bombCount);
 			bombList.add(new Bomb((int)position.x,(int)position.y, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			bombCount += 1;
 		}
+	}
+
+	public int getAmmo() {
+		return ammo;
 	}
 
 	public void bombUpdate() {

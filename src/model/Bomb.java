@@ -36,6 +36,7 @@ public class Bomb extends GameObject{
     private int stopDown;
     private int stopLeft;
     private int stopRight;
+    private boolean willBeExploding;
 
 
     /**
@@ -55,7 +56,7 @@ public class Bomb extends GameObject{
         // Kicking bomb
         this.kicked = false;
         this.kickDirection = KickDirection.Nothing;
-
+        this.willBeExploding = false;
         this.startTime = System.currentTimeMillis();
 
         //Set bomb in case
@@ -63,8 +64,14 @@ public class Bomb extends GameObject{
 
 
     }
-    
 
+    public boolean getwillBeExploding() {
+        return willBeExploding;
+    }
+
+    public void setWillBeExploding() {
+        this.willBeExploding = true;
+    }
 
     /**
      * Function that kills players in a cross-shaped area (with each extension of length firepower)
@@ -86,16 +93,17 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
-                //System.out.println("right stop at " + (int)position.x + "/" + i + " where there are " + current);
-                //System.out.println("start at y=" + (int)position.y + " stop at y=" + lineRight + "\n" );
+                System.out.println("right stop at " + (int)position.x + "/" + i + " where there are " + current);
+                System.out.println("start at y=" + (int)position.y + " stop at y=" + lineRight + "\n" );
 
             } else {
-                //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
+                System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
                 current.killMoveables(board);
             }
 		}
@@ -107,13 +115,14 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
+                System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
                 current.killMoveables(board);
             }
         }
@@ -126,31 +135,33 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
+                System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
                 current.killMoveables(board);
             }
         }
         stopTop = i;
         end = false;
-        for(i = (int)position.x ; i < columnDown && !end; i++ ){ // commence a x et pas x + 1 pour tuer les joueurs sur l'emplacement de la bombe
+        for(i = (int)position.x + 1 ; i < columnDown && !end; i++ ){ // commence a x et pas x + 1 pour tuer les joueurs sur l'emplacement de la bombe
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
 
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
+                System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
                 current.killMoveables(board);
             }
         }
@@ -253,8 +264,6 @@ enum KickDirection {
     KickDirection(Point2D.Float velocity) {
         this.velocity = velocity;
     }
-
-
 
 	public Point2D.Float getVelocity() {
         return this.velocity;
