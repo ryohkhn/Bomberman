@@ -32,7 +32,6 @@ public class Gui extends JFrame{
         guiBar.setPreferredSize(new Dimension(this.getHeight()/15,this.getWidth()/15));
 
         this.add(guiMenu,BorderLayout.CENTER);
-        
         //this.add(guiBar,BorderLayout.NORTH);
         //this.add(guiBoard,BorderLayout.CENTER);
         setVisible(true);

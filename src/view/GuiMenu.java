@@ -23,26 +23,23 @@ public class GuiMenu extends JPanel implements ActionListener{
     private int gamemode; // 0 pvp 1 monster
     private int map; //0 non selected 1-3 selected
     private int numberOfPlayers; // 1-4
+    private int numberOfAI;
     
 	public GuiMenu(Gui frame) {
 		this.frame = frame;
-		//this.setLayout(new GridLayout(2,1));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
 		// Buttons
-		String newGameLabel = "Start Game";
-		String settingsLabel = "Settings";
-		String quitLabel = "Quit";
-		newGame = new JButton(newGameLabel);
+		newGame = new JButton("Start Game");
 		newGame.setToolTipText("Click this button to start a new game.");
-		quit = new JButton(quitLabel);
+		settings = new JButton("Settings");
+		settings.setToolTipText("Click this button change the settings of the game.");
+		quit = new JButton("Quit");
 		quit.setToolTipText("Click this button quit the game.");
-		settings = new JButton(settingsLabel);
 		
 		newGame.addActionListener(newGameAction);
 		settings.addActionListener(settingsAction);
 		quit.addActionListener(quitAction);
-		//buttonPanel.setPreferredSize(new Dimension(500,350));
 		buttonPanel.add(Box.createRigidArea(new Dimension(0, 120)));
 		buttonPanel.add(newGame);
 		buttonPanel.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -50,9 +47,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 		buttonPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 		buttonPanel.add(quit);
 		
-
 		JButton[] buttons = {newGame, settings, quit};
-		
 		for(JButton b : buttons) {
 			b.setAlignmentX(Component.CENTER_ALIGNMENT);
 			b.setPreferredSize(new Dimension(150,50));
@@ -72,8 +67,6 @@ public class GuiMenu extends JPanel implements ActionListener{
 		buttonPanel.setOpaque(true);
 		buttonPanel.setBackground(new Color(0,0,0,0));
 		add(buttonPanel);
-		
-        //setSize(600,553);
 		setVisible(true);
 	}
 	
@@ -94,12 +87,10 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        JPanel settingPanel = new JPanel();
 	        settingPanel.setLayout(new BoxLayout(settingPanel, BoxLayout.Y_AXIS));
 	        
-
 	        //
 	        // Gamemode
 	        //
-	        
-	        
+	                
 	        JRadioButton gamePvpButton = new JRadioButton();
 	        JRadioButton gameMonsterButton = new JRadioButton();
 	        gamePvpButton.setText("PVP");
@@ -140,24 +131,56 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        gamemodes.setBackground(new Color(0,0,0,0));
 	        
 	        //
-	        // Number of players
+	        // Number of players and AI
 	        //
 	        
 	        JPanel nbPlayers = new JPanel();
 	        Integer[] optionsToChoose = {1,2,3,4};
 	        JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
 	        jComboBox.setSelectedItem(numberOfPlayers);
-	        jComboBox.addActionListener (new ActionListener () {
-	            public void actionPerformed(ActionEvent e) {
-	                numberOfPlayers = (int) jComboBox.getSelectedItem();
-	            }
-	        });
 	        
 	        nbPlayers.add(new JLabel("Number of players: "));
 	        nbPlayers.add(jComboBox);
 	        nbPlayers.setOpaque(true);
 	        nbPlayers.setBackground(new Color(0,0,0,0));
 
+	        JPanel nbAI = new JPanel();
+	        Integer[] optionsToChooseAI = {0,1,2,3};
+	        JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
+	        jComboBoxAI.setSelectedItem(numberOfAI);
+            System.out.println(numberOfAI);
+
+	        nbAI.add(new JLabel("Number of AI: "));
+	        nbAI.add(jComboBoxAI);
+	        nbAI.setOpaque(true);
+	        nbAI.setBackground(new Color(0,0,0,0));
+	        
+	        jComboBoxAI.addActionListener (new ActionListener () {
+	            public void actionPerformed(ActionEvent e) {
+	                numberOfAI = (jComboBoxAI.getItemCount() == 0) ? 0 : (int) jComboBoxAI.getSelectedItem();
+	                repaint();
+	            }
+	        });
+	        
+	        jComboBox.addActionListener (new ActionListener () {
+	            public void actionPerformed(ActionEvent e) {
+	            	if(numberOfPlayers == (int) jComboBox.getSelectedItem()) return;
+	            	else if(numberOfPlayers < (int) jComboBox.getSelectedItem()) {
+		                numberOfPlayers = (int) jComboBox.getSelectedItem();
+		                jComboBoxAI.removeAllItems();
+		                for(int i = 0; i < 5 - numberOfPlayers; i++) {
+			                jComboBoxAI.addItem(i);
+		                }
+	                }
+	                else {
+	                	numberOfPlayers = (int) jComboBox.getSelectedItem();
+		                for(int i = numberOfAI; i < 5 - numberOfPlayers; i++) {
+			                jComboBoxAI.addItem(i);
+		                }
+	                }
+	            }
+	        });
+	        
 	        //
 	        // Maps
 	        //
@@ -165,6 +188,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        GridLayout mapLayout = new GridLayout(1,3);
 	        mapLayout.setHgap(25);
 	        JPanel maps = new JPanel(mapLayout);
+	        boolean mapError = false;
 			try {
 				ImageIcon map1 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
 				ImageIcon map2 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
@@ -204,17 +228,9 @@ public class GuiMenu extends JPanel implements ActionListener{
 				        map3label.setIcon(map3);
 				        map = 1;
 		            }
-
-					@Override
 					public void mouseEntered(MouseEvent arg0) {}
-
-					@Override
 					public void mouseExited(MouseEvent arg0) {}
-
-					@Override
 					public void mousePressed(MouseEvent arg0) {}
-
-					@Override
 					public void mouseReleased(MouseEvent arg0) {}
 		        });
 		        
@@ -228,17 +244,9 @@ public class GuiMenu extends JPanel implements ActionListener{
 				        map3label.setIcon(map3);
 				        map = 2;
 		            }
-
-					@Override
 					public void mouseEntered(MouseEvent arg0) {}
-
-					@Override
 					public void mouseExited(MouseEvent arg0) {}
-
-					@Override
 					public void mousePressed(MouseEvent arg0) {}
-
-					@Override
 					public void mouseReleased(MouseEvent arg0) {}
 		        });
 		        
@@ -252,17 +260,9 @@ public class GuiMenu extends JPanel implements ActionListener{
 				        map3label.setIcon(map3selected);
 				        map = 3;
 		            }
-
-					@Override
 					public void mouseEntered(MouseEvent arg0) {}
-
-					@Override
 					public void mouseExited(MouseEvent arg0) {}
-
-					@Override
 					public void mousePressed(MouseEvent arg0) {}
-
-					@Override
 					public void mouseReleased(MouseEvent arg0) {}
 		        });
 		        maps.add(map1label);
@@ -272,6 +272,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 				maps.setBackground(new Color(0,0,0,0));
 			} catch (IOException e1) {
 				System.out.println("Maps not found");
+				mapError = true;
 			}
 
 			//
@@ -291,8 +292,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	                repaint();
 	            }
 	        });
-	        returnButton.setPreferredSize(new Dimension(150,30));
-	        	        
+	        returnButton.setPreferredSize(new Dimension(150,30));  
 
 	        JPanel game = new JPanel();
 	        game.setLayout(new BoxLayout(game, BoxLayout.Y_AXIS));
@@ -300,16 +300,19 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        game.add(Box.createRigidArea(new Dimension(0, 20)));
 	        game.add(gamemodes);
 	        game.add(nbPlayers);
-	        game.add(Box.createRigidArea(new Dimension(10, 10)));
-	        JLabel text = new JLabel("Select map:");
-	        text.setAlignmentX(Component.CENTER_ALIGNMENT);
-	        game.add(text);
-	        game.add(maps);
+	        game.add(nbAI);
+	        if(!mapError) {
+		        game.add(Box.createRigidArea(new Dimension(0, 10)));
+		        JLabel text = new JLabel("Select map:");
+		        text.setAlignmentX(Component.CENTER_ALIGNMENT);
+		        game.add(text);
+		        game.add(Box.createRigidArea(new Dimension(0, 10)));
+		        game.add(maps);
+	        }
+
 	        game.add(Box.createRigidArea(new Dimension(0, 20)));
-	        
 	        settingPanel.add(game);
 	        settingPanel.add(returnButton);
-	        settingPanel.setPreferredSize(new Dimension(500,350));
 	        
 	        JComponent[] comp = {gamePvpButton, gameMonsterButton, game, settingPanel};
 	        for(JComponent c : comp) {
