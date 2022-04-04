@@ -34,9 +34,7 @@ public class Gui extends JFrame{
         this.add(guiMenu,BorderLayout.CENTER);
         
         //this.add(guiBar,BorderLayout.NORTH);
-        
         //this.add(guiBoard,BorderLayout.CENTER);
-        //setUndecorated(true);
         setVisible(true);
     }
 
@@ -46,6 +44,7 @@ public class Gui extends JFrame{
     }
 
 	public void startGame() {
+		//marche pas...
 		this.remove(guiMenu);
 		this.add(guiBar,BorderLayout.NORTH);
 		this.add(guiBoard,BorderLayout.CENTER);
