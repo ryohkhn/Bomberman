@@ -139,9 +139,7 @@ public class GuiBoard extends JPanel{
                     if(cases[x][y].getBonus() != null) {
                         g2.drawImage(bonusMap.get(cases[x][y].getBonus().getType()), y * width, x * height, width, height, null); // on affiche le bonus
                     }
-                    if(cases[x][y].getBomb()!=null) {
-                        paintBomb(board, g2, x, y, width, height);
-                    }
+
                 }
                 else if(cases[x][y].getWall().isBreakable()){
                     g2.drawImage(breakableBlock,y * width,x * height,width,height,null);
@@ -149,12 +147,19 @@ public class GuiBoard extends JPanel{
                 else{
                     g2.drawImage(unbreakableBlock,y * width,x * height,width,height,null);
                 }
+
+            }
+        }
+        for(int x = 0; x < cases.length; x++) {
+            for (int y = 0; y < cases[x].length; y++) {
+                if(cases[x][y].getBomb()!=null) {
+                    paintBomb(board, g2, x, y, width, height);
+                }
             }
         }
     }
 
     private void paintBomb(Board board,Graphics2D g2, int x, int y, int width, int height) {
-        Case current = board.getCases()[x][y];
         Bomb bomb = board.getCases()[x][y].getBomb();
         int spriteIndex = bomb.getSpriteIndex();
         if(spriteIndex == -1){
@@ -169,22 +174,19 @@ public class GuiBoard extends JPanel{
 
         //left
         int i = y - 1;
-
-        while(i > bomb.getStopLeft() && board.getCases()[x][i].getWall() == null) {
+        while(i > bomb.getStopLeft() + 1 && board.getCases()[x][i].getWall() == null) {
             g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
             i -= 1;
-
         }
-        if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable()) {
+        if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable() ) {
             g2.drawImage(getBombImageState("left", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
         }
+
         //top
          i = x - 1;
-
-        while(i > bomb.getStopTop() && board.getCases()[i][y].getWall() == null) {
+        while(i > bomb.getStopTop() + 1 && board.getCases()[i][y].getWall() == null) {
             g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
             i -= 1;
-
         }
         if(board.getCases()[i][y].getWall() == null || board.getCases()[i][y].getWall().isBreakable()) {
             g2.drawImage(getBombImageState("top", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
@@ -192,30 +194,23 @@ public class GuiBoard extends JPanel{
 
         //right
         i = y + 1;
-
-        while(i < bomb.getStopRight() && board.getCases()[x][i].getWall() == null) {
-            System.out.println("i avant augmentation : " + i);
-            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * (x-1), width, height, null); // on affiche l'image de l'état de la bombe
+        while(i < bomb.getStopRight() - 1 && board.getCases()[x][i].getWall() == null) {
+            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * (x), width, height, null); // on affiche l'image de l'état de la bombe
             i += 1;
-            System.out.println("i apres augmentation : " + i);
-
         }
         if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable()) {
-            g2.drawImage(getBombImageState("right", spriteIndex), width * i, height * (x-1), width, height, null); // on affiche l'image de l'état de la bombe
+            g2.drawImage(getBombImageState("right", spriteIndex), width * i, height * (x), width, height, null); // on affiche l'image de l'état de la bombe
         }
 
         //down
         i = x + 1;
-
-        while(i < bomb.getStopDown() && board.getCases()[i][y].getWall() == null) {
+        while(i < bomb.getStopDown() - 1 && board.getCases()[i][y].getWall() == null) {
             g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
             i += 1;
-
         }
         if(board.getCases()[i][y].getWall() == null || board.getCases()[i][y].getWall().isBreakable()) {
             g2.drawImage(getBombImageState("down", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
         }
-
     }
 
     private BufferedImage getBombImageState(String explosion, int spriteIndex) {

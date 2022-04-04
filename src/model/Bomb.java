@@ -78,10 +78,11 @@ public class Bomb extends GameObject{
         int lineRight = Math.min(((int) position.y + firepower), 14);
         int columnTop = Math.max(((int) position.x - firepower), 0);
         int columnDown = Math.min(((int) position.x + firepower), 12);
-        boolean end = false;
-        Case current = null;
+        Case current = c[(int)position.x][(int)position.y];
+        current.killMoveables(board);
         int i;
-        for(i = (int)position.y + 1 ;i < lineRight && !end; i++ ){
+        boolean end = false;
+        for(i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
@@ -91,18 +92,14 @@ public class Bomb extends GameObject{
                 else {
                 	end = true;
                 }
-                //System.out.println("right stop at " + (int)position.x + "/" + i + " where there are " + current);
-                //System.out.println("start at y=" + (int)position.y + " stop at y=" + lineRight + "\n" );
-
             } else {
-                //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
                 current.killMoveables(board);
             }
 		}
-        assert current != null;
         stopRight = i;
+
         end = false;
-        for(i = (int)position.y - 1 ;i > lineLeft && !end; i-- ){
+        for(i = (int)position.y - 1 ;i >= lineLeft && !end; i-- ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
@@ -118,10 +115,9 @@ public class Bomb extends GameObject{
             }
         }
         stopLeft = i;
-        System.out.println("stop left = " + i + "    and lineLeft is = " + lineLeft);
 
         end = false;
-        for(i = (int)position.x - 1 ; i > columnTop && !end; i-- ){
+        for(i = (int)position.x - 1 ; i >= columnTop && !end; i-- ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
@@ -132,16 +128,15 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
                 current.killMoveables(board);
             }
         }
         stopTop = i;
+
         end = false;
-        for(i = (int)position.x ; i < columnDown && !end; i++ ){ // commence a x et pas x + 1 pour tuer les joueurs sur l'emplacement de la bombe
+        for(i = (int)position.x + 1 ; i <= columnDown && !end; i++ ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
-
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
                     end = (!pierce);
@@ -150,12 +145,10 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                //System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
                 current.killMoveables(board);
             }
         }
         stopDown = i;
-        System.out.println("bomb killed movables and destroyed wall");
     }
     
     public void setKicked(boolean kicked, KickDirection kickDirection) {
@@ -175,10 +168,6 @@ public class Bomb extends GameObject{
     public KickDirection getKick() {
     	return this.kickDirection;
     }
-    
-   /*
-    * Deletes the bomb after explosion
-	*/
 
 
     // setter et getter :
