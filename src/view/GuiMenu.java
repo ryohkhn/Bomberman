@@ -1,36 +1,13 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -44,6 +21,8 @@ public class GuiMenu extends JPanel implements ActionListener{
     private Gui frame;
     
     private int gamemode; // 0 pvp 1 monster
+    private int map; //0 non selected 1-3 selected
+    private int numberOfPlayers; // 1-4
     
 	public GuiMenu(Gui frame) {
 		this.frame = frame;
@@ -111,12 +90,15 @@ public class GuiMenu extends JPanel implements ActionListener{
      */
     public Action settingsAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-		    //new SettingsFrame();
+		    
 	        JPanel settingPanel = new JPanel();
-	        JPanel game = new JPanel();
 	        settingPanel.setLayout(new BoxLayout(settingPanel, BoxLayout.Y_AXIS));
-	        JButton returnButton = new JButton("Return");
-	        returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        
+
+	        //
+	        // Gamemode
+	        //
+	        
 	        
 	        JRadioButton gamePvpButton = new JRadioButton();
 	        JRadioButton gameMonsterButton = new JRadioButton();
@@ -150,6 +132,154 @@ public class GuiMenu extends JPanel implements ActionListener{
 	            }
 	        });
 	        
+	        JPanel gamemodes = new JPanel();
+	        gamemodes.add(new JLabel("Select gamemode:"));
+	        gamemodes.add(gamePvpButton);
+	        gamemodes.add(gameMonsterButton);
+	        gamemodes.setOpaque(true);
+	        gamemodes.setBackground(new Color(0,0,0,0));
+	        
+	        //
+	        // Number of players
+	        //
+	        
+	        JPanel nbPlayers = new JPanel();
+	        Integer[] optionsToChoose = {1,2,3,4};
+	        JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
+	        jComboBox.setSelectedItem(numberOfPlayers);
+	        jComboBox.addActionListener (new ActionListener () {
+	            public void actionPerformed(ActionEvent e) {
+	                numberOfPlayers = (int) jComboBox.getSelectedItem();
+	            }
+	        });
+	        
+	        nbPlayers.add(new JLabel("Number of players: "));
+	        nbPlayers.add(jComboBox);
+	        nbPlayers.setOpaque(true);
+	        nbPlayers.setBackground(new Color(0,0,0,0));
+
+	        //
+	        // Maps
+	        //
+	        
+	        GridLayout mapLayout = new GridLayout(1,3);
+	        mapLayout.setHgap(25);
+	        JPanel maps = new JPanel(mapLayout);
+			try {
+				ImageIcon map1 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
+				ImageIcon map2 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
+				ImageIcon map3 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
+
+		        ImageIcon map1selected = new ImageIcon(ImageIO.read(new File("resources/map_selected.jpg")));
+		        ImageIcon map2selected = new ImageIcon(ImageIO.read(new File("resources/map_selected.jpg")));
+		        ImageIcon map3selected = new ImageIcon(ImageIO.read(new File("resources/map_selected.jpg")));
+		        
+		        JLabel map1label = new JLabel(map1);
+		        JLabel map2label = new JLabel(map2);
+		        JLabel map3label = new JLabel(map3);
+		        
+		        switch(map) {
+			        case 0:
+			        	break;
+			        case 1:
+				        map1label.setIcon(map1selected);
+			        	break;
+			        case 2:
+				        map2label.setIcon(map2selected);
+			        	break;
+			        case 3:
+				        map3label.setIcon(map3selected);
+			        	break;
+			        default:
+			        	break;
+		        }
+		        
+		        map1label.addMouseListener(new MouseListener() 
+		        {
+		            @Override
+		            public void mouseClicked(MouseEvent e) 
+		            {
+				        map1label.setIcon(map1selected);
+				        map2label.setIcon(map2);
+				        map3label.setIcon(map3);
+				        map = 1;
+		            }
+
+					@Override
+					public void mouseEntered(MouseEvent arg0) {}
+
+					@Override
+					public void mouseExited(MouseEvent arg0) {}
+
+					@Override
+					public void mousePressed(MouseEvent arg0) {}
+
+					@Override
+					public void mouseReleased(MouseEvent arg0) {}
+		        });
+		        
+		        map2label.addMouseListener(new MouseListener() 
+		        {
+		            @Override
+		            public void mouseClicked(MouseEvent e) 
+		            {
+				        map1label.setIcon(map1);
+				        map2label.setIcon(map2selected);
+				        map3label.setIcon(map3);
+				        map = 2;
+		            }
+
+					@Override
+					public void mouseEntered(MouseEvent arg0) {}
+
+					@Override
+					public void mouseExited(MouseEvent arg0) {}
+
+					@Override
+					public void mousePressed(MouseEvent arg0) {}
+
+					@Override
+					public void mouseReleased(MouseEvent arg0) {}
+		        });
+		        
+		        map3label.addMouseListener(new MouseListener() 
+		        {
+		            @Override
+		            public void mouseClicked(MouseEvent e) 
+		            {
+				        map1label.setIcon(map1);
+				        map2label.setIcon(map2);
+				        map3label.setIcon(map3selected);
+				        map = 3;
+		            }
+
+					@Override
+					public void mouseEntered(MouseEvent arg0) {}
+
+					@Override
+					public void mouseExited(MouseEvent arg0) {}
+
+					@Override
+					public void mousePressed(MouseEvent arg0) {}
+
+					@Override
+					public void mouseReleased(MouseEvent arg0) {}
+		        });
+		        maps.add(map1label);
+		        maps.add(map2label);
+		        maps.add(map3label);
+		        maps.setOpaque(true);
+				maps.setBackground(new Color(0,0,0,0));
+			} catch (IOException e1) {
+				System.out.println("Maps not found");
+			}
+
+			//
+			// Return
+			//
+			
+	        JButton returnButton = new JButton("Return");
+	        returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 	        returnButton.setUI(new StyledButtonUI());
 	        returnButton.addActionListener(new ActionListener() {
 	            @Override
@@ -162,24 +292,35 @@ public class GuiMenu extends JPanel implements ActionListener{
 	            }
 	        });
 	        returnButton.setPreferredSize(new Dimension(150,30));
+	        	        
+
+	        JPanel game = new JPanel();
+	        game.setLayout(new BoxLayout(game, BoxLayout.Y_AXIS));
 	        
-	        game.add(Box.createRigidArea(new Dimension(0, 100)));
-	        game.add(gamePvpButton);
-	        game.add(gameMonsterButton);
-	        game.add(Box.createRigidArea(new Dimension(0, 10)));
+	        game.add(Box.createRigidArea(new Dimension(0, 20)));
+	        game.add(gamemodes);
+	        game.add(nbPlayers);
+	        game.add(Box.createRigidArea(new Dimension(10, 10)));
+	        JLabel text = new JLabel("Select map:");
+	        text.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        game.add(text);
+	        game.add(maps);
+	        game.add(Box.createRigidArea(new Dimension(0, 20)));
+	        
 	        settingPanel.add(game);
 	        settingPanel.add(returnButton);
 	        settingPanel.setPreferredSize(new Dimension(500,350));
-	        buttonPanel.setVisible(false);
 	        
 	        JComponent[] comp = {gamePvpButton, gameMonsterButton, game, settingPanel};
 	        for(JComponent c : comp) {
 	        	c.setOpaque(true);
 	        	c.setBackground(new Color(0,0,0,0));
 	        }
-	        add(settingPanel);
+	        
+	        buttonPanel.setVisible(false);
 	        remove(buttonPanel);
 	        settingPanel.setVisible(true);
+	        add(settingPanel);
 	        repaint();
 		}
     };
