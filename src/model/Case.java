@@ -49,7 +49,6 @@ public class Case{
 	}
 
 	public void killMoveables(Board board) {
-		//bonus = null; devrait effacer le bonus si celui-ci est sur la portée des bombes.
 		Iterator<Movable> iterator = movablesOnCase.iterator();
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
@@ -58,6 +57,10 @@ public class Case{
 				iterator.remove();
 			}
 		}
+		if (bomb != null) {
+			bomb.setFuse(1);
+		}
+		setBonus(null);
 	}
 
 

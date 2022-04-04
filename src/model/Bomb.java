@@ -36,6 +36,7 @@ public class Bomb extends GameObject{
     private int stopDown;
     private int stopLeft;
     private int stopRight;
+    private int fuse;
 
 
     /**
@@ -55,7 +56,7 @@ public class Bomb extends GameObject{
         // Kicking bomb
         this.kicked = false;
         this.kickDirection = KickDirection.Nothing;
-
+        this.fuse = 0;
         this.startTime = System.currentTimeMillis();
 
         //Set bomb in case
@@ -64,7 +65,13 @@ public class Bomb extends GameObject{
 
     }
     
+    public int getFuse() {
+        return fuse;
+    }
 
+    public void setFuse(int fuse) {
+        this.fuse = fuse;
+    }
 
     /**
      * Function that kills players in a cross-shaped area (with each extension of length firepower)
