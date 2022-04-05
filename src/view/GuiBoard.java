@@ -8,14 +8,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 public class GuiBoard extends JPanel{
-    private Board board;
-    private ArrayList<Player> players;
+    private final Board board;
+    private final ArrayList<Player> players;
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
@@ -53,7 +50,6 @@ public class GuiBoard extends JPanel{
             e.printStackTrace();
         }
     }
-
     private void loadExplosionImages() throws IOException{
         bombImage = ImageIO.read(new File("resources/bomb.png"));
 
@@ -103,7 +99,6 @@ public class GuiBoard extends JPanel{
         bonusMap.put(Bonus.Type.Speed,ImageIO.read(new File("resources/bonus_speed.png")));
         //bonusMap.put(Bonus.Type.Timer,ImageIO.read(new File("resources/bonus_timer.png")));
     }
-
     private void loadPlayerImages() throws IOException{
         playerImagesList.add(ImageIO.read(new File("resources/player_0.png")));
         playerImagesList.add(ImageIO.read(new File("resources/player_1.png")));
@@ -132,6 +127,7 @@ public class GuiBoard extends JPanel{
         Case[][] cases=board.getCases();
         int height=this.getHeight()/cases.length;
         int width=this.getWidth()/cases[0].length;
+        ArrayList<Point> bombs= new ArrayList<>();
         for(int x = 0; x < cases.length; x++){
             for(int y = 0; y < cases[x].length; y++){
                 if(cases[x][y].getWall() == null) {
@@ -139,8 +135,9 @@ public class GuiBoard extends JPanel{
                     if(cases[x][y].getBonus() != null) {
                         g2.drawImage(bonusMap.get(cases[x][y].getBonus().getType()), y * width, x * height, width, height, null); // on affiche le bonus
                     }
+                    if(cases[x][y].getBomb()!=null) bombs.add(new Point(x,y));
 
-                }
+                    }
                 else if(cases[x][y].getWall().isBreakable()){
                     g2.drawImage(breakableBlock,y * width,x * height,width,height,null);
                 }
@@ -150,12 +147,9 @@ public class GuiBoard extends JPanel{
 
             }
         }
-        for(int x = 0; x < cases.length; x++) {
-            for (int y = 0; y < cases[x].length; y++) {
-                if(cases[x][y].getBomb()!=null) {
-                    paintBomb(board, g2, x, y, width, height);
-                }
-            }
+        // TODO: 05/04/2022 bombs casse bonus a regler 
+        for(Point p : bombs){
+            paintBomb(board, g2, p.x, p.y, width, height);
         }
     }
 
