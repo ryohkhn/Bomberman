@@ -40,6 +40,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 		newGame.addActionListener(newGameAction);
 		settings.addActionListener(settingsAction);
 		quit.addActionListener(quitAction);
+		buttonPanel.setPreferredSize(new Dimension(500,350));
 		buttonPanel.add(Box.createRigidArea(new Dimension(0, 120)));
 		buttonPanel.add(newGame);
 		buttonPanel.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -50,7 +51,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 		JButton[] buttons = {newGame, settings, quit};
 		for(JButton b : buttons) {
 			b.setAlignmentX(Component.CENTER_ALIGNMENT);
-			b.setPreferredSize(new Dimension(150,50));
+			b.setPreferredSize(new Dimension(200,60));
 			b.setUI(new StyledButtonUI());
 		}
 		
