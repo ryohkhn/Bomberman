@@ -15,4 +15,6 @@ public abstract class Game{
 
     public abstract boolean hasEnded();
 
+	public abstract Board init();
+
 }

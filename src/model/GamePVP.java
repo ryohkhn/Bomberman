@@ -17,19 +17,22 @@ public class GamePVP extends Game{
     private Board board;
     private Gui gui;
     public static double timer;
+    
+    private String map;
 
-    public GamePVP() {
+    public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
+		this.gui = gui;
+		this.map = map;
         playerList = new ArrayList<Player>();
     	loader = new Loader();
     }
 
-    public void init() {
+    public Board init() {
 		try {
-			board = new Board("maps/default.csv",playerList); // fait
+			board = new Board(this.map,playerList); // fait
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		this.gui=new Gui(board);
         key1 = new PlayerInput(board.getPlayer(0));
     	gui.addKeyListener(key1);
         key2 = new PlayerInput(board.getPlayer(1));
@@ -39,6 +42,7 @@ public class GamePVP extends Game{
         key4 = new PlayerInput(board.getPlayer(3));
         gui.addKeyListener(key4);
         this.addPlayers();
+        return board;
     }
 
     public void addPlayers() {
@@ -123,8 +127,8 @@ public class GamePVP extends Game{
 
 
     public static void main(String[] args){
-        GamePVP game=new GamePVP();
-        game.init();
-        game.gameLoop();
+        //GamePVP game=new GamePVP();
+        //game.init();
+        //game.gameLoop();
     }
 }

@@ -76,7 +76,7 @@ public class GuiMenu extends JPanel implements ActionListener{
      */
     public Action newGameAction = new AbstractAction() {
 	public void actionPerformed(ActionEvent e) {
-        frame.startGame();
+		frame.startGame();
 	}
     };
     /**
@@ -97,7 +97,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        gamePvpButton.setText("PVP");
 	        gameMonsterButton.setText("Monsters");
 	        
-	        switch(gamemode) {
+	        switch(getGamemode()) {
 	        case 0:
 	        	gamePvpButton.setSelected(true);
 	        	break;
@@ -138,7 +138,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        JPanel nbPlayers = new JPanel();
 	        Integer[] optionsToChoose = {1,2,3,4};
 	        JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
-	        jComboBox.setSelectedItem(numberOfPlayers);
+	        jComboBox.setSelectedItem(getNumberOfPlayers());
 	        
 	        nbPlayers.add(new JLabel("Number of players: "));
 	        nbPlayers.add(jComboBox);
@@ -148,8 +148,8 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        JPanel nbAI = new JPanel();
 	        Integer[] optionsToChooseAI = {0,1,2,3};
 	        JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
-	        jComboBoxAI.setSelectedItem(numberOfAI);
-            System.out.println(numberOfAI);
+	        jComboBoxAI.setSelectedItem(getNumberOfAI());
+            System.out.println(getNumberOfAI());
 
 	        nbAI.add(new JLabel("Number of AI: "));
 	        nbAI.add(jComboBoxAI);
@@ -165,17 +165,17 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        
 	        jComboBox.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
-	            	if(numberOfPlayers == (int) jComboBox.getSelectedItem()) return;
-	            	else if(numberOfPlayers < (int) jComboBox.getSelectedItem()) {
+	            	if(getNumberOfPlayers() == (int) jComboBox.getSelectedItem()) return;
+	            	else if(getNumberOfPlayers() < (int) jComboBox.getSelectedItem()) {
 		                numberOfPlayers = (int) jComboBox.getSelectedItem();
 		                jComboBoxAI.removeAllItems();
-		                for(int i = 0; i < 5 - numberOfPlayers; i++) {
+		                for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
 			                jComboBoxAI.addItem(i);
 		                }
 	                }
 	                else {
 	                	numberOfPlayers = (int) jComboBox.getSelectedItem();
-		                for(int i = numberOfAI; i < 5 - numberOfPlayers; i++) {
+		                for(int i = getNumberOfAI(); i < 5 - getNumberOfPlayers(); i++) {
 			                jComboBoxAI.addItem(i);
 		                }
 	                }
@@ -390,5 +390,26 @@ public class GuiMenu extends JPanel implements ActionListener{
 			myImage = ImageIO.read(new File("resources/background.jpg"));
 	        g.drawImage(myImage, 0, 0, null);
 		} catch (IOException e) {}
+	}
+
+	public int getGamemode() {
+		return gamemode;
+	}
+
+	public String getMap() {
+		switch(this.map) {
+		case 1:
+			return "maps/default.csv";
+		default:
+			return "maps/default.csv";
+		}
+	}
+
+	public int getNumberOfPlayers() {
+		return numberOfPlayers;
+	}
+
+	public int getNumberOfAI() {
+		return numberOfAI;
 	}
 }
