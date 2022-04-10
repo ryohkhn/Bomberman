@@ -15,6 +15,7 @@ public class Gui extends JFrame{
     private GuiMenu guiMenu;
     private GuiBar guiBar;
     private GuiBoard guiBoard;
+    private Board board;
     public static int width;
     public static int height; 
 
@@ -22,18 +23,14 @@ public class Gui extends JFrame{
         width = 600;
         height = 553;
         this.guiMenu=new GuiMenu(this);
-        this.guiBar=new GuiBar(board.getPlayerList());
-        this.guiBoard=new GuiBoard(board);
+        this.board=board;
 
         setSize(600,553);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         this.setLayout(new BorderLayout());
-        guiBar.setPreferredSize(new Dimension(this.getHeight()/15,this.getWidth()/15));
 
         this.add(guiMenu,BorderLayout.CENTER);
-        //this.add(guiBar,BorderLayout.NORTH);
-        //this.add(guiBoard,BorderLayout.CENTER);
         setVisible(true);
     }
 
@@ -44,8 +41,12 @@ public class Gui extends JFrame{
 
 	public void startGame() {
 		//marche pas...
-		this.remove(guiMenu);
+        this.remove(guiMenu);
+        this.guiBar=new GuiBar(board.getPlayerList());
+        this.guiBoard=new GuiBoard(board);
+        guiBar.setPreferredSize(new Dimension(this.getHeight()/15,this.getWidth()/15));
 		this.add(guiBar,BorderLayout.NORTH);
 		this.add(guiBoard,BorderLayout.CENTER);
+        revalidate();
 	}
 }
