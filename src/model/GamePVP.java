@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
 
 import java.awt.event.KeyEvent;
 
@@ -89,9 +90,14 @@ public class GamePVP extends Game{
 
             //début des instructions de jeu
             if(bombUpdate() != 0) {
-    			try {
+    			
+				try {
 					playSound("resources/SFX/BombeExplode.wav", false);
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 
             }
             playerUpdate(loopTimeInterval);
             gui.repaint();
@@ -139,6 +145,11 @@ public class GamePVP extends Game{
 	    File f = new File(soundFile);
 	    AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
 	    Clip clip = AudioSystem.getClip();
+	    clip.addLineListener(event -> {
+	        if(LineEvent.Type.STOP.equals(event.getType())) {
+	            clip.close();
+	        }
+	    });
 	    clip.open(audioIn);
 	    clip.start();
 	    if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
