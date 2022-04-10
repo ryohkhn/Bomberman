@@ -1,11 +1,20 @@
 package model;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import com.sun.tools.javac.Main;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Float;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Bomb objects that are created by players.
@@ -80,6 +89,7 @@ public class Bomb extends GameObject{
     public void explode() {
         if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
         hasExploded = true;
+        
     	Case [][] c = board.getCases();
         int lineLeft = Math.max(((int) position.y - firepower), 0);
         int lineRight = Math.min(((int) position.y + firepower), 14);
@@ -156,6 +166,14 @@ public class Bomb extends GameObject{
             }
         }
         stopDown = i;
+    }
+    
+    void playSound(String soundFile) throws Exception {
+        File f = new File("resources/SFX/" + soundFile);
+        AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioIn);
+        clip.start();
     }
     
     public void setKicked(boolean kicked, KickDirection kickDirection) {

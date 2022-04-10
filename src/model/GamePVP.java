@@ -1,8 +1,14 @@
 package model;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
@@ -70,7 +76,9 @@ public class GamePVP extends Game{
         double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
         double currentTime;
-
+        try {
+			playSound("resources/SFX/BackgroundMusic.wav", true);
+		} catch (Exception e1) {}
         while(!this.hasEnded()){
             long startLoopTime = System.currentTimeMillis();
 
@@ -80,14 +88,19 @@ public class GamePVP extends Game{
             // fin timer
 
             //début des instructions de jeu
-            bombUpdate();
+            if(bombUpdate() != 0) {
+    			try {
+					playSound("resources/SFX/BombeExplode.wav", false);
+				} catch (Exception e) {}
+            }
             playerUpdate(loopTimeInterval);
             gui.repaint();
             //fin des instructions de jeu
 
             long endLoopTime = System.currentTimeMillis();
             try{
-                Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
+            	long time = (long)loopTimeInterval - (endLoopTime - startLoopTime);
+                if(time>0) Thread.sleep(time);
             }catch (java.lang.InterruptedException e){
                 e.printStackTrace();
             }
@@ -101,10 +114,12 @@ public class GamePVP extends Game{
     }
 
 
-    private void bombUpdate() {
+    private int bombUpdate() {
+    	int bombsExploded = 0;
         for(Player p : playerList){
-            p.bombUpdate();
+        	bombsExploded += p.bombUpdate();
         }
+        return bombsExploded;
     }
 
     private double printTime(double timer2) {
@@ -120,7 +135,14 @@ public class GamePVP extends Game{
         return false;
     }
 
-
+    void playSound(String soundFile, boolean loop) throws Exception {
+	    File f = new File(soundFile);
+	    AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
+	    Clip clip = AudioSystem.getClip();
+	    clip.open(audioIn);
+	    clip.start();
+	    if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
+	}
 
     public static void main(String[] args){
         GamePVP game=new GamePVP();

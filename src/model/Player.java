@@ -1,7 +1,20 @@
 package model;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+
+import javax.print.attribute.standard.Media;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import com.sun.tools.javac.Main;
 
 
 public class Player extends GameObject implements Movable{
@@ -340,7 +353,8 @@ public class Player extends GameObject implements Movable{
 		}
 	}
 
-	public void bombUpdate() {
+	public int bombUpdate() {
+		int bombsExploded = 0;
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
 			if(System.currentTimeMillis() - b.getStartTime() > 3900) {
@@ -377,6 +391,7 @@ public class Player extends GameObject implements Movable{
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 3000){
 				b.explode();
+				bombsExploded += 1;
 				b.setSpriteIndex(0);
 			}
 			if (b.getFuse() == 1) {
@@ -405,6 +420,7 @@ public class Player extends GameObject implements Movable{
 			}
 		}
 		bombList.removeAll(valueToRemove);
+		return bombsExploded;
 	}
 
 	public Board getBoard() {
