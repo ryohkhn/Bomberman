@@ -127,8 +127,6 @@ public class GuiBoard extends JPanel{
         Case[][] cases=board.getCases();
         int height=this.getHeight()/cases.length;
         int width=this.getWidth()/cases[0].length;
-        System.out.println("H "+this.getHeight());
-        System.out.println("W "+this.getWidth());
         ArrayList<Point> bombs= new ArrayList<>();
         for(int x = 0; x < cases.length; x++){
             for(int y = 0; y < cases[x].length; y++){
