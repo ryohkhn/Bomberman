@@ -104,7 +104,7 @@ public class Bomb extends GameObject{
 
             } else {
                 System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
-                current.killMoveables(board);
+                current.killMoveables();
             }
 		}
         assert current != null;
@@ -123,7 +123,7 @@ public class Bomb extends GameObject{
                 }
             } else {
                 System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
-                current.killMoveables(board);
+                current.killMoveables();
             }
         }
         stopLeft = i;
@@ -143,7 +143,7 @@ public class Bomb extends GameObject{
                 }
             } else {
                 System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
-                current.killMoveables(board);
+                current.killMoveables();
             }
         }
         stopTop = i;
@@ -162,7 +162,7 @@ public class Bomb extends GameObject{
                 }
             } else {
                 System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
-                current.killMoveables(board);
+                current.killMoveables();
             }
         }
         stopDown = i;

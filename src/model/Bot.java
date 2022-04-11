@@ -8,10 +8,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-public class Bot extends Player {
+public class Bot extends Player implements AI {
 
-	private ArrayList<String> options;
-	private final LinkedList<String> moves;
+	private ArrayList<Integer> options;
+	private final LinkedList<Integer> moves;
 	private EnemyDistanceComp edc;
 	private BonusDistanceComp bdc;
 	private final Random random;
@@ -27,10 +27,10 @@ public class Bot extends Player {
 		bdc = new BonusDistanceComp();
 		options = new ArrayList<>();
 		moves = new LinkedList<>();
-		options.add("UP");
-		options.add("DOWN");
-		options.add("LEFT");
-		options.add("RIGHT");
+		options.add(1);
+		options.add(2);
+		options.add(3);
+		options.add(4);
 		super.setBombCount(0);
 		random = new Random();
 		//generateNavMap();
@@ -48,15 +48,15 @@ public class Bot extends Player {
 		 
         	if(nextInvoke == 1) {
 				updateNav();
-				String move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
+				int move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
 											// moving between cases.
-				if(move == null || !moveSafe(move) || enemyCheck()){ // reset if bombs or enemies ar nearby
+				if(move == 0 || !moveSafe(move) || enemyCheck()){ // reset if bombs or enemies ar nearby
 					moves.clear();
 					if(canPlaceBombAndEscape(moves)){ 
 						//System.out.println(move);
-						move = "BOMB";
+						move = -1;
 					} else {
-						move = "none";
+						move = 0;
 						Collections.shuffle(options);
 						for(int i = 0; i < 4; ++i){
 							move = options.get(i);
@@ -68,8 +68,8 @@ public class Bot extends Player {
 					}
 				}
 			
-				if(!move.equals("none")){
-					if (move.equals("BOMB")) {
+				if(move != 0){
+					if (move == -1) {
 						setAction();
 					} else {
 						stop();
@@ -81,7 +81,7 @@ public class Bot extends Player {
 		super.update(deltaTime);
 	}
 
-	private void stop() {
+	public void stop() {
 		setReleasedDown();
 		setReleasedLeft();
 		setReleasedRight();
@@ -89,15 +89,15 @@ public class Bot extends Player {
 		setReleasedAction();
 	}
 
-	private void chooseDirection(String move) {
+	public void chooseDirection(double move) {
 		
-		if (move.charAt(0) == 'U') { // first letter of move
+		if (move == 1) { // first letter of move
 			setPressUp();
-		} else if(move.charAt(0) == 'D') {
+		} else if(move == 2) {
 			setPressDown();
-		} else if(move.charAt(0) == 'L') {
+		} else if(move == 3) {
 			setPressLeft();
-		} else if (move.charAt(0) == 'R') {
+		} else if (move == 4) {
 			setPressRight();
 		}
 	}
@@ -242,16 +242,16 @@ public class Bot extends Player {
 	}
 
 
-	private IntPair xyFromMove(int ox, int oy, String move){
+	private IntPair xyFromMove(int ox, int oy, int move){
 		int x = ox;
 		int y = oy;
-		if (move.charAt(0) == 'U') {
+		if (move == 1) {
 			--y;
-		} else if(move.charAt(0) == 'D') {
+		} else if(move == 2) {
 			++y;
-		} else if(move.charAt(0) == 'L') {
+		} else if(move == 3) {
 			--x;
-		} else if (move.charAt(0) == 'R') {
+		} else if (move == 4) {
 			++x;
 		}
 		x = Math.max(0, Math.min(x, cases.length-1));
@@ -262,7 +262,7 @@ public class Bot extends Player {
 			return new IntPair(ox, oy);
 	}
 
-	private void bfsCheck(BFSCase bt, Queue<BFSCase> tqueue, ArrayList<IntPair> tiles, boolean[][] visited, String dir){
+	private void bfsCheck(BFSCase bt, Queue<BFSCase> tqueue, ArrayList<IntPair> tiles, boolean[][] visited, int dir){
 		IntPair pos = xyFromMove(bt.c.getX(), bt.c.getY(), dir);
 		if(!visited[pos.getX()][pos.getY()]){
 			visited[pos.getX()][pos.getY()] = true;
@@ -307,36 +307,36 @@ public class Bot extends Player {
 		}
 	}
 
-	private boolean getRouteToCase(Case to, LinkedList<String> route){
+	private boolean getRouteToCase(Case to, LinkedList<Integer> route){
 		if(cases[(int)position.x][(int)position.y].getNav_group() != to.getNav_group()) return false;
 		
 		boolean [][] visited = new boolean[cases.length][cases[0].length];
 		
 		ArrayList<IntPair> tiles = getAccessibleCases(cases[getPositionXasInt()][getPositionYasInt()]);
 		Queue<BFSCase> tqueue = new LinkedList<>();
-		tqueue.add(new BFSCase(new IntPair(getPositionXasInt(),getPositionYasInt()), null, null));
+		tqueue.add(new BFSCase(new IntPair(getPositionXasInt(),getPositionYasInt()), null, 0));
 		
 		while(true){
 			BFSCase bt = tqueue.peek();
 			if(bt == null) return false;
 			if(cases[bt.c.getX()][bt.c.getY()] == to) break;
 			
-			if(bt.c.getY() > 0) bfsCheck(bt, tqueue, tiles, visited, "UP");
-			if(bt.c.getY() < cases[0].length-1) bfsCheck(bt, tqueue, tiles, visited, "DOWN");
-			if(bt.c.getX() > 0) bfsCheck(bt, tqueue, tiles, visited, "LEFT");
-			if(bt.c.getX() < cases.length-1) bfsCheck(bt, tqueue, tiles, visited, "RIGHT");
+			if(bt.c.getY() > 0) bfsCheck(bt, tqueue, tiles, visited, 1);
+			if(bt.c.getY() < cases[0].length-1) bfsCheck(bt, tqueue, tiles, visited, 2);
+			if(bt.c.getX() > 0) bfsCheck(bt, tqueue, tiles, visited, 3);
+			if(bt.c.getX() < cases.length-1) bfsCheck(bt, tqueue, tiles, visited, 4);
 
 			tqueue.poll();
 		}
 
 		for(BFSCase t = tqueue.poll(); t != null; t = t.prev)
-			if(t.dir != null) route.addFirst(t.dir);
+			if(t.dir != 0) route.addFirst(t.dir);
 
 		return true;
 	}
 
-	private boolean canPlaceBombAndEscape(LinkedList<String> moves){
-		if(getBombCount() >= getAmmo() || !moveSafe("none")) {
+	private boolean canPlaceBombAndEscape(LinkedList<Integer> moves){
+		if(getBombCount() >= getAmmo() || !moveSafe(0)) {
 			//System.out.println("oui");
 			return false;
 		}
@@ -359,7 +359,7 @@ public class Bot extends Player {
 		return safe;
 	}
 
-	private boolean moveSafe(String move){
+	private boolean moveSafe(int move){
 		// check if the case is a safe place
 		IntPair pos = xyFromMove(getPositionXasInt(), getPositionYasInt(), move);
 		Case t = cases[pos.getX()][pos.getY()];
@@ -369,8 +369,8 @@ public class Bot extends Player {
 	private class BFSCase {
 		IntPair c;
 		BFSCase prev;
-		String dir;
-		BFSCase(IntPair t, BFSCase b, String s){
+		int dir;
+		BFSCase(IntPair t, BFSCase b, int s){
 			c = t;
 			prev = b;
 			dir = s;

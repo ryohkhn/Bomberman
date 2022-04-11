@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class GuiBoard extends JPanel{
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
+    private final int objectSizex = 32;
+    private final int objectSizey = 48;
     private final HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
     private final LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionWidthList=new LinkedList<>();
@@ -28,8 +31,7 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> explosionTopList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionDownList=new LinkedList<>();
     private BufferedImage bombImage;
-
-    private final LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
+    private final LinkedList<BufferedImage[][]> playerImagesList=new LinkedList<>();
 
 
     public GuiBoard(Board board){
@@ -105,10 +107,19 @@ public class GuiBoard extends JPanel{
     }
 
     private void loadPlayerImages() throws IOException{
-        playerImagesList.add(ImageIO.read(new File("resources/player_0.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_1.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_2.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_3.png")));
+        for (int i = 0; i <4; i++) {
+            BufferedImage image = ImageIO.read(new File("resources/playersheet_"+ i+".png"));
+            int rows = image.getHeight() / objectSizey;
+            int cols = image.getWidth() / objectSizex;
+
+            BufferedImage [][] walkFrames = new BufferedImage[rows][cols];
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    walkFrames[row][col] = image.getSubimage(col * objectSizex, row * objectSizey, objectSizex, objectSizey);
+                }
+            }
+            playerImagesList.add(walkFrames);
+        }
     }
 
     private void resetPlayerImages() throws IOException{
@@ -280,22 +291,32 @@ public class GuiBoard extends JPanel{
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
-            playerImagesList.set(player.getId(), player.getImage()); // pourquoi ajouter ça dans la liste à chaque itération ?
+            int direction = player.getDirection();
+            int spriteIndex = player.getSpriteIndex();
             switch (player.getId()) {
                 case 0:
-                    g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    g2.drawImage(playerImagesList.get(0)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 case 1:
-                    g2.drawImage(playerImagesList.get(1), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    g2.drawImage(playerImagesList.get(1)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 case 2:
-                    g2.drawImage(playerImagesList.get(2), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    g2.drawImage(playerImagesList.get(2)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 case 3:
-                    g2.drawImage(playerImagesList.get(3), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    g2.drawImage(playerImagesList.get(3)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
                     break;
                 default:
                     break;
+            }
+            if (player.getId() == 0) {
+                g2.drawImage(playerImagesList.get(0)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            } else if (player.getId() == 1){
+                g2.drawImage(playerImagesList.get(1)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            } else if (player.getId() == 2){
+                g2.drawImage(playerImagesList.get(2)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            } else if (player.getId() == 3){
+                g2.drawImage(playerImagesList.get(3)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
             }
         }
     }

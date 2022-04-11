@@ -69,12 +69,12 @@ public class Case{
 		return nav_update;
 	}
 
-	public void killMoveables(Board board) {
+	public void killMoveables() {
 		//bonus = null; devrait effacer le bonus si celui-ci est sur la portée des bombes.
 		Iterator<Movable> iterator = movablesOnCase.iterator();
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
-			if (m instanceof Player) {
+			if (m instanceof Player && m != this) {
 				((Player)m).setAlive(false);
 				iterator.remove();
 			}

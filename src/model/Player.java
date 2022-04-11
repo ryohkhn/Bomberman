@@ -13,18 +13,12 @@ public class Player extends GameObject implements Movable{
     private float speed = 1F;
     private int keyUp, keyDown, keyLeft, keyRight,keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false, pressAction = false;
-    private BufferedImage[][] walkFrames;
 	boolean ai;
 	private int spriteTimer;
 	//private int deathTimer;
 	private int spriteIndex;
 	private int direction;
 	private int points=0;
-	private float hitboxWidthLeft=0.38F;
-	private float hitboxWidthRight=0.38F;
-	private float hitboxHeightTop=0.38F;
-	private float hitboxHeightBottom=0.55F;
-	private BufferedImage image = null;
 
 	private int ammo = 1;
 	private boolean kick = false;
@@ -42,6 +36,8 @@ public class Player extends GameObject implements Movable{
         position.x = x;
         position.y = y;
 		this.board=board;
+		this.direction = 1;
+		this.spriteIndex = 0;
     }
 
 	public void update(double deltaTime) {
@@ -50,11 +46,9 @@ public class Player extends GameObject implements Movable{
                 spriteIndex++;
                 spriteTimer = 0;
             }
-            if ((!pressUp && !pressDown && !pressLeft && !pressRight) || (this.spriteIndex >= walkFrames[0].length)) {
+            if ((!pressUp && !pressDown && !pressLeft && !pressRight) || (this.spriteIndex >= 4)) {
                 spriteIndex = 0;
             }
-            image = this.walkFrames[this.direction][this.spriteIndex];
-
 			if(pressUp){
 				detectCollisionUp(deltaTime);
 			}
@@ -72,11 +66,10 @@ public class Player extends GameObject implements Movable{
 		} else {
 			if (spriteTimer++ >= 15) {
                 spriteIndex++;
-                if (spriteIndex < walkFrames[4].length) {
-                    image = walkFrames[4][spriteIndex];
+                if (spriteIndex < 4) {
                     spriteTimer = 0;
                 } else {
-					image = null;
+					id = -1;
 				}
 			}
 		}
@@ -96,7 +89,8 @@ public class Player extends GameObject implements Movable{
 
 	public void setAlive(boolean b) {
 		if (!b) {
-			spriteIndex = 0; 
+			spriteIndex = 0;
+			this.direction = 4;
 			//deathTimer = 0;
 		}
 		this.alive = b;
@@ -164,7 +158,7 @@ public class Player extends GameObject implements Movable{
 	public void setPressRight() {
 		this.pressRight = true;
 	}
-
+	@Override
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 1;
@@ -287,10 +281,6 @@ public class Player extends GameObject implements Movable{
 				position.y+=speedDelta;
 				position.y=roundFloat(position.y);
 			}
-			if(Board.cases[line][nextColumn].getBonus()!=null) {
-				Board.cases[line][nextColumn].getBonus().grantBonus(this);
-				Board.cases[line][nextColumn].setBonus(null);
-			}
 		}
 		else{
 			position.y+=nextColumn-(nextY+hitboxWidthRight);
@@ -331,23 +321,21 @@ public class Player extends GameObject implements Movable{
 		return false;
 	}
 
-	public void setPlayer(BufferedImage spriteSheet,int ind,float x,float y,int spriteWidth,int spriteHeight) {
-		int rows = spriteSheet.getHeight() / spriteHeight;
-        int cols = spriteSheet.getWidth() / spriteWidth;
-        walkFrames = new BufferedImage[rows][cols];
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                walkFrames[row][col] = spriteSheet.getSubimage(col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight);
-            }
-        }
-		image = walkFrames[1][0];
+	public void setPlayer(int ind,float x,float y) {
 		this.id = ind;
 		this.setAttributs(x,y);
-		this.direction = 1;
+	}
+
+	public int getSpriteIndex() {
+		return spriteIndex;
+	}
+
+	public int getDirection() {
+		return direction;
 	}
 
 
-	private float roundFloat(float f){
+	public float roundFloat(float f){
 		return (float)(Math.round((f)*100.0)/100.0);
 	}
 
@@ -427,10 +415,6 @@ public class Player extends GameObject implements Movable{
 
 	public Board getBoard() {
 		return board;
-	}
-
-	public BufferedImage getImage() {
-		return image;
 	}
     
     public void addFirepower(boolean max) {

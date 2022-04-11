@@ -1,11 +1,5 @@
 package model;
 
-import java.awt.image.BufferedImage;
-
-public class Monster extends GameObject implements Movable{
-
-    public Monster(float x, float y) {
-        super(x, y);
-        //TODO Auto-generated constructor stub
-    }
+public interface Monster extends Movable{
+    void killPlayers();
 }
