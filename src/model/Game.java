@@ -11,7 +11,7 @@ public abstract class Game{
     private File boardTemplate;
     private Board board;
 
-    public abstract void gameLoop() throws InterruptedException;
+    public abstract void gameLoop();
 
     public abstract boolean hasEnded();
 

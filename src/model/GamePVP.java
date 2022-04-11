@@ -87,25 +87,26 @@ public class GamePVP extends Game{
             bombUpdate();
             playerUpdate(loopTimeInterval);
             gui.repaint();
+            gui.revalidate();
             //fin des instructions de jeu
 
             long endLoopTime = System.currentTimeMillis();
             try{
                 Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
-            }catch (java.lang.InterruptedException e){
+            }catch (InterruptedException e){
                 e.printStackTrace();
             }
         }
     }
 
-    private void playerUpdate(double deltaTime) {
+    public void playerUpdate(double deltaTime) {
         for(Player p : playerList){
             p.update(deltaTime);
         }
     }
 
 
-    private void bombUpdate() {
+    public void bombUpdate() {
         for(Player p : playerList){
             p.bombUpdate();
         }
@@ -127,8 +128,6 @@ public class GamePVP extends Game{
 
 
     public static void main(String[] args){
-        //GamePVP game=new GamePVP();
-        //game.init();
-        //game.gameLoop();
+        Gui gui = new Gui();
     }
 }

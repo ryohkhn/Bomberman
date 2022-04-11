@@ -5,13 +5,14 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
 
-import model.GamePVP;
 
 public class GuiMenu extends JPanel implements ActionListener{
 	private final JPanel buttonPanel = new JPanel();
@@ -98,12 +99,12 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        gameMonsterButton.setText("Monsters");
 	        
 	        switch(getGamemode()) {
-	        case 0:
-	        	gamePvpButton.setSelected(true);
-	        	break;
-	        case 1:
-	        	gameMonsterButton.setSelected(true);
-	        	break;
+		        case 0:
+		        	gamePvpButton.setSelected(true);
+		        	break;
+		        case 1:
+		        	gameMonsterButton.setSelected(true);
+		        	break;
 	        }
 	        
 	        ButtonGroup editableGroup = new ButtonGroup();
@@ -139,6 +140,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        Integer[] optionsToChoose = {1,2,3,4};
 	        JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
 	        jComboBox.setSelectedItem(getNumberOfPlayers());
+	       
 	        
 	        nbPlayers.add(new JLabel("Number of players: "));
 	        nbPlayers.add(jComboBox);
@@ -149,13 +151,12 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        Integer[] optionsToChooseAI = {0,1,2,3};
 	        JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
 	        jComboBoxAI.setSelectedItem(getNumberOfAI());
-            System.out.println(getNumberOfAI());
 
 	        nbAI.add(new JLabel("Number of AI: "));
 	        nbAI.add(jComboBoxAI);
 	        nbAI.setOpaque(true);
 	        nbAI.setBackground(new Color(0,0,0,0));
-	        
+	        	        
 	        jComboBoxAI.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
 	                numberOfAI = (jComboBoxAI.getItemCount() == 0) ? 0 : (int) jComboBoxAI.getSelectedItem();
@@ -181,6 +182,8 @@ public class GuiMenu extends JPanel implements ActionListener{
 	                }
 	            }
 	        });
+	        transparentBox(jComboBox);
+	        transparentBox(jComboBoxAI);
 	        
 	        //
 	        // Maps
@@ -371,14 +374,14 @@ public class GuiMenu extends JPanel implements ActionListener{
 	    }
 	}
 	
-	public static void setUIFont(javax.swing.plaf.FontUIResource f)
+	public static void setUIFont(FontUIResource f)
 	{   
-	    java.util.Enumeration keys = UIManager.getDefaults().keys();
+	    Enumeration<Object> keys = UIManager.getDefaults().keys();
 	    while(keys.hasMoreElements())
 	    {
 	        Object key = keys.nextElement();
 	        Object value = UIManager.get(key);
-	        if(value instanceof javax.swing.plaf.FontUIResource) UIManager.put(key, f);
+	        if(value instanceof FontUIResource) UIManager.put(key, f);
 	    }
 	}
 	
@@ -412,4 +415,39 @@ public class GuiMenu extends JPanel implements ActionListener{
 	public int getNumberOfAI() {
 		return numberOfAI;
 	}
+	
+	private void transparentBox(Container container) {
+	      Component[] components = container.getComponents();
+	      for (Component component : components) {
+	         if (component instanceof AbstractButton) {
+	            component.addMouseListener(new MouseListener() {
+
+					@Override
+					public void mouseClicked(MouseEvent arg0) {
+						frame.repaint();
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent arg0) {
+						frame.repaint();
+					}
+
+					@Override
+					public void mouseExited(MouseEvent arg0) {
+						frame.repaint();
+					}
+
+					@Override
+					public void mousePressed(MouseEvent arg0) {
+						frame.repaint();
+					}
+
+					@Override
+					public void mouseReleased(MouseEvent arg0) {
+						frame.repaint();
+					}
+	            });
+	         }
+	      }
+	   }
 }
