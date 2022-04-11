@@ -46,18 +46,24 @@ public class Case{
 		else this.bomb = bomb;
 	}
 
-	public void killMoveables(Board board) {
+	public int killMoveables(Board board) {
+		int pointsCount = 0;
 		Iterator<Movable> iterator = movablesOnCase.iterator();
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
 			if (m instanceof Player) {
+				pointsCount += 100;
 				((Player)m).setAlive(false);
 				iterator.remove();
+			}
+			if(m instanceof Wall && ((Wall) m).isBreakable()){
+				pointsCount += 10;
 			}
 		}
 		if (bomb != null) {
 			bomb.setFuse(1);
 		}
+		return pointsCount;
 	}
 
 

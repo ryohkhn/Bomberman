@@ -466,4 +466,8 @@ public class Player extends GameObject implements Movable{
 	public int getPoints(){
 		return points;
 	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
 }

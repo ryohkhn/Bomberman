@@ -79,6 +79,7 @@ public class Bomb extends GameObject{
     public void explode() {
         if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
         hasExploded = true;
+        int pointsCount = 0;
         
     	Case [][] c = board.getCases();
         int lineLeft = Math.max(((int) position.y - firepower), 0);
@@ -100,7 +101,7 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                current.killMoveables(board);
+                pointsCount += current.killMoveables(board);
             }
 		}
         stopRight = i;
@@ -118,8 +119,8 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                //System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
-                current.killMoveables(board);
+                pointsCount += current.killMoveables(board);
+
             }
         }
         stopLeft = i;
@@ -137,7 +138,8 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                current.killMoveables(board);
+                pointsCount += current.killMoveables(board);
+
             }
         }
         stopTop = i;
@@ -154,10 +156,12 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                current.killMoveables(board);
+                pointsCount += current.killMoveables(board);
+
             }
         }
         stopDown = i;
+         this.player.setPoints(this.player.getPoints() + pointsCount + 1);
     }
     
     void playSound(String soundFile) throws Exception {

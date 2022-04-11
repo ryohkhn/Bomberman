@@ -35,4 +35,7 @@ public class Gui extends JFrame{
         guiBar.repaint();
         guiBoard.repaint();
     }
+
+    public void endScreen() { // TODO: 11/04/2022 end screen (le perso du gagnant qui marche a coté d'un "YOU WON!" ce serait pas mal) 
+    }
 }

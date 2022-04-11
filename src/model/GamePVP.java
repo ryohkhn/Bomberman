@@ -24,6 +24,7 @@ public class GamePVP extends Game{
     private Board board;
     private Gui gui;
     public static double timer;
+    private double endTime = -1;
 
     public GamePVP() {
         playerList = new ArrayList<Player>();
@@ -76,11 +77,11 @@ public class GamePVP extends Game{
 
         double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
-        double currentTime;
         try {
 			playSound("resources/SFX/BackgroundMusic.wav", true);
 		} catch (Exception e1) {}
-        while(!this.hasEnded()){
+        boolean endLoop = false;
+        while(!endLoop){
             long startLoopTime = System.currentTimeMillis();
 
             //instructions timer
@@ -89,6 +90,10 @@ public class GamePVP extends Game{
             // fin timer
 
             //début des instructions de jeu
+            if(this.hasEnded()){
+                if(endTime == -1) endTime = System.currentTimeMillis();
+                else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
+            }
             if(bombUpdate() != 0) {
     			
 				try {
@@ -111,6 +116,7 @@ public class GamePVP extends Game{
                 e.printStackTrace();
             }
         }
+        gui.endScreen();
     }
 
     private void playerUpdate(double deltaTime) {
@@ -130,7 +136,6 @@ public class GamePVP extends Game{
 
     private double printTime(double timer2) {
         if(timer >= timer2 + 100){
-            //System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");
             return timer;
         }
         return timer2;
@@ -138,7 +143,13 @@ public class GamePVP extends Game{
 
     @Override
     public boolean hasEnded() { // verification de la victoire
-        return false;
+        int alivePlayer = this.playerList.size();
+        for(Player p : this.playerList){
+            if(!p.isAlive()){
+                alivePlayer -= 1;
+            }
+        }
+        return alivePlayer <= 1;
     }
 
     void playSound(String soundFile, boolean loop) throws Exception {
