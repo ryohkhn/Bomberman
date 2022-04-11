@@ -1,9 +1,7 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class Case{
     private ArrayList<Movable> movablesOnCase = new ArrayList<Movable>();
@@ -60,7 +58,6 @@ public class Case{
 		if (bomb != null) {
 			bomb.setFuse(1);
 		}
-		setBonus(null);
 	}
 
 

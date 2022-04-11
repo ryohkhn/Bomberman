@@ -1,20 +1,10 @@
 package model;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import com.sun.tools.javac.Main;
-
-import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Float;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Bomb objects that are created by players.
@@ -116,6 +106,7 @@ public class Bomb extends GameObject{
         stopRight = i;
 
         end = false;
+        
         for(i = (int)position.y - 1 ;i >= lineLeft && !end; i-- ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
@@ -134,6 +125,7 @@ public class Bomb extends GameObject{
         stopLeft = i;
 
         end = false;
+        
         for(i = (int)position.x - 1 ; i >= columnTop && !end; i-- ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
