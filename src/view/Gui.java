@@ -20,11 +20,11 @@ public class Gui extends JFrame{
         this.guiBoard=new GuiBoard(board);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        getContentPane().setPreferredSize(new Dimension(675,598));
+        getContentPane().setPreferredSize(new Dimension(675,608));
         pack();
 
         this.setLayout(new BorderLayout());
-        guiBar.setPreferredSize(new Dimension(this.getHeight()/13,this.getWidth()/13));
+        guiBar.setPreferredSize(new Dimension(this.getWidth()/15,this.getHeight()/13));
 
         this.add(guiBar,BorderLayout.NORTH);
         this.add(guiBoard,BorderLayout.CENTER);
