@@ -20,8 +20,8 @@ public class Board{
 	public static int sizeCol;
 	private Thread thread;
     
-	public Board(String filename,ArrayList<Player> p) throws FileNotFoundException {
-		this.monsterList = new ArrayList<>();
+	public Board(String filename,ArrayList<Player> p,ArrayList<Monster> m) throws FileNotFoundException {
+		this.monsterList = m;
 		this.playerList = p;
 		this.loadBoardFile(filename);
 		this.loadCases();

@@ -17,6 +17,7 @@ import java.util.LinkedList;
 public class GuiBoard extends JPanel{
     private Board board;
     private ArrayList<Player> players;
+    private ArrayList<Monster> monsters;
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
@@ -32,11 +33,13 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> explosionDownList=new LinkedList<>();
     private BufferedImage bombImage;
     private final LinkedList<BufferedImage[][]> playerImagesList=new LinkedList<>();
+    private final LinkedList<BufferedImage> monsterImagesList =new LinkedList<>();
 
 
     public GuiBoard(Board board){
         this.board=board;
         this.players=board.getPlayerList();
+        this.monsters=board.getMonsterList();
         GameObject.setSizeY(this.getHeight());
         GameObject.setSizeX(this.getWidth());
         setBackground(Color.WHITE);
@@ -48,6 +51,7 @@ public class GuiBoard extends JPanel{
             loadExplosionImages();
             loadBonusImages();
             loadPlayerImages();
+            loadMonsterImages();
             block=ImageIO.read(new File("resources/block.png"));
             unbreakableBlock=ImageIO.read(new File("resources/block_unbreakable.png"));
             breakableBlock=ImageIO.read(new File("resources/block_breakable.png"));
@@ -121,10 +125,11 @@ public class GuiBoard extends JPanel{
             playerImagesList.add(walkFrames);
         }
     }
-
-    private void resetPlayerImages() throws IOException{
-        playerImagesList.clear();
-        loadPlayerImages();
+    private void loadMonsterImages() throws IOException{
+        for (int i = 0; i <4; i++) {
+            BufferedImage image = ImageIO.read(new File("resources/player_"+ i+".png"));
+            monsterImagesList.add(image);
+        }
     }
 
     @Override
@@ -134,6 +139,7 @@ public class GuiBoard extends JPanel{
         try{
             paintBoard(g2);
             paintPlayers(g2);
+            paintMonsters(g2);
         } catch(IOException e){
             e.printStackTrace();
         }
@@ -293,22 +299,7 @@ public class GuiBoard extends JPanel{
             int y_width = this.getWidth() / board.getCases()[0].length;
             int direction = player.getDirection();
             int spriteIndex = player.getSpriteIndex();
-            switch (player.getId()) {
-                case 0:
-                    g2.drawImage(playerImagesList.get(0)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                case 1:
-                    g2.drawImage(playerImagesList.get(1)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                case 2:
-                    g2.drawImage(playerImagesList.get(2)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                case 3:
-                    g2.drawImage(playerImagesList.get(3)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                default:
-                    break;
-            }
+            if (!player.isSet()) continue;
             if (player.getId() == 0) {
                 g2.drawImage(playerImagesList.get(0)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
             } else if (player.getId() == 1){
@@ -318,6 +309,17 @@ public class GuiBoard extends JPanel{
             } else if (player.getId() == 3){
                 g2.drawImage(playerImagesList.get(3)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
             }
+        }
+    }
+    private void paintMonsters(Graphics2D g2) throws IOException {
+        for (Monster monster: monsters) {
+            float x = monster.getPositionX() - 0.4F;
+            float y = monster.getPositionY() - 0.4F;
+            int x_height = this.getHeight() / board.getCases().length;
+            int y_width = this.getWidth() / board.getCases()[0].length;
+            if (!monster.isSet()) continue;
+            g2.drawImage(monsterImagesList.get(0), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            // à changer bien évidemment
         }
     }
 }

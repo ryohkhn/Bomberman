@@ -1,16 +1,19 @@
 package model;
 
-public class MonstreUn extends GameObject implements Monster,AI{
+public class MonstreUn extends Monster {
     private boolean isAlive;
     private int nextInvoke;
-    private int thinkTime;
+    private int thinkTime = 75;
     private Board board;
     private int direction;
     private float speed = 1F;
+	final int type = 0; 
 
+	// TO DO à tester l'ia de base
     public MonstreUn(float x, float y,Board board) {
         super(x, y);
         this.board = board;
+		this.isAlive = true;
         
     }
 
@@ -206,4 +209,13 @@ public class MonstreUn extends GameObject implements Monster,AI{
     public float roundFloat(float f) {
         return (float)(Math.round((f)*100.0)/100.0);
     }
+
+	public void setMonster(float x,float y) {
+		this.setAttributs(x,y);
+		isset = true;
+	}
+	public boolean isSet() {
+		return isset;
+	}
+
 }

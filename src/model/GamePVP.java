@@ -12,21 +12,19 @@ public class GamePVP extends Game{
     private ArrayList<Player> playerList;
     private PlayerInput key1,key2,key3,key4;
     private Player player1,player2,player3,player4;
-    private Monster monster;
-    private BufferedImage image1,image2,image3,image4;
-    private Loader loader;
     private Board board;
     private Gui gui;
     public static double timer;
+    private ArrayList<Monster> monsterList;
 
     public GamePVP() {
         playerList = new ArrayList<Player>();
-    	loader = new Loader();
+        monsterList = new ArrayList<Monster>();
     }
 
     public void init() {
 		try {
-			board = new Board("maps/default.csv",playerList); // fait
+			board = new Board("maps/default.csv",playerList,monsterList); // fait
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -37,19 +35,14 @@ public class GamePVP extends Game{
     	gui.addKeyListener(key2);
         key3 = new PlayerInput(board.getPlayer(2));
     	gui.addKeyListener(key3);
-        key4 = new PlayerInput(board.getPlayer(3));
-        gui.addKeyListener(key4);
+        monsterList.add(new MonstreUn(11.4F, 13.4F, board));
+        //key4 = new PlayerInput(board.getPlayer(3));
+        //gui.addKeyListener(key4);
         this.addPlayers();
     }
 
     public void addPlayers() {
         try {
-            /*
-            image1 = loader.loadImage("resources/playersheet_0.png");
-            image2 = loader.loadImage("resources/playersheet_1.png");
-            image3 = loader.loadImage("resources/playersheet_2.png");
-            image4 = loader.loadImage("resources/playersheet_3.png");
-            */
             player1 = board.getPlayer(0);
             player1.setPlayer(0, 1.4F, 1.4F);
             player1.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
@@ -59,9 +52,9 @@ public class GamePVP extends Game{
             player3 = board.getPlayer(2);
             player3.setPlayer(2,11.4F, 1.4F);
             player3.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
-            player4 = board.getPlayer(3);
-            player4.setPlayer(3,11.4F, 13.4F);
-            player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
+            //player4 = board.getPlayer(3);
+            //player4.setPlayer(3,11.4F, 13.4F);
+            //player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,6 +78,7 @@ public class GamePVP extends Game{
             //début des instructions de jeu
             bombUpdate();
             playerUpdate(loopTimeInterval);
+            monsterUpdate(loopTimeInterval);
             gui.repaint();
             //fin des instructions de jeu
 
@@ -100,6 +94,12 @@ public class GamePVP extends Game{
     private void playerUpdate(double deltaTime) {
         for(Player p : playerList){
             p.update(deltaTime);
+        }
+    }
+
+    private void monsterUpdate(double deltaTime) {
+        for(Monster m : monsterList){
+            m.update(deltaTime);
         }
     }
 

@@ -1,13 +1,15 @@
 package model;
 
-public class MonstreDeux extends GameObject implements Monster,AI {
+public class MonstreDeux extends Monster {
     private boolean isAlive;
     private int nextInvoke;
     private int thinkTime;
     private Board board;
     private int direction;
     private float speed = 1F;
+    final int type = 1; 
 
+	// monstre pas encore réalisé, celui-ci est celui qui pourra voler à travers les cases
     public MonstreDeux(float x, float y) {
         super(x, y);
     }

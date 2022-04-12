@@ -23,6 +23,7 @@ public class Player extends GameObject implements Movable{
 	private int ammo = 1;
 	private boolean kick = false;
 	private boolean pierce = false;
+	private boolean isset;
 	private int firepower = 3; //max 6
 
 
@@ -324,6 +325,7 @@ public class Player extends GameObject implements Movable{
 	public void setPlayer(int ind,float x,float y) {
 		this.id = ind;
 		this.setAttributs(x,y);
+		isset = true;
 	}
 
 	public int getSpriteIndex() {
@@ -332,6 +334,10 @@ public class Player extends GameObject implements Movable{
 
 	public int getDirection() {
 		return direction;
+	}
+
+	public boolean isSet() {
+		return isset;
 	}
 
 
