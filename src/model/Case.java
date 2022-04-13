@@ -70,11 +70,25 @@ public class Case{
 	}
 
 	public void killMoveables() {
-		//bonus = null; devrait effacer le bonus si celui-ci est sur la portée des bombes.
 		Iterator<Movable> iterator = movablesOnCase.iterator();
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
-			if (m instanceof Player && m != this) {
+			if (m instanceof Player) {
+				((Player)m).setAlive(false);
+				iterator.remove();
+			}
+			if (m instanceof Monster) {
+				((Monster)m).setAlive(false);
+				iterator.remove();
+			}
+		}
+	}
+
+	public void killPlayers() {
+		Iterator<Movable> iterator = movablesOnCase.iterator();
+		while(iterator.hasNext()) {
+			Movable m = iterator.next();
+			if (m instanceof Player) {
 				((Player)m).setAlive(false);
 				iterator.remove();
 			}

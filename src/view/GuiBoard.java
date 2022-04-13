@@ -319,7 +319,7 @@ public class GuiBoard extends JPanel{
             int y_width = this.getWidth() / board.getCases()[0].length;
             if (!monster.isSet()) continue;
             g2.drawImage(monsterImagesList.get(0), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-            // à changer bien évidemment
+            // à changer
         }
     }
 }

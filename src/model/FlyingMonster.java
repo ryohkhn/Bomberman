@@ -1,41 +1,40 @@
 package model;
 
-public class MonstreUn extends Monster {
-    private boolean isAlive;
-    private int nextInvoke;
-    private int thinkTime = 75;
-    private Board board;
-    private int direction;
-    private float speed = 1F;
-	final int type = 0; 
 
-	// TO DO à tester l'ia de base
-    public MonstreUn(float x, float y,Board board) {
+public class FlyingMonster extends Monster implements AI {
+	final int type = 1;
+
+    public FlyingMonster(float x, float y,Board board) {
         super(x, y);
         this.board = board;
 		this.isAlive = true;
-        
     }
 
 	public void update(double deltaTime) {
-		if (isAlive()) {
-			nextInvoke = (++nextInvoke)%thinkTime;
+		//System.out.println("terminatior (x,y) :" + (int)position.x + "," + (int)position.y);
+		if (isAlive() && isset) {
 			killPlayers();
-        	if(nextInvoke == 1) {
-				stop();
-        		chooseDirection(deltaTime);
+			nextInvoke = (++nextInvoke)%thinkTime;
+			if(nextInvoke == 1) {
+        		chooseDirection();
+				move = true;
         	}
+			if (!move) spriteIndex = 0;
+			if(direction == 0) {
+				detectCollisionDown(deltaTime);
+			}else if (direction == 1) {
+				detectCollisionUp(deltaTime);
+			} else if (direction == 2) {
+				detectCollisionLeft(deltaTime);
+			} else if (direction == 3) {
+				detectCollisionRight(deltaTime);
+			}
 		}
 	}
-
-    public boolean isAlive() {
-        return isAlive;
-    }
 
     @Override
     public void detectCollisionRight(double d) {
         double speedDelta=speed/d;
-		direction = 3;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -45,26 +44,26 @@ public class MonstreUn extends Monster {
 			position.y+=speedDelta;
 			position.y=roundFloat(position.y);
 		}
-		else if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null){
+		else if(!(board.getCases()[line][nextColumn].getWall() !=null && !board.getCases()[line][nextColumn].getWall().isBreakable())){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y+=speedDelta;
 				position.y=roundFloat(position.y);
+			} else {
+				stop();
 			}
-		}
+		} 
 		else{
 			position.y+=nextColumn-(nextY+hitboxWidthRight);
 			position.y=roundFloat(position.y);
-			direction = -1;
+			stop();
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
-        
     }
 
     @Override
     public void detectCollisionUp(double d) {
         // TODO Auto-generated method stub
         double speedDelta=speed/d;
-		direction = 0;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -74,14 +73,16 @@ public class MonstreUn extends Monster {
 			position.x-=speedDelta;
 			position.x=roundFloat(position.x);
 		}
-		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
+		else if(!(board.getCases()[nextLine][column].getWall() !=null && !board.getCases()[nextLine][column].getWall().isBreakable())){
 			if(detectDiagonalCollisionUpDown(nextLine,column)){
 				position.x-=speedDelta;
 				position.x=roundFloat(position.x);
+			} else {
+				stop();
 			}
 		} else {
-			direction = -1;
-		}		
+			stop();
+		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
     }
@@ -92,7 +93,6 @@ public class MonstreUn extends Monster {
         double speedDelta=speed/d;
 		//System.out.println("Kick :" + this.kick);
 		//System.out.println("Pierce :" + this.pierce);
-		direction=2;
 		board.getCases()[(int) position.x][(int) position.y].deleteMovableOnCase(this);
 		int line=(int) position.x;
 		int column=(int) position.y;
@@ -102,13 +102,15 @@ public class MonstreUn extends Monster {
 			position.y-=speedDelta;
 			position.y=roundFloat(position.y);
 		}
-		else if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb()==null){
+		else if(!(board.getCases()[line][nextColumn].getWall() !=null && !board.getCases()[line][nextColumn].getWall().isBreakable())){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y-=speedDelta;
 				position.y=roundFloat(position.y);
+			} else {
+				stop();
 			}
 		} else {
-			direction = -1;
+			stop();
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
@@ -118,7 +120,6 @@ public class MonstreUn extends Monster {
     public void detectCollisionDown(double d) {
         // TODO Auto-generated method stub
         double speedDelta=speed/d;
-		direction = 1;
 		//System.out.println("Kick :" + this.kick);
 		//System.out.println("Pierce :" + this.pierce);
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -131,13 +132,15 @@ public class MonstreUn extends Monster {
 			position.x+=speedDelta;
 			position.x=roundFloat(position.x);
 		}
-		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
+		else if(!(board.getCases()[nextLine][column].getWall() !=null && !board.getCases()[nextLine][column].getWall().isBreakable())){
 			if(detectDiagonalCollisionUpDown(nextLine,column)){
 				position.x+=speedDelta;
 				position.x=roundFloat(position.x);
+			} else {
+				stop();
 			}
 		} else {
-			direction = -1;
+			stop();
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
@@ -145,43 +148,110 @@ public class MonstreUn extends Monster {
 
     @Override
     public void killPlayers() {
-        // TODO Auto-generated method stub
 		int line= (int)position.x;
 		int column= (int)position.y;
-		board.getCases()[line][column].killMoveables();
+		board.getCases()[line][column].killPlayers();
         
     }
 
     @Override
     public void stop() {
         // TODO Auto-generated method stub
-        direction = -1;
+    	move = false;
     }
 
     @Override
-    public void chooseDirection(double d) {
+    public void chooseDirection() {
         // TODO Auto-generated method stub
-        if (direction == -1) direction = randi.nextInt(4);
-        if(direction == 0) {
-            detectCollisionDown(d);
-        }else if (direction == 1) {
-            detectCollisionUp(d);
-        } else if (direction == 2) {
-            detectCollisionLeft(d);
-        } else if (direction == 3) {
-            detectCollisionRight(d);
-        }
-        
-    }
+		if (direction == -1 || !move) {
+			direction = randi.nextInt(4);
+			return;
+		}
+		int d = randi.nextInt(2);
+		if (d == 1) {
+			int v = calculateRowDirection();
+			if(v != -1) direction = v;
+			else direction = calculateColDirection();
+			
+		} else {
+			int h = calculateColDirection();
+			if(h != -1)direction = h;
+			else direction = calculateRowDirection();
+		}
+		
+	}
+
+	protected int calculateColDirection() {
+		int x = (int)position.x;
+		int y = (int)position.y;
+		int xx;
+		for(int i = 1; i < board.getCases().length; i++){
+			xx = x + i;
+			if(xx < 0 || xx >= board.getCases().length) break;
+			Case t = board.getCases()[xx][y];
+			for (Movable m :t.getMovablesOnCase()) {
+				if (m instanceof Player) {
+					System.out.println("col bas victime (x,y) :" + xx + "," + y);
+					return 3;
+				}
+			}
+
+		}
+		for(int i = 1; i < board.getCases().length; i++){
+			xx = x - i;
+			if(xx < 0 || xx >= board.getCases().length) break;
+			Case t = board.getCases()[xx][y];
+			for (Movable m :t.getMovablesOnCase()) {
+				if (m instanceof Player) {
+					System.out.println("col haut victime (x,y) :" + xx + "," + y);
+					return 2;
+				}
+			}
+
+		}
+		return -1;
+	}
+
+	protected int calculateRowDirection() {
+		int x = (int)position.x;
+		int y = (int)position.y;
+		int yy;
+		Case t;
+		for(int i = 1; i < board.getCases()[0].length; i++){
+			yy = y + i;
+			if(yy < 0 || yy >= board.getCases()[0].length) break;
+			t = board.getCases()[x][yy];
+			for (Movable m :t.getMovablesOnCase()) {
+				if (m instanceof Player) {
+					System.out.println("ligne droite victime (x,y) :" + x + "," + yy);
+					return 1;
+				}
+			}
+
+		}
+		for(int i = 1; i < board.getCases()[0].length; i++){
+			yy = y - i;
+			if(yy < 0 || yy >= board.getCases()[0].length) break;
+			t = board.getCases()[x][yy];
+			for (Movable m :t.getMovablesOnCase()) {
+				if (m instanceof Player) {
+					System.out.println("ligne gauche victime (x,y) :" + x + "," + yy);
+					return 0;
+				}
+			}
+
+		}
+		return -1;
+	}
 
 
     @Override
     public boolean detectDiagonalCollisionRightLeft(int line, int nextColumn) {
         // TODO Auto-generated method stub
-		if(position.x%1<hitboxHeightTop &&  board.getCases()[line-1][nextColumn].getWall()==null){
+		if(position.x%1<hitboxHeightTop && !(board.getCases()[line-1][nextColumn].getWall()!=null && !board.getCases()[line-1][nextColumn].getWall().isBreakable())){
 			return true;
 		}
-		else if(position.x%1>1-hitboxHeightBottom && board.getCases()[line+1][nextColumn].getWall()==null){
+		else if(position.x%1>1-hitboxHeightBottom && !(board.getCases()[line+1][nextColumn].getWall()!=null && !board.getCases()[line+1][nextColumn].getWall().isBreakable())){
 			return true;
 		}
 		else if(position.x%1>hitboxHeightTop && position.x%1<1-hitboxHeightBottom){
@@ -193,10 +263,10 @@ public class MonstreUn extends Monster {
     @Override
     public boolean detectDiagonalCollisionUpDown(int nextLine, int column) {
         // TODO Auto-generated method stub
-		if(position.y%1<hitboxWidthLeft && board.getCases()[nextLine][column-1].getWall()==null){
+		if(position.y%1<hitboxWidthLeft && !(board.getCases()[nextLine][column-1].getWall()!=null && !board.getCases()[nextLine][column-1].getWall().isBreakable())){
 			return true;
 		}
-		else if(position.y%1>1-hitboxWidthRight && board.getCases()[nextLine][column+1].getWall()==null){
+		else if(position.y%1>1-hitboxWidthRight && !(board.getCases()[nextLine][column+1].getWall()!=null && !board.getCases()[nextLine][column+1].getWall().isBreakable())){
 			return true;
 		}
 		else if(position.y%1>hitboxWidthLeft && position.y%1<1-hitboxWidthRight){
@@ -209,13 +279,5 @@ public class MonstreUn extends Monster {
     public float roundFloat(float f) {
         return (float)(Math.round((f)*100.0)/100.0);
     }
-
-	public void setMonster(float x,float y) {
-		this.setAttributs(x,y);
-		isset = true;
-	}
-	public boolean isSet() {
-		return isset;
-	}
 
 }

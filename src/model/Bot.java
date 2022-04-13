@@ -12,6 +12,7 @@ public class Bot extends Player implements AI {
 
 	private ArrayList<Integer> options;
 	private final LinkedList<Integer> moves;
+	private int move;
 	private EnemyDistanceComp edc;
 	private BonusDistanceComp bdc;
 	private final Random random;
@@ -48,7 +49,7 @@ public class Bot extends Player implements AI {
 		 
         	if(nextInvoke == 1) {
 				updateNav();
-				int move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
+				move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
 											// moving between cases.
 				if(move == 0 || !moveSafe(move) || enemyCheck()){ // reset if bombs or enemies ar nearby
 					moves.clear();
@@ -73,7 +74,7 @@ public class Bot extends Player implements AI {
 						setAction();
 					} else {
 						stop();
-						chooseDirection(move);
+						chooseDirection();
 					}
 				}
 			}
@@ -89,7 +90,7 @@ public class Bot extends Player implements AI {
 		setReleasedAction();
 	}
 
-	public void chooseDirection(double move) {
+	public void chooseDirection() {
 		
 		if (move == 1) { // first letter of move
 			setPressUp();

@@ -1,39 +1,43 @@
 package model;
 
-public class MonstreDeux extends Monster {
-    private boolean isAlive;
-    private int nextInvoke;
-    private int thinkTime;
-    private Board board;
-    private int direction;
-    private float speed = 1F;
-    final int type = 1; 
+public class WalkingMonster extends Monster implements AI{
+	final int type = 0;
 
-	// monstre pas encore réalisé, celui-ci est celui qui pourra voler à travers les cases
-    public MonstreDeux(float x, float y) {
+    public WalkingMonster(float x, float y,Board board) {
         super(x, y);
+        this.board = board;
+		isAlive = true;
+		nextInvoke = 0;
     }
 
-    
 	public void update(double deltaTime) {
-		if (isAlive()) {
-			nextInvoke = (++nextInvoke)%thinkTime;
+		if (isAlive() && isset) {
 			killPlayers();
-        	if(nextInvoke == 1) {
-				stop();
-        		chooseDirection(deltaTime);
+			nextInvoke = (++nextInvoke)%thinkTime;
+			if(nextInvoke == 1) {
+				if (!move) {
+        			chooseDirection();
+					move = true;
+				}
         	}
+			//System.out.println(direction);
+			if (!move) spriteIndex = 0;
+			if(direction == 0) {
+				detectCollisionDown(deltaTime);
+			}else if (direction == 1) {
+				detectCollisionUp(deltaTime);
+			} else if (direction == 2) {
+				detectCollisionLeft(deltaTime);
+			} else if (direction == 3) {
+				detectCollisionRight(deltaTime);
+			}
 		}
 	}
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
     @Override
     public void detectCollisionRight(double d) {
+		//System.out.println("right");
         double speedDelta=speed/d;
-		direction = 3;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -43,26 +47,29 @@ public class MonstreDeux extends Monster {
 			position.y+=speedDelta;
 			position.y=roundFloat(position.y);
 		}
-		else if(!(Board.cases[line][nextColumn].getWall() !=null && !Board.cases[line][nextColumn].getWall().isBreakable())){
+		else if(board.getCases()[line][nextColumn].getWall()==null && board.getCases()[line][nextColumn].getBomb() == null){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y+=speedDelta;
 				position.y=roundFloat(position.y);
+			} else {
+				stop();
 			}
-		}
+		} 
 		else{
 			position.y+=nextColumn-(nextY+hitboxWidthRight);
 			position.y=roundFloat(position.y);
-			direction = -1;
+			stop();
 		}
+		//System.out.println("update");
+		//System.out.println(direction);
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
-        
     }
 
     @Override
     public void detectCollisionUp(double d) {
+		//System.out.println("up");
         // TODO Auto-generated method stub
         double speedDelta=speed/d;
-		direction = 0;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -72,25 +79,28 @@ public class MonstreDeux extends Monster {
 			position.x-=speedDelta;
 			position.x=roundFloat(position.x);
 		}
-		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
+		else if(board.getCases()[nextLine][column].getWall()==null && board.getCases()[nextLine][column].getBomb() == null){
 			if(detectDiagonalCollisionUpDown(nextLine,column)){
 				position.x-=speedDelta;
 				position.x=roundFloat(position.x);
+			} else {
+				stop();
 			}
 		} else {
-			direction = -1;
-		}		
+			stop();
+		}
+		//System.out.println("update");
+		//System.out.println(direction);
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
     }
 
     @Override
     public void detectCollisionLeft(double d) {
-        // TODO Auto-generated method stub
+		//System.out.println("left");
         double speedDelta=speed/d;
 		//System.out.println("Kick :" + this.kick);
 		//System.out.println("Pierce :" + this.pierce);
-		direction=2;
 		board.getCases()[(int) position.x][(int) position.y].deleteMovableOnCase(this);
 		int line=(int) position.x;
 		int column=(int) position.y;
@@ -100,23 +110,26 @@ public class MonstreDeux extends Monster {
 			position.y-=speedDelta;
 			position.y=roundFloat(position.y);
 		}
-		else if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb()==null){
+		else if(board.getCases()[line][nextColumn].getWall()==null && board.getCases()[line][nextColumn].getBomb()==null){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y-=speedDelta;
 				position.y=roundFloat(position.y);
+			} else {
+				stop();
 			}
 		} else {
-			direction = -1;
+			stop();
 		}
+		//System.out.println("update");
+		//System.out.println(direction);
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
-        
     }
 
     @Override
     public void detectCollisionDown(double d) {
+		//System.out.println("down");
         // TODO Auto-generated method stub
         double speedDelta=speed/d;
-		direction = 1;
 		//System.out.println("Kick :" + this.kick);
 		//System.out.println("Pierce :" + this.pierce);
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -128,15 +141,18 @@ public class MonstreDeux extends Monster {
 		if((nextX+hitboxHeightBottom)<nextLine){
 			position.x+=speedDelta;
 			position.x=roundFloat(position.x);
-		}
-		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
+		} else if(board.getCases()[nextLine][column].getWall()==null && board.getCases()[nextLine][column].getBomb() == null){
 			if(detectDiagonalCollisionUpDown(nextLine,column)){
 				position.x+=speedDelta;
 				position.x=roundFloat(position.x);
+			} else {
+				stop();
 			}
 		} else {
-			direction = -1;
+			stop();
 		}
+		//System.out.println("update");
+		//System.out.println(direction);
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
     }
@@ -146,40 +162,40 @@ public class MonstreDeux extends Monster {
         // TODO Auto-generated method stub
 		int line= (int)position.x;
 		int column= (int)position.y;
-		board.getCases()[line][column].killMoveables();
+		board.getCases()[line][column].killPlayers();
         
     }
 
     @Override
     public void stop() {
         // TODO Auto-generated method stub
-        direction = -1;
+    	move = false;
     }
 
     @Override
-    public void chooseDirection(double d) {
-        // TODO Auto-generated method stub
-        if (direction == -1) direction = randi.nextInt(4);
-        if(direction == 0) {
-            detectCollisionDown(d);
-        }else if (direction == 1) {
-            detectCollisionUp(d);
-        } else if (direction == 2) {
-            detectCollisionLeft(d);
-        } else if (direction == 3) {
-            detectCollisionRight(d);
-        }
-        
+    public void chooseDirection() {
+		if (direction == -1) {
+			direction = randi.nextInt(3);
+			return;
+		}
+		int d = direction;
+        do {
+			d = randi.nextInt(5);
+			//System.out.println("ab");
+		} while ((direction == d && !move) || d == 4);
+		if (d == 5) spriteIndex = 0;
+		if (d != 5 && d != -1) direction = d;
+		//System.out.println("lol" + direction);
     }
 
 
     @Override
     public boolean detectDiagonalCollisionRightLeft(int line, int nextColumn) {
         // TODO Auto-generated method stub
-		if(position.x%1<hitboxHeightTop && (board.getCases()[line-1][nextColumn].getWall()==null && board.getCases()[line-1][nextColumn].getWall().isBreakable())){
+		if(position.x%1<hitboxHeightTop &&  board.getCases()[line-1][nextColumn].getWall()==null){
 			return true;
 		}
-		else if(position.x%1>1-hitboxHeightBottom && (board.getCases()[line-1][nextColumn].getWall()==null && board.getCases()[line-1][nextColumn].getWall().isBreakable())){
+		else if(position.x%1>1-hitboxHeightBottom && board.getCases()[line+1][nextColumn].getWall()==null){
 			return true;
 		}
 		else if(position.x%1>hitboxHeightTop && position.x%1<1-hitboxHeightBottom){
@@ -207,4 +223,5 @@ public class MonstreDeux extends Monster {
     public float roundFloat(float f) {
         return (float)(Math.round((f)*100.0)/100.0);
     }
+
 }
