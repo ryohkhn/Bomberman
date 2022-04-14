@@ -1,8 +1,15 @@
 package model;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
@@ -19,6 +26,7 @@ public class GamePVP extends Game{
     public static double timer;
     
     private String map;
+    private double endTime = -1;
 
     public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
 		this.gui = gui;
@@ -92,7 +100,12 @@ public class GamePVP extends Game{
                     }
                 }
             }
-        	
+        
+        try {
+			playSound("resources/SFX/BackgroundMusic.wav", true);
+		} catch (Exception e1) {}
+        boolean endLoop = false;
+        while(!endLoop){
             long startLoopTime = System.currentTimeMillis();
 
             //instructions timer
@@ -103,6 +116,20 @@ public class GamePVP extends Game{
             //début des instructions de jeu
             
             bombUpdate();
+            if(this.hasEnded()){
+                if(endTime == -1) endTime = System.currentTimeMillis();
+                else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
+            }
+            if(bombUpdate() != 0) {
+    			
+				try {
+					playSound("resources/SFX/BombeExplode.wav", false);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 
+            }
             playerUpdate(loopTimeInterval);
             gui.repaint();
             gui.revalidate();
@@ -116,6 +143,7 @@ public class GamePVP extends Game{
                 e.printStackTrace();
             }
         }
+        gui.endScreen();
     }
 
     public void playerUpdate(double deltaTime) {
@@ -125,15 +153,17 @@ public class GamePVP extends Game{
     }
 
 
-    public void bombUpdate() {
+ 
+    private int bombUpdate() {
+    	int bombsExploded = 0;
         for(Player p : playerList){
-            p.bombUpdate();
+        	bombsExploded += p.bombUpdate();
         }
+        return bombsExploded;
     }
 
     private double printTime(double timer2) {
         if(timer >= timer2 + 100){
-            //System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");
             return timer;
         }
         return timer2;
@@ -141,10 +171,28 @@ public class GamePVP extends Game{
 
     @Override
     public boolean hasEnded() { // verification de la victoire
-        return false;
+        int alivePlayer = this.playerList.size();
+        for(Player p : this.playerList){
+            if(!p.isAlive()){
+                alivePlayer -= 1;
+            }
+        }
+        return alivePlayer <= 1;
     }
 
-
+    void playSound(String soundFile, boolean loop) throws Exception {
+	    File f = new File(soundFile);
+	    AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
+	    Clip clip = AudioSystem.getClip();
+	    clip.addLineListener(event -> {
+	        if(LineEvent.Type.STOP.equals(event.getType())) {
+	            clip.close();
+	        }
+	    });
+	    clip.open(audioIn);
+	    clip.start();
+	    if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
+	}
 
     public static void main(String[] args){
         Gui gui = new Gui();

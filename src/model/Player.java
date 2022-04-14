@@ -340,10 +340,12 @@ public class Player extends GameObject implements Movable{
 		}
 	}
 
-	public void bombUpdate() {
+	public int bombUpdate() {
+		int bombsExploded = 0;
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
 			if(System.currentTimeMillis() - b.getStartTime() > 3900) {
+				b.setFuse(b.getFuse()-1);
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
 				System.out.println("bomb delete");
@@ -376,7 +378,13 @@ public class Player extends GameObject implements Movable{
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 3000){
 				b.explode();
+				bombsExploded += 1;
 				b.setSpriteIndex(0);
+			}
+			if (b.getFuse() == 1) {
+				b.setStartTime(System.currentTimeMillis() - Math.max(System.currentTimeMillis() - b.getStartTime(),2999));
+				b.setFuse(0);
+
 			}
 			if(b.isKicked()) {
 				if ((int) (b.position.x + b.getKick().getVelocity().x) >= 13 || (int) (b.position.y + b.getKick().getVelocity().y) >= 15) {
@@ -399,6 +407,7 @@ public class Player extends GameObject implements Movable{
 			}
 		}
 		bombList.removeAll(valueToRemove);
+		return bombsExploded;
 	}
 
 	public Board getBoard() {
@@ -460,5 +469,8 @@ public class Player extends GameObject implements Movable{
 
 	public ArrayList<Bomb> getBombList() {
 		return this.bombList;
+	}
+	public void setPoints(int points) {
+		this.points = points;
 	}
 }

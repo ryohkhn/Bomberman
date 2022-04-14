@@ -1,9 +1,7 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class Case{
     private ArrayList<Movable> movablesOnCase = new ArrayList<Movable>();
@@ -48,16 +46,24 @@ public class Case{
 		else this.bomb = bomb;
 	}
 
-	public void killMoveables(Board board) {
-		//bonus = null; devrait effacer le bonus si celui-ci est sur la portée des bombes.
+	public int killMoveables(Board board) {
+		int pointsCount = 0;
 		Iterator<Movable> iterator = movablesOnCase.iterator();
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
 			if (m instanceof Player) {
+				pointsCount += 100;
 				((Player)m).setAlive(false);
 				iterator.remove();
 			}
+			if(m instanceof Wall && ((Wall) m).isBreakable()){
+				pointsCount += 10;
+			}
 		}
+		if (bomb != null) {
+			bomb.setFuse(1);
+		}
+		return pointsCount;
 	}
 
 

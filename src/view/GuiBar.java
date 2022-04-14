@@ -1,5 +1,6 @@
 package view;
 
+import model.Board;
 import model.GamePVP;
 import model.Player;
 
@@ -30,10 +31,10 @@ public class GuiBar extends JPanel{
     }
 
     private void loadPlayerImages() throws IOException{
-        playerImagesList.add(ImageIO.read(new File("resources/player_0.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_1.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_2.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_3.png")));
+        playerImagesList.add(ImageIO.read(new File("resources/player_head_0.png")));
+        playerImagesList.add(ImageIO.read(new File("resources/player_head_1.png")));
+        playerImagesList.add(ImageIO.read(new File("resources/player_head_2.png")));
+        playerImagesList.add(ImageIO.read(new File("resources/player_head_3.png")));
     }
 
     @Override
@@ -45,6 +46,7 @@ public class GuiBar extends JPanel{
             g2.setColor(Color.WHITE);
             paintBar(g2);
             drawValues(g2);
+            drawPlayersHeads(g2);
         } catch(IOException e){
             e.printStackTrace();
         }
@@ -60,7 +62,16 @@ public class GuiBar extends JPanel{
         g2.drawString(minutes+":"+(seconds<10?"0"+seconds:seconds),(int)(this.getWidth()/6.5),2*(this.getHeight())/3);
         int multiplier=0;
         for(Player player : players){
-            g2.drawString(String.valueOf(player.getPoints()), (float) (multiplier*this.getWidth()/20+(9.5)*(this.getWidth()/20)), 2*(this.getHeight())/3);
+            g2.drawString(String.valueOf(player.getPoints()), (float)(multiplier*this.getWidth()/20+(9.5)*(this.getWidth()/20)), (float)(2*(this.getHeight())/3));
+            multiplier+=3;
+        }
+    }
+
+
+    private void drawPlayersHeads(Graphics2D g2) throws IOException{
+        int multiplier=0;
+        for(int i=0; i<players.size(); i++){
+            g2.drawImage(playerImagesList.get(i),(int)(this.getWidth()/20*((7.8)+multiplier)),this.getHeight()/5,this.getWidth()/Board.cases[0].length,this.getHeight()/2 ,null);
             multiplier+=3;
         }
     }

@@ -20,18 +20,24 @@ public class Gui extends JFrame implements KeyListener{
     public static Thread gameThread;
     public static boolean isPaused=false;
 
-    public Gui(){
-        width = 600;
-        height = 553;
-        this.guiMenu=new GuiMenu(this);
-
-        setSize(600,553);
+    public Gui(Board board){
+        width = this.getWidth();
+        height = this.getHeight();
+        this.guiMenu=new GuiMenu();
+        this.guiBar=new GuiBar(board.getPlayerList());
+        this.guiBoard=new GuiBoard(board);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         addKeyListener(this);
 
-        this.setLayout(new BorderLayout());        
-        this.add(guiMenu,BorderLayout.CENTER);
+        getContentPane().setPreferredSize(new Dimension(675,608));
+        pack();
+
+        this.setLayout(new BorderLayout());
+        guiBar.setPreferredSize(new Dimension(this.getWidth()/15,this.getHeight()/13));
+
+        this.add(guiBar,BorderLayout.NORTH);
+        this.add(guiBoard,BorderLayout.CENTER);
         setVisible(true);
     }
 
