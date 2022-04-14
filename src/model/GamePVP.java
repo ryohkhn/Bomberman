@@ -143,7 +143,8 @@ public class GamePVP extends Game{
                 e.printStackTrace();
             }
         }
-        gui.endScreen();
+    }
+        //gui.endScreen();
     }
 
     public void playerUpdate(double deltaTime) {
