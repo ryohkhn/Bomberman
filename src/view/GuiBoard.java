@@ -33,8 +33,14 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> explosionDownList=new LinkedList<>();
     private BufferedImage bombImage;
     private final LinkedList<BufferedImage[][]> playerImagesList=new LinkedList<>();
-    private final LinkedList<BufferedImage> monsterImagesList =new LinkedList<>();
 
+    private final LinkedList<BufferedImage> kondoriaLeftList =new LinkedList<>();
+    private final LinkedList<BufferedImage> kondoriaRightList =new LinkedList<>();
+    private final LinkedList<BufferedImage> kondoriaDeadList =new LinkedList<>();
+    
+    private final LinkedList<BufferedImage> minvoLeftList =new LinkedList<>();
+    private final LinkedList<BufferedImage> minvoRightList =new LinkedList<>();
+    private final LinkedList<BufferedImage> minvoDeadList =new LinkedList<>();
 
     public GuiBoard(Board board){
         this.board=board;
@@ -126,10 +132,31 @@ public class GuiBoard extends JPanel{
         }
     }
     private void loadMonsterImages() throws IOException{
-        for (int i = 0; i <4; i++) {
-            BufferedImage image = ImageIO.read(new File("resources/player_"+ i+".png"));
-            monsterImagesList.add(image);
-        }
+        kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left1.png")));
+        kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left2.png")));
+        kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left3.png")));
+
+        kondoriaRightList.add(ImageIO.read(new File("resources/monsters/kondoria_right1.png")));
+        kondoriaRightList.add(ImageIO.read(new File("resources/monsters/kondoria_right2.png")));
+        kondoriaRightList.add(ImageIO.read(new File("resources/monsters/kondoria_right3.png")));
+
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/kondoria_dead.png")));
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead1.png")));
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead2.png")));
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead3.png")));
+
+        minvoLeftList.add(ImageIO.read(new File("resources/monsters/minvo_left1.png")));
+        minvoLeftList.add(ImageIO.read(new File("resources/monsters/minvo_left2.png")));
+        minvoLeftList.add(ImageIO.read(new File("resources/monsters/minvo_left3.png")));
+
+        minvoRightList.add(ImageIO.read(new File("resources/monsters/minvo_right1.png")));
+        minvoRightList.add(ImageIO.read(new File("resources/monsters/minvo_right2.png")));
+        minvoRightList.add(ImageIO.read(new File("resources/monsters/minvo_right3.png")));
+
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/minvo_dead.png")));
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead1.png")));
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead2.png")));
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead3.png")));
     }
 
     @Override
@@ -317,9 +344,32 @@ public class GuiBoard extends JPanel{
             float y = monster.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
+            int direction = monster.getDirection();
+            int spriteIndex = monster.getSpriteIndex();
             if (!monster.isSet()) continue;
-            g2.drawImage(monsterImagesList.get(0), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-            // à changer
+            if (monster.getType() == 0) {
+                if (!monster.isAlive()) {
+                    g2.drawImage(minvoDeadList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                } else {
+                    if (direction == 2 || direction == 0) {
+                        g2.drawImage(minvoLeftList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                    if (direction == 3 || direction == 1) {
+                        g2.drawImage(minvoRightList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                }
+            } else {
+                if (!monster.isAlive()) {
+                    g2.drawImage(kondoriaDeadList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                } else {
+                    if (direction == 2 || direction == 0) {
+                        g2.drawImage(kondoriaLeftList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                    if (direction == 3 || direction == 1) {
+                        g2.drawImage(kondoriaRightList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                }
+            }
         }
     }
 }

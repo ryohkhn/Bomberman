@@ -172,7 +172,7 @@ public class Bot extends Player implements AI {
 		}
 	}
 
-	private boolean enemyCheck() {
+	public boolean enemyCheck() {
 		// determine wheter an enemy is in the range of the possible placements of your bomb
 		if (getBombCount() >= getAmmo()) return false;
 		ArrayList<IntPair> tiles = getCasesInBombRange((int)position.x, (int)position.y);

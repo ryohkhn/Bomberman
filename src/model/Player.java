@@ -1,6 +1,5 @@
 package model;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
@@ -15,7 +14,6 @@ public class Player extends GameObject implements Movable{
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false, pressAction = false;
 	boolean ai;
 	private int spriteTimer;
-	//private int deathTimer;
 	private int spriteIndex;
 	private int direction;
 	private int points=0;
@@ -42,7 +40,7 @@ public class Player extends GameObject implements Movable{
     }
 
 	public void update(double deltaTime) {
-		if (alive) {
+		if (alive && isset) {
 			if ((spriteTimer += speed) >= 20) {
                 spriteIndex++;
                 spriteTimer = 0;
@@ -64,14 +62,15 @@ public class Player extends GameObject implements Movable{
 			} else if (pressAction){
 				dropBomb();
 			}
-		} else {
+		}
+		if (!isAlive() && isset) {
 			if (spriteTimer++ >= 15) {
                 spriteIndex++;
                 if (spriteIndex < 4) {
                     spriteTimer = 0;
-                } else {
-					id = -1;
-				}
+                }
+			} else {
+				isset =false;
 			}
 		}
 	}

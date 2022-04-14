@@ -6,12 +6,13 @@ public abstract class Monster extends GameObject implements Movable{
     protected boolean isset = false;
     protected boolean isAlive = false;
     protected Board board;
-    protected float speed = 1F;
+    protected float speed;
     protected int direction;
     protected boolean move = false;
 	protected int spriteIndex;
     protected int nextInvoke;
-	protected int thinkTime = 75;
+	protected int thinkTime;
+    protected double spriteTimer;
     protected Monster(float x, float y) {
         super(x, y);
         //TODO Auto-generated constructor stub
@@ -20,6 +21,15 @@ public abstract class Monster extends GameObject implements Movable{
     public boolean isSet() {
         return isset;
     }
+
+    public int getSpriteIndex() {
+        return spriteIndex;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+    public abstract int getType();
 
     public void setMonster(float x,float y) {
 		this.setAttributs(x,y);
@@ -39,5 +49,14 @@ public abstract class Monster extends GameObject implements Movable{
 		return isAlive;
 	}
 
-    abstract void killPlayers();
+    public void killPlayers() {
+		int line= (int)position.x;
+		int column= (int)position.y;
+		board.getCases()[line][column].killPlayers();
+        
+    }
+
+    public float roundFloat(float f) {
+        return (float)(Math.round((f)*100.0)/100.0);
+    }
 }

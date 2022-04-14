@@ -2,20 +2,37 @@ package model;
 
 
 public class FlyingMonster extends Monster implements AI {
-	final int type = 1;
+	static final int TYPE = 1;
 
     public FlyingMonster(float x, float y,Board board) {
         super(x, y);
         this.board = board;
 		this.isAlive = true;
+		this.speed = 0.65F;
+		this.thinkTime = 50;
+		this.spriteTimer = 0;
     }
+
+	public int getType() {
+		return TYPE;
+	}
 
 	public void update(double deltaTime) {
 		//System.out.println("terminatior (x,y) :" + (int)position.x + "," + (int)position.y);
 		if (isAlive() && isset) {
+			spriteTimer += speed;
+			//System.out.println("spritetimer : " + spriteIndex);
+			if (spriteTimer >= 5) {
+				//System.out.println("spriteindex : " + spriteIndex);
+                spriteIndex++;
+                spriteTimer = 0;
+            }
+			if (spriteIndex >= 3) {
+				spriteIndex = 0;
+			}
 			killPlayers();
 			nextInvoke = (++nextInvoke)%thinkTime;
-			if(nextInvoke == 1) {
+			if(nextInvoke == 1 && !move) {
         		chooseDirection();
 				move = true;
         	}
@@ -28,6 +45,16 @@ public class FlyingMonster extends Monster implements AI {
 				detectCollisionLeft(deltaTime);
 			} else if (direction == 3) {
 				detectCollisionRight(deltaTime);
+			}
+		}
+		if (!isAlive() && isset) {
+			if (spriteTimer++ >= 15) {
+                spriteIndex++;
+                if (spriteIndex < 4) {
+                    spriteTimer = 0;
+                }
+			} else {
+				isset = false;
 			}
 		}
 	}
@@ -62,7 +89,6 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public void detectCollisionUp(double d) {
-        // TODO Auto-generated method stub
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
@@ -89,7 +115,6 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public void detectCollisionLeft(double d) {
-        // TODO Auto-generated method stub
         double speedDelta=speed/d;
 		//System.out.println("Kick :" + this.kick);
 		//System.out.println("Pierce :" + this.pierce);
@@ -156,29 +181,25 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
     	move = false;
     }
 
     @Override
     public void chooseDirection() {
-        // TODO Auto-generated method stub
-		if (direction == -1 || !move) {
-			direction = randi.nextInt(4);
-			return;
-		}
 		int d = randi.nextInt(2);
 		if (d == 1) {
 			int v = calculateRowDirection();
 			if(v != -1) direction = v;
 			else direction = calculateColDirection();
-			
-		} else {
+		} else if (d == 2) {
 			int h = calculateColDirection();
 			if(h != -1)direction = h;
 			else direction = calculateRowDirection();
 		}
-		
+
+		if (direction == -1) {
+			direction = randi.nextInt(3);
+		}
 	}
 
 	protected int calculateColDirection() {
@@ -192,7 +213,7 @@ public class FlyingMonster extends Monster implements AI {
 			for (Movable m :t.getMovablesOnCase()) {
 				if (m instanceof Player) {
 					System.out.println("col bas victime (x,y) :" + xx + "," + y);
-					return 3;
+					return 0;
 				}
 			}
 
@@ -203,8 +224,8 @@ public class FlyingMonster extends Monster implements AI {
 			Case t = board.getCases()[xx][y];
 			for (Movable m :t.getMovablesOnCase()) {
 				if (m instanceof Player) {
-					System.out.println("col haut victime (x,y) :" + xx + "," + y);
-					return 2;
+					//System.out.println("col haut victime (x,y) :" + xx + "," + y);
+					return 1;
 				}
 			}
 
@@ -224,7 +245,7 @@ public class FlyingMonster extends Monster implements AI {
 			for (Movable m :t.getMovablesOnCase()) {
 				if (m instanceof Player) {
 					System.out.println("ligne droite victime (x,y) :" + x + "," + yy);
-					return 1;
+					return 3;
 				}
 			}
 
@@ -236,7 +257,7 @@ public class FlyingMonster extends Monster implements AI {
 			for (Movable m :t.getMovablesOnCase()) {
 				if (m instanceof Player) {
 					System.out.println("ligne gauche victime (x,y) :" + x + "," + yy);
-					return 0;
+					return 2;
 				}
 			}
 
@@ -247,7 +268,6 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public boolean detectDiagonalCollisionRightLeft(int line, int nextColumn) {
-        // TODO Auto-generated method stub
 		if(position.x%1<hitboxHeightTop && !(board.getCases()[line-1][nextColumn].getWall()!=null && !board.getCases()[line-1][nextColumn].getWall().isBreakable())){
 			return true;
 		}
@@ -262,7 +282,6 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public boolean detectDiagonalCollisionUpDown(int nextLine, int column) {
-        // TODO Auto-generated method stub
 		if(position.y%1<hitboxWidthLeft && !(board.getCases()[nextLine][column-1].getWall()!=null && !board.getCases()[nextLine][column-1].getWall().isBreakable())){
 			return true;
 		}
@@ -273,11 +292,6 @@ public class FlyingMonster extends Monster implements AI {
 			return true;
 		}
 		return false;
-    }
-
-    @Override
-    public float roundFloat(float f) {
-        return (float)(Math.round((f)*100.0)/100.0);
     }
 
 }

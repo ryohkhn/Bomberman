@@ -1,24 +1,33 @@
 package model;
 
 public class WalkingMonster extends Monster implements AI{
-	final int type = 0;
+	static final int TYPE = 0;
 
     public WalkingMonster(float x, float y,Board board) {
         super(x, y);
         this.board = board;
 		isAlive = true;
 		nextInvoke = 0;
+		this.speed = 1.25F;
+		thinkTime = 20;
     }
 
+	public int getType() {
+		return TYPE;
+	}
+
 	public void update(double deltaTime) {
-		if (isAlive() && isset) {
+		if (isAlive && isset) {
 			killPlayers();
+			if ((spriteTimer += speed) >= 20) {
+                spriteIndex++;
+                spriteTimer = 0;
+            }
+			if (spriteIndex >= 3) spriteIndex = 0;
 			nextInvoke = (++nextInvoke)%thinkTime;
-			if(nextInvoke == 1) {
-				if (!move) {
-        			chooseDirection();
-					move = true;
-				}
+			if (nextInvoke == 1 && !move) {
+				chooseDirection();
+				move = true;
         	}
 			//System.out.println(direction);
 			if (!move) spriteIndex = 0;
@@ -30,6 +39,16 @@ public class WalkingMonster extends Monster implements AI{
 				detectCollisionLeft(deltaTime);
 			} else if (direction == 3) {
 				detectCollisionRight(deltaTime);
+			}
+		}
+		if (!isAlive && isset) {
+			if (spriteTimer++ >= 15) {
+                spriteIndex++;
+                if (spriteIndex < 4) {
+                    spriteTimer = 0;
+                }
+			} else {
+				isset = false;
 			}
 		}
 	}
@@ -128,7 +147,6 @@ public class WalkingMonster extends Monster implements AI{
     @Override
     public void detectCollisionDown(double d) {
 		//System.out.println("down");
-        // TODO Auto-generated method stub
         double speedDelta=speed/d;
 		//System.out.println("Kick :" + this.kick);
 		//System.out.println("Pierce :" + this.pierce);
@@ -158,17 +176,7 @@ public class WalkingMonster extends Monster implements AI{
     }
 
     @Override
-    public void killPlayers() {
-        // TODO Auto-generated method stub
-		int line= (int)position.x;
-		int column= (int)position.y;
-		board.getCases()[line][column].killPlayers();
-        
-    }
-
-    @Override
     public void stop() {
-        // TODO Auto-generated method stub
     	move = false;
     }
 
@@ -191,7 +199,6 @@ public class WalkingMonster extends Monster implements AI{
 
     @Override
     public boolean detectDiagonalCollisionRightLeft(int line, int nextColumn) {
-        // TODO Auto-generated method stub
 		if(position.x%1<hitboxHeightTop &&  board.getCases()[line-1][nextColumn].getWall()==null){
 			return true;
 		}
@@ -206,7 +213,6 @@ public class WalkingMonster extends Monster implements AI{
 
     @Override
     public boolean detectDiagonalCollisionUpDown(int nextLine, int column) {
-        // TODO Auto-generated method stub
 		if(position.y%1<hitboxWidthLeft && board.getCases()[nextLine][column-1].getWall()==null){
 			return true;
 		}
@@ -217,11 +223,6 @@ public class WalkingMonster extends Monster implements AI{
 			return true;
 		}
 		return false;
-    }
-
-    @Override
-    public float roundFloat(float f) {
-        return (float)(Math.round((f)*100.0)/100.0);
     }
 
 }
