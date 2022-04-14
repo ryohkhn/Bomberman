@@ -272,7 +272,11 @@ public class Player extends GameObject implements Movable{
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y+=speedDelta;
 				position.y=roundFloat(position.y);
+			}if(Board.cases[line][nextColumn].getBonus()!=null){
+				Board.cases[line][nextColumn].getBonus().grantBonus(this);
+				Board.cases[line][nextColumn].setBonus(null);
 			}
+
 		}
 		else{
 			position.y+=nextColumn-(nextY+hitboxWidthRight);
