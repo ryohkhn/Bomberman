@@ -4,6 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import model.Player;
+import view.Gui;
 
 public class PlayerInput extends KeyAdapter{
 	

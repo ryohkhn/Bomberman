@@ -27,18 +27,19 @@ public class GamePVP extends Game{
     private String map;
     private double endTime = -1;
 
-    public GamePVP() {
+    public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
+		this.gui = gui;
+		this.map = map;
         playerList = new ArrayList<Player>();
         monsterList = new ArrayList<Monster>();
     }
 
-    public void init() {
+    public Board init() {
 		try {
 			board = new Board(this.map,playerList,monsterList); // fait
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		this.gui=new Gui(board);
         key1 = new PlayerInput(board.getPlayer(0));
     	gui.addKeyListener(key1);
         key2 = new PlayerInput(board.getPlayer(1));
@@ -51,6 +52,7 @@ public class GamePVP extends Game{
         //key4 = new PlayerInput(board.getPlayer(3));
         //gui.addKeyListener(key4);
         this.addPlayers();
+        return board;
     }
 
     public void addPlayers() {
@@ -77,16 +79,35 @@ public class GamePVP extends Game{
         }
     }
 
+    private final Object pauseLock = new Object();
+    private volatile boolean paused = false;
+    private long pauseTime;
+    private long resumeTime;
+    
     @Override
     public void gameLoop() {
 
         double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
+        double currentTime;
+
         try {
 			playSound("resources/SFX/BackgroundMusic.wav", true);
 		} catch (Exception e1) {}
         boolean endLoop = false;
         while(!endLoop){
+        	synchronized (pauseLock) {
+                if (paused) {
+                    try {
+                        synchronized (pauseLock) {
+                            pauseLock.wait();
+                        }
+                    } catch (InterruptedException ex) {
+                        break;
+                    }
+                }
+            }
+        
             long startLoopTime = System.currentTimeMillis();
 
             //instructions timer
@@ -95,37 +116,36 @@ public class GamePVP extends Game{
             // fin timer
 
             //début des instructions de jeu
+            
+            bombUpdate();
             if(this.hasEnded()){
                 if(endTime == -1) endTime = System.currentTimeMillis();
                 else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
             }
             if(bombUpdate() != 0) {
-    			
 				try {
 					playSound("resources/SFX/BombeExplode.wav", false);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				 
+				} catch (Exception e) {}
             }
             playerUpdate(loopTimeInterval);
             monsterUpdate(loopTimeInterval);
             gui.repaint();
+            gui.revalidate();
             //fin des instructions de jeu
 
             long endLoopTime = System.currentTimeMillis();
             try{
-            	long time = (long)loopTimeInterval - (endLoopTime - startLoopTime);
-                if(time>0) Thread.sleep(time);
-            }catch (java.lang.InterruptedException e){
+            	if((long)loopTimeInterval - (endLoopTime - startLoopTime)>0)
+					Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
+            }catch (InterruptedException e){
                 e.printStackTrace();
             }
         }
-        gui.endScreen();
+    
+        //gui.endScreen();
     }
 
-    private void playerUpdate(double deltaTime) {
+    public void playerUpdate(double deltaTime) {
         for(Player p : playerList){
             p.update(deltaTime);
         }
@@ -178,8 +198,36 @@ public class GamePVP extends Game{
 	}
 
     public static void main(String[] args){
-        GamePVP game=new GamePVP();
-        game.init();
-        game.gameLoop();
+        Gui gui = new Gui();
     }
+
+	@Override
+	public boolean getPaused() {
+		return this.paused;
+	}
+	
+	public void pause() {
+        pauseTime = System.currentTimeMillis();
+        this.paused = true;
+    }
+
+    public void resume() {
+        resumeTime = System.currentTimeMillis();
+        bombPauseUpdate();
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll(); 
+        }
+    }
+
+	private void bombPauseUpdate() {
+		timer -= (resumeTime - pauseTime);
+        for(Player p : playerList){
+        	for(Bomb b : p.getBombList()){
+        		b.setStartTime(b.getStartTime() + resumeTime - pauseTime);
+        	}
+        }
+        resumeTime = 0;
+        pauseTime = 0;
+	}
 }
