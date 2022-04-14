@@ -88,8 +88,6 @@ public class GamePVP extends Game{
         double lastTime = System.currentTimeMillis();
         double currentTime;
 
-
-        
         try {
 			playSound("resources/SFX/BackgroundMusic.wav", true);
 		} catch (Exception e1) {}
@@ -122,14 +120,9 @@ public class GamePVP extends Game{
                 else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
             }
             if(bombUpdate() != 0) {
-    			
 				try {
 					playSound("resources/SFX/BombeExplode.wav", false);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				 
+				} catch (Exception e) {}
             }
             playerUpdate(loopTimeInterval);
             gui.repaint();

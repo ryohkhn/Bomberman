@@ -25,7 +25,6 @@ public class Gui extends JFrame implements KeyListener{
         height = this.getHeight();
         this.guiMenu=new GuiMenu(this);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        //setLocationRelativeTo(null);
         addKeyListener(this);
 
         getContentPane().setPreferredSize(new Dimension(675,608));
@@ -33,6 +32,7 @@ public class Gui extends JFrame implements KeyListener{
 
         this.setLayout(new BorderLayout());
         this.add(guiMenu,BorderLayout.CENTER);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
