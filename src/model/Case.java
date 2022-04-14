@@ -1,12 +1,10 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class Case{
-    private ArrayList<Movable> movablesOnCase = new ArrayList<Movable>();
+    private ArrayList<Movable> movablesOnCase = new ArrayList<>();
     private Wall wall;
     private Bonus bonus;
     private Bomb bomb;
@@ -17,7 +15,6 @@ public class Case{
 		this.wall = wall;
 		nav_update = false;
 		nav_group = 0;
-		nav_update = false;
 	}
 
 	public void addMovableOnCase(Movable movable) {
@@ -69,11 +66,13 @@ public class Case{
 		return nav_update;
 	}
 
-	public void killMoveables() {
+	public int killMoveables() {
 		Iterator<Movable> iterator = movablesOnCase.iterator();
+		int pointsCount = 0;
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
 			if (m instanceof Player) {
+				pointsCount += 100;
 				((Player)m).setAlive(false);
 				iterator.remove();
 			}
@@ -81,20 +80,27 @@ public class Case{
 				((Monster)m).setAlive(false);
 				iterator.remove();
 			}
+			if(m instanceof Wall && ((Wall) m).isBreakable()){
+				pointsCount += 10;
+			}
 		}
+		if (bomb != null) {
+			bomb.setFuse(1);
+		}
+
+		return pointsCount;
 	}
 
 	public void killPlayers() {
-		Iterator<Movable> iterator = movablesOnCase.iterator();
-		while(iterator.hasNext()) {
-			Movable m = iterator.next();
+		Iterator<Movable> iter = movablesOnCase.iterator();
+		while(iter.hasNext()) {
+			Movable m = iter.next();
 			if (m instanceof Player) {
 				((Player)m).setAlive(false);
-				iterator.remove();
+				iter.remove();
 			}
 		}
 	}
-
 
 	@Override
 	public String toString() {

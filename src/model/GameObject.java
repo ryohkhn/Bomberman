@@ -1,6 +1,4 @@
 package model;
-import java.awt.image.BufferedImage;
-import java.nio.Buffer;
 
 public class GameObject {
     protected static int sizeX;

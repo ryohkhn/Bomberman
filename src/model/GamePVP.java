@@ -1,8 +1,15 @@
 package model;
 
-import java.awt.image.BufferedImage;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
@@ -17,6 +24,8 @@ public class GamePVP extends Game{
     public static double timer;
     private ArrayList<Monster> monsterList;
     // should use game class as starter for choosing modes
+    private double endTime = -1;
+
     public GamePVP() {
         playerList = new ArrayList<Player>();
         monsterList = new ArrayList<Monster>();
@@ -72,9 +81,11 @@ public class GamePVP extends Game{
 
         double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
-        double currentTime;
-
-        while(!this.hasEnded()){
+        try {
+			playSound("resources/SFX/BackgroundMusic.wav", true);
+		} catch (Exception e1) {}
+        boolean endLoop = false;
+        while(!endLoop){
             long startLoopTime = System.currentTimeMillis();
 
             //instructions timer
@@ -83,7 +94,20 @@ public class GamePVP extends Game{
             // fin timer
 
             //début des instructions de jeu
-            bombUpdate();
+            if(this.hasEnded()){
+                if(endTime == -1) endTime = System.currentTimeMillis();
+                else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
+            }
+            if(bombUpdate() != 0) {
+    			
+				try {
+					playSound("resources/SFX/BombeExplode.wav", false);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 
+            }
             playerUpdate(loopTimeInterval);
             monsterUpdate(loopTimeInterval);
             gui.repaint();
@@ -91,11 +115,13 @@ public class GamePVP extends Game{
 
             long endLoopTime = System.currentTimeMillis();
             try{
-                Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
+            	long time = (long)loopTimeInterval - (endLoopTime - startLoopTime);
+                if(time>0) Thread.sleep(time);
             }catch (java.lang.InterruptedException e){
                 e.printStackTrace();
             }
         }
+        gui.endScreen();
     }
 
     private void playerUpdate(double deltaTime) {
@@ -110,15 +136,16 @@ public class GamePVP extends Game{
         }
     }
     
-    private void bombUpdate() {
+    private int bombUpdate() {
+    	int bombsExploded = 0;
         for(Player p : playerList){
-            p.bombUpdate();
+        	bombsExploded += p.bombUpdate();
         }
+        return bombsExploded;
     }
 
     private double printTime(double timer2) {
         if(timer >= timer2 + 100){
-            //System.out.println("---------------------------------- Timer : " + (int)timer/1000 + " s " + (int)timer%1000/100 + " ms " + " ------------------------------------");
             return timer;
         }
         return timer2;
@@ -126,8 +153,29 @@ public class GamePVP extends Game{
 
     @Override
     public boolean hasEnded() { // verification de la victoire
-        return false;
+        int alivePlayer = this.playerList.size();
+        for(Player p : this.playerList){
+            if(!p.isAlive()){
+                alivePlayer -= 1;
+            }
+        }
+        return alivePlayer <= 1;
     }
+
+    void playSound(String soundFile, boolean loop) throws Exception {
+	    File f = new File(soundFile);
+	    AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
+	    Clip clip = AudioSystem.getClip();
+	    clip.addLineListener(event -> {
+	        if(LineEvent.Type.STOP.equals(event.getType())) {
+	            clip.close();
+	        }
+	    });
+	    clip.open(audioIn);
+	    clip.start();
+	    if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
+	}
+
     public static void main(String[] args){
         GamePVP game=new GamePVP();
         game.init();

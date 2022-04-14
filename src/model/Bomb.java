@@ -1,10 +1,9 @@
 package model;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Float;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
 /**
@@ -37,6 +36,7 @@ public class Bomb extends GameObject{
     private int stopLeft;
     private int stopRight;
     private boolean willBeExploding;
+    private int fuse;
 
 
     /**
@@ -57,6 +57,7 @@ public class Bomb extends GameObject{
         this.kicked = false;
         this.kickDirection = KickDirection.Nothing;
         this.willBeExploding = false;
+        this.fuse = 0;
         this.startTime = System.currentTimeMillis();
 
         //Set bomb in case
@@ -72,6 +73,13 @@ public class Bomb extends GameObject{
     public void setWillBeExploding() {
         this.willBeExploding = true;
     }
+    public int getFuse() {
+        return fuse;
+    }
+
+    public void setFuse(int fuse) {
+        this.fuse = fuse;
+    }
 
     /**
      * Function that kills players in a cross-shaped area (with each extension of length firepower)
@@ -80,15 +88,18 @@ public class Bomb extends GameObject{
     public void explode() {
         if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
         hasExploded = true;
+        int pointsCount = 0;
+        
     	Case [][] c = board.getCases();
         int lineLeft = Math.max(((int) position.y - firepower), 0);
         int lineRight = Math.min(((int) position.y + firepower), 14);
         int columnTop = Math.max(((int) position.x - firepower), 0);
         int columnDown = Math.min(((int) position.x + firepower), 12);
-        boolean end = false;
-        Case current = null;
+        Case current = c[(int)position.x][(int)position.y];
+        current.killMoveables();
         int i;
-        for(i = (int)position.y + 1 ;i < lineRight && !end; i++ ){
+        boolean end = false;
+        for(i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
@@ -99,18 +110,15 @@ public class Bomb extends GameObject{
                 else {
                 	end = true;
                 }
-                System.out.println("right stop at " + (int)position.x + "/" + i + " where there are " + current);
-                System.out.println("start at y=" + (int)position.y + " stop at y=" + lineRight + "\n" );
-
             } else {
-                System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
-                current.killMoveables();
+                pointsCount += current.killMoveables();
             }
 		}
-        assert current != null;
         stopRight = i;
+
         end = false;
-        for(i = (int)position.y - 1 ;i > lineLeft && !end; i-- ){
+        
+        for(i = (int)position.y - 1 ;i >= lineLeft && !end; i-- ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
@@ -122,15 +130,15 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                System.out.println("x=" + (int)position.x + " y=" + i + " for " + current);
-                current.killMoveables();
+                pointsCount += current.killMoveables();
+
             }
         }
         stopLeft = i;
-        System.out.println("stop left = " + i + "    and lineLeft is = " + lineLeft);
 
         end = false;
-        for(i = (int)position.x - 1 ; i > columnTop && !end; i-- ){
+        
+        for(i = (int)position.x - 1 ; i >= columnTop && !end; i-- ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
@@ -142,16 +150,16 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
-                current.killMoveables();
+                pointsCount += current.killMoveables();
+
             }
         }
         stopTop = i;
+
         end = false;
-        for(i = (int)position.x + 1 ; i < columnDown && !end; i++ ){ // commence a x et pas x + 1 pour tuer les joueurs sur l'emplacement de la bombe
+        for(i = (int)position.x + 1 ; i <= columnDown && !end; i++ ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
-
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
                     current.setNav_update(false);
@@ -161,12 +169,20 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                System.out.println("x=" + i + " y=" + (int)position.y + " for " + current);
-                current.killMoveables();
+                pointsCount += current.killMoveables();
+
             }
         }
         stopDown = i;
-        System.out.println("bomb killed movables and destroyed wall");
+         this.player.setPoints(this.player.getPoints() + pointsCount + 1);
+    }
+    
+    void playSound(String soundFile) throws Exception {
+        File f = new File("resources/SFX/" + soundFile);
+        AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioIn);
+        clip.start();
     }
     
     public void setKicked(boolean kicked, KickDirection kickDirection) {
@@ -186,10 +202,6 @@ public class Bomb extends GameObject{
     public KickDirection getKick() {
     	return this.kickDirection;
     }
-    
-   /*
-    * Deletes the bomb after explosion
-	*/
 
 
     // setter et getter :
