@@ -213,6 +213,7 @@ public class GamePVP extends Game{
     }
 
 	private void bombPauseUpdate() {
+		timer -= (resumeTime - pauseTime);
         for(Player p : playerList){
         	for(Bomb b : p.getBombList()){
         		b.setStartTime(b.getStartTime() + resumeTime - pauseTime);
