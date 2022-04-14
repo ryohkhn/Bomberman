@@ -88,7 +88,13 @@ public class GamePVP extends Game{
         double lastTime = System.currentTimeMillis();
         double currentTime;
 
-        while(!this.hasEnded()){
+
+        
+        try {
+			playSound("resources/SFX/BackgroundMusic.wav", true);
+		} catch (Exception e1) {}
+        boolean endLoop = false;
+        while(!endLoop){
         	synchronized (pauseLock) {
                 if (paused) {
                     try {
@@ -101,11 +107,6 @@ public class GamePVP extends Game{
                 }
             }
         
-        try {
-			playSound("resources/SFX/BackgroundMusic.wav", true);
-		} catch (Exception e1) {}
-        boolean endLoop = false;
-        while(!endLoop){
             long startLoopTime = System.currentTimeMillis();
 
             //instructions timer
@@ -143,7 +144,7 @@ public class GamePVP extends Game{
                 e.printStackTrace();
             }
         }
-    }
+    
         //gui.endScreen();
     }
 
