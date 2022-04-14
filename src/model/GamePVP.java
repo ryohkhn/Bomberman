@@ -68,6 +68,11 @@ public class GamePVP extends Game{
         }
     }
 
+    private final Object pauseLock = new Object();
+    private volatile boolean paused = false;
+    private long pauseTime;
+    private long resumeTime;
+    
     @Override
     public void gameLoop() {
 
@@ -76,6 +81,18 @@ public class GamePVP extends Game{
         double currentTime;
 
         while(!this.hasEnded()){
+        	synchronized (pauseLock) {
+                if (paused) {
+                    try {
+                        synchronized (pauseLock) {
+                            pauseLock.wait();
+                        }
+                    } catch (InterruptedException ex) {
+                        break;
+                    }
+                }
+            }
+        	
             long startLoopTime = System.currentTimeMillis();
 
             //instructions timer
@@ -84,6 +101,7 @@ public class GamePVP extends Game{
             // fin timer
 
             //début des instructions de jeu
+            
             bombUpdate();
             playerUpdate(loopTimeInterval);
             gui.repaint();
@@ -92,7 +110,8 @@ public class GamePVP extends Game{
 
             long endLoopTime = System.currentTimeMillis();
             try{
-                Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
+            	if((long)loopTimeInterval - (endLoopTime - startLoopTime)>0)
+					Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -130,4 +149,33 @@ public class GamePVP extends Game{
     public static void main(String[] args){
         Gui gui = new Gui();
     }
+
+	@Override
+	public boolean getPaused() {
+		return this.paused;
+	}
+	
+	public void pause() {
+        pauseTime = System.currentTimeMillis();
+        this.paused = true;
+    }
+
+    public void resume() {
+        resumeTime = System.currentTimeMillis();
+        bombPauseUpdate();
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll(); 
+        }
+    }
+
+	private void bombPauseUpdate() {
+        for(Player p : playerList){
+        	for(Bomb b : p.getBombList()){
+        		b.setStartTime(b.getStartTime() + resumeTime - pauseTime);
+        	}
+        }
+        resumeTime = 0;
+        pauseTime = 0;
+	}
 }

@@ -457,4 +457,8 @@ public class Player extends GameObject implements Movable{
 	public int getPoints(){
 		return points;
 	}
+
+	public ArrayList<Bomb> getBombList() {
+		return this.bombList;
+	}
 }

@@ -76,18 +76,15 @@ public class Gui extends JFrame implements KeyListener{
 
     }
 
+    
     @Override
     public void keyPressed(KeyEvent keyEvent){
         int k = keyEvent.getKeyCode();
         if(k==KeyEvent.VK_ESCAPE){
-            if(Gui.isPaused){
-                Gui.isPaused=false;
-                Gui.gameThread.resume();
-                System.out.println("resume");
-            } else{
-                Gui.isPaused=true;
-                Gui.gameThread.stop();
-                System.out.println("stop");
+            if(!game.getPaused()){
+            	game.pause();
+            	} else{
+            	game.resume();
             }
         }
     }

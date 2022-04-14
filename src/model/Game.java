@@ -10,11 +10,18 @@ public abstract class Game{
     private ArrayList<Player> players;
     private File boardTemplate;
     private Board board;
-
+    
+    private final Object pauseLock = new Object();
+    private volatile boolean paused;
+    
     public abstract void gameLoop();
 
     public abstract boolean hasEnded();
 
 	public abstract Board init();
+
+	public abstract boolean getPaused();
+	public abstract void pause();
+	public abstract void resume();
 
 }
