@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Case{
-    private ArrayList<Movable> movablesOnCase = new ArrayList<Movable>();
+    private ArrayList<Movable> movablesOnCase = new ArrayList<>();
     private Wall wall;
     private Bonus bonus;
     private Bomb bomb;
+	private int nav_group;
+	private boolean nav_update;
 
 	public void setWall(Wall wall) {
 		this.wall = wall;
+		nav_update = false;
+		nav_group = 0;
 	}
 
 	public void addMovableOnCase(Movable movable) {
@@ -46,14 +50,34 @@ public class Case{
 		else this.bomb = bomb;
 	}
 
-	public int killMoveables(Board board) {
-		int pointsCount = 0;
+	public void setNav_group(int nav_group) {
+		this.nav_group = nav_group;
+	}
+
+	public int getNav_group() {
+		return nav_group;
+	}
+
+	public void setNav_update(boolean nav_update) {
+		this.nav_update = nav_update;
+	}
+	
+	public boolean getNav_update() {
+		return nav_update;
+	}
+
+	public int killMoveables() {
 		Iterator<Movable> iterator = movablesOnCase.iterator();
+		int pointsCount = 0;
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
 			if (m instanceof Player) {
 				pointsCount += 100;
 				((Player)m).setAlive(false);
+				iterator.remove();
+			}
+			if (m instanceof Monster) {
+				((Monster)m).setAlive(false);
 				iterator.remove();
 			}
 			if(m instanceof Wall && ((Wall) m).isBreakable()){
@@ -63,9 +87,20 @@ public class Case{
 		if (bomb != null) {
 			bomb.setFuse(1);
 		}
+
 		return pointsCount;
 	}
 
+	public void killPlayers() {
+		Iterator<Movable> iter = movablesOnCase.iterator();
+		while(iter.hasNext()) {
+			Movable m = iter.next();
+			if (m instanceof Player) {
+				((Player)m).setAlive(false);
+				iter.remove();
+			}
+		}
+	}
 
 	@Override
 	public String toString() {

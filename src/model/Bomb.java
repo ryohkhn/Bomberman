@@ -35,6 +35,7 @@ public class Bomb extends GameObject{
     private int stopDown;
     private int stopLeft;
     private int stopRight;
+    private boolean willBeExploding;
     private int fuse;
 
 
@@ -55,6 +56,7 @@ public class Bomb extends GameObject{
         // Kicking bomb
         this.kicked = false;
         this.kickDirection = KickDirection.Nothing;
+        this.willBeExploding = false;
         this.fuse = 0;
         this.startTime = System.currentTimeMillis();
 
@@ -63,7 +65,14 @@ public class Bomb extends GameObject{
 
 
     }
-    
+
+    public boolean getwillBeExploding() {
+        return willBeExploding;
+    }
+
+    public void setWillBeExploding() {
+        this.willBeExploding = true;
+    }
     public int getFuse() {
         return fuse;
     }
@@ -87,7 +96,7 @@ public class Bomb extends GameObject{
         int columnTop = Math.max(((int) position.x - firepower), 0);
         int columnDown = Math.min(((int) position.x + firepower), 12);
         Case current = c[(int)position.x][(int)position.y];
-        current.killMoveables(board);
+        current.killMoveables();
         int i;
         boolean end = false;
         for(i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
@@ -95,13 +104,14 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(board);
+                pointsCount += current.killMoveables();
             }
 		}
         stopRight = i;
@@ -113,13 +123,14 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(board);
+                pointsCount += current.killMoveables();
 
             }
         }
@@ -132,13 +143,14 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(board);
+                pointsCount += current.killMoveables();
 
             }
         }
@@ -150,13 +162,14 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
+                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(board);
+                pointsCount += current.killMoveables();
 
             }
         }
@@ -263,8 +276,6 @@ enum KickDirection {
     KickDirection(Point2D.Float velocity) {
         this.velocity = velocity;
     }
-
-
 
 	public Point2D.Float getVelocity() {
         return this.velocity;

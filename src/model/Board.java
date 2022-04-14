@@ -15,15 +15,17 @@ public class Board{
     private ArrayList<ArrayList<String>> mapLayout;
 	private BufferedReader bufferedReader;
 	private ArrayList<Player> playerList;
+	private ArrayList<Monster> monsterList;
 	public static int sizeRow;
 	public static int sizeCol;
 	private Thread thread;
     
-	public Board(String filename,ArrayList<Player> p) throws FileNotFoundException {
+	public Board(String filename,ArrayList<Player> p,ArrayList<Monster> m) throws FileNotFoundException {
+		this.monsterList = m;
 		this.playerList = p;
 		this.loadBoardFile(filename);
 		this.loadCases();
-		this.printCases();
+		//this.printCases();
 	}
 
 	public Case[][] getCases() {
@@ -73,24 +75,26 @@ public class Board{
     			
 				switch(c) {
 	    			case "1":
-						this.playerList.add(new Player(0, 0, 0,this));
+						this.playerList.add(new Player(0, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(0));
 	    				break;
 	    				
 	    			case "2":
 						this.playerList.add(new Player(1, 0, 0, this));
-						//this.playerList.add(new Bot(null, 1, 0, 0, this));
-	    				currentCase.addMovableOnCase(this.playerList.get(1));
+						//this.playerList.add(new Bot(1, 0, 0, this));
+						currentCase.addMovableOnCase(this.playerList.get(1));
+						//this.monsterList.add(new MonstreUn(0, 0, this));
+						//currentCase.addMovableOnCase(this.monsterList.get(0));
 	    				break;
 	    				
 	    			case "3":
-						this.playerList.add(new Player(2, 0, 0, this));
-	    				currentCase.addMovableOnCase(this.playerList.get(2));
+						//this.playerList.add(new Player(2, 0, 0, this));
+	    				//currentCase.addMovableOnCase(this.playerList.get(1));
 	    				break;
 	    				
 	    			case "4":
-						this.playerList.add(new Player(3, 0, 0, this));
-	    				currentCase.addMovableOnCase(this.playerList.get(3));
+						//this.playerList.add(new Player(3, 0, 0, this));
+	    				//currentCase.addMovableOnCase(this.playerList.get(2));
 	    				break;
 	    				
 	    			case "E":
@@ -111,6 +115,7 @@ public class Board{
 	    			default:
 	    				break;
     			}
+				
     			cases[lineCount][columnCount] = currentCase;
     			
     			columnCount++;
@@ -157,5 +162,13 @@ public class Board{
 
 	public Player getPlayer(int i) {
 		return playerList.get(i);
+	}
+
+	public ArrayList<Monster> getMonsterList() {
+		return monsterList;
+	}
+
+	public Monster getMonster(int i) {
+		return monsterList.get(i);
 	}
 }

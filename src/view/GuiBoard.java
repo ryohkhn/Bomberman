@@ -6,16 +6,20 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class GuiBoard extends JPanel{
     private final Board board;
-    private final ArrayList<Player> players;
+    private ArrayList<Player> players;
+    private ArrayList<Monster> monsters;
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
+    private final int objectSizex = 32;
+    private final int objectSizey = 48;
     private final HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
     private final LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionWidthList=new LinkedList<>();
@@ -25,13 +29,20 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> explosionTopList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionDownList=new LinkedList<>();
     private BufferedImage bombImage;
+    private final LinkedList<BufferedImage[][]> playerImagesList=new LinkedList<>();
 
-    private final LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
-
+    private final LinkedList<BufferedImage> kondoriaLeftList =new LinkedList<>();
+    private final LinkedList<BufferedImage> kondoriaRightList =new LinkedList<>();
+    private final LinkedList<BufferedImage> kondoriaDeadList =new LinkedList<>();
+    
+    private final LinkedList<BufferedImage> minvoLeftList =new LinkedList<>();
+    private final LinkedList<BufferedImage> minvoRightList =new LinkedList<>();
+    private final LinkedList<BufferedImage> minvoDeadList =new LinkedList<>();
 
     public GuiBoard(Board board){
         this.board=board;
         this.players=board.getPlayerList();
+        this.monsters=board.getMonsterList();
         GameObject.setSizeY(this.getHeight());
         GameObject.setSizeX(this.getWidth());
         setBackground(Color.WHITE);
@@ -43,6 +54,7 @@ public class GuiBoard extends JPanel{
             loadExplosionImages();
             loadBonusImages();
             loadPlayerImages();
+            loadMonsterImages();
             block=ImageIO.read(new File("resources/block.png"));
             unbreakableBlock=ImageIO.read(new File("resources/block_unbreakable.png"));
             breakableBlock=ImageIO.read(new File("resources/block_breakable.png"));
@@ -100,15 +112,46 @@ public class GuiBoard extends JPanel{
         //bonusMap.put(Bonus.Type.Timer,ImageIO.read(new File("resources/bonus_timer.png")));
     }
     private void loadPlayerImages() throws IOException{
-        playerImagesList.add(ImageIO.read(new File("resources/player_0.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_1.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_2.png")));
-        playerImagesList.add(ImageIO.read(new File("resources/player_3.png")));
-    }
+        for (int i = 0; i <4; i++) {
+            BufferedImage image = ImageIO.read(new File("resources/playersheet_"+ i+".png"));
+            int rows = image.getHeight() / objectSizey;
+            int cols = image.getWidth() / objectSizex;
 
-    private void resetPlayerImages() throws IOException{
-        playerImagesList.clear();
-        loadPlayerImages();
+            BufferedImage [][] walkFrames = new BufferedImage[rows][cols];
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    walkFrames[row][col] = image.getSubimage(col * objectSizex, row * objectSizey, objectSizex, objectSizey);
+                }
+            }
+            playerImagesList.add(walkFrames);
+        }
+    }
+    private void loadMonsterImages() throws IOException{
+        kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left1.png")));
+        kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left2.png")));
+        kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left3.png")));
+
+        kondoriaRightList.add(ImageIO.read(new File("resources/monsters/kondoria_right1.png")));
+        kondoriaRightList.add(ImageIO.read(new File("resources/monsters/kondoria_right2.png")));
+        kondoriaRightList.add(ImageIO.read(new File("resources/monsters/kondoria_right3.png")));
+
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/kondoria_dead.png")));
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead1.png")));
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead2.png")));
+        kondoriaDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead3.png")));
+
+        minvoLeftList.add(ImageIO.read(new File("resources/monsters/minvo_left1.png")));
+        minvoLeftList.add(ImageIO.read(new File("resources/monsters/minvo_left2.png")));
+        minvoLeftList.add(ImageIO.read(new File("resources/monsters/minvo_left3.png")));
+
+        minvoRightList.add(ImageIO.read(new File("resources/monsters/minvo_right1.png")));
+        minvoRightList.add(ImageIO.read(new File("resources/monsters/minvo_right2.png")));
+        minvoRightList.add(ImageIO.read(new File("resources/monsters/minvo_right3.png")));
+
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/minvo_dead.png")));
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead1.png")));
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead2.png")));
+        minvoDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead3.png")));
     }
 
     @Override
@@ -118,6 +161,7 @@ public class GuiBoard extends JPanel{
         try{
             paintBoard(g2);
             paintPlayers(g2);
+            paintMonsters(g2);
         } catch(IOException e){
             e.printStackTrace();
         }
@@ -208,6 +252,7 @@ public class GuiBoard extends JPanel{
     }
 
     private BufferedImage getBombImageState(String explosion, int spriteIndex) {
+
         switch (explosion) {
             case "mid" : switch (spriteIndex) {
                 case 1 : return explosionMidList.get(1);
@@ -268,22 +313,51 @@ public class GuiBoard extends JPanel{
             float y = player.getPositionY() - 0.4F;
             int x_height = this.getHeight() / board.getCases().length;
             int y_width = this.getWidth() / board.getCases()[0].length;
-            playerImagesList.set(player.getId(), player.getImage()); // pourquoi ajouter ça dans la liste à chaque itération ?
-            switch (player.getId()) {
-                case 0:
-                    g2.drawImage(playerImagesList.get(0), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                case 1:
-                    g2.drawImage(playerImagesList.get(1), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                case 2:
-                    g2.drawImage(playerImagesList.get(2), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                case 3:
-                    g2.drawImage(playerImagesList.get(3), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
-                    break;
-                default:
-                    break;
+            int direction = player.getDirection();
+            int spriteIndex = player.getSpriteIndex();
+            if (!player.isSet()) continue;
+            if (player.getId() == 0) {
+                g2.drawImage(playerImagesList.get(0)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            } else if (player.getId() == 1){
+                g2.drawImage(playerImagesList.get(1)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            } else if (player.getId() == 2){
+                g2.drawImage(playerImagesList.get(2)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            } else if (player.getId() == 3){
+                g2.drawImage(playerImagesList.get(3)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+            }
+        }
+    }
+    private void paintMonsters(Graphics2D g2) throws IOException {
+        for (Monster monster: monsters) {
+            float x = monster.getPositionX() - 0.4F;
+            float y = monster.getPositionY() - 0.4F;
+            int x_height = this.getHeight() / board.getCases().length;
+            int y_width = this.getWidth() / board.getCases()[0].length;
+            int direction = monster.getDirection();
+            int spriteIndex = monster.getSpriteIndex();
+            if (!monster.isSet()) continue;
+            if (monster.getType() == 0) {
+                if (!monster.isAlive()) {
+                    g2.drawImage(minvoDeadList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                } else {
+                    if (direction == 2 || direction == 0) {
+                        g2.drawImage(minvoLeftList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                    if (direction == 3 || direction == 1) {
+                        g2.drawImage(minvoRightList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                }
+            } else {
+                if (!monster.isAlive()) {
+                    g2.drawImage(kondoriaDeadList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                } else {
+                    if (direction == 2 || direction == 0) {
+                        g2.drawImage(kondoriaLeftList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                    if (direction == 3 || direction == 1) {
+                        g2.drawImage(kondoriaRightList.get(spriteIndex), (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
+                    }
+                }
             }
         }
     }
