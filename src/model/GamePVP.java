@@ -24,6 +24,7 @@ public class GamePVP extends Game{
     public static double timer;
     private ArrayList<Monster> monsterList;
     // should use game class as starter for choosing modes
+    private String map;
     private double endTime = -1;
 
     public GamePVP() {
@@ -33,7 +34,7 @@ public class GamePVP extends Game{
 
     public void init() {
 		try {
-			board = new Board("maps/default.csv",playerList,monsterList); // fait
+			board = new Board(this.map,playerList,monsterList); // fait
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
