@@ -54,7 +54,7 @@ public class Gui extends JFrame implements KeyListener{
 		board = game.init();
         this.guiBar=new GuiBar(board.getPlayerList());
         this.guiBoard=new GuiBoard(board);
-        guiBar.setPreferredSize(new Dimension(this.getHeight()/15,this.getWidth()/15));        
+        guiBar.setPreferredSize(new Dimension(this.getWidth()/15,this.getHeight()/13));
         this.add(guiBar,BorderLayout.NORTH);
 		this.add(guiBoard,BorderLayout.CENTER);
         requestFocusInWindow();
