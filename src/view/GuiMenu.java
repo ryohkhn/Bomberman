@@ -21,7 +21,7 @@ public class GuiMenu extends JPanel implements ActionListener{
     private JButton quit;
     private Gui frame;
     
-    private int gamemode; // 0 pvp 1 monster
+    private int gamemode; // 0 pvp 1 monster TODO switch les deux game modes une fois monstres réalisés pour solo versus monstres
     private int map; //0 non selected 1-3 selected
     private int numberOfPlayers; // 1-4
     private int numberOfAI;

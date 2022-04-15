@@ -37,6 +37,7 @@ public class Player extends GameObject implements Movable{
 		this.board=board;
 		this.direction = 1;
 		this.spriteIndex = 0;
+		this.setAttributs(x,y);
     }
 
 	public void update(double deltaTime) {
@@ -317,9 +318,7 @@ public class Player extends GameObject implements Movable{
 		return false;
 	}
 
-	public void setPlayer(int ind,float x,float y) {
-		this.id = ind;
-		this.setAttributs(x,y);
+	public void setPlayer() {
 		isset = true;
 	}
 

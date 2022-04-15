@@ -10,11 +10,13 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 
 public abstract class Game{
-    public double timer = 0;
-    public int FPS = 60;
-    private ArrayList<Player> players;
-    private File boardTemplate;
-    private Board board;
+    public static double timer = 0;
+    public final int FPS = 60;
+    protected ArrayList<Player> players;
+	protected ArrayList<Player> monsters;
+    protected File boardTemplate;
+    protected Board board;
+	
     
     private final Object pauseLock = new Object();
     private volatile boolean paused;

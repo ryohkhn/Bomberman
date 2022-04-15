@@ -39,6 +39,7 @@ public class Bot extends Player implements AI {
 
 	@Override
 	public void update(double deltaTime) {
+		/*
 		if (!init) {
 			cases = getBoard().getCases();
 			generateNavMap();
@@ -80,6 +81,7 @@ public class Bot extends Player implements AI {
 			}
 		}
 		super.update(deltaTime);
+		*/
 	}
 
 	public void stop() {

@@ -42,7 +42,7 @@ public class GuiBoard extends JPanel{
     public GuiBoard(Board board){
         this.board=board;
         this.players=board.getPlayerList();
-        this.monsters=board.getMonsterList();
+        //this.monsters=board.getMonsterList();
         GameObject.setSizeY(this.getHeight());
         GameObject.setSizeX(this.getWidth());
         setBackground(Color.WHITE);
@@ -54,7 +54,7 @@ public class GuiBoard extends JPanel{
             loadExplosionImages();
             loadBonusImages();
             loadPlayerImages();
-            loadMonsterImages();
+            //loadMonsterImages();
             block=ImageIO.read(new File("resources/block.png"));
             unbreakableBlock=ImageIO.read(new File("resources/block_unbreakable.png"));
             breakableBlock=ImageIO.read(new File("resources/block_breakable.png"));

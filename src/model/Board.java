@@ -20,9 +20,7 @@ public class Board{
 	public static int sizeCol;
 	private Thread thread;
     
-	public Board(String filename,ArrayList<Player> p,ArrayList<Monster> m) throws FileNotFoundException {
-		this.monsterList = m;
-		this.playerList = p;
+	public Board(String filename) throws FileNotFoundException {
 		this.loadBoardFile(filename);
 		this.loadCases();
 		//this.printCases();
@@ -30,6 +28,14 @@ public class Board{
 
 	public Case[][] getCases() {
 		return cases;
+	}
+
+	public void setPlayerList(ArrayList<Player> playerList) {
+		this.playerList = playerList;
+	}
+
+	public void setMonsterList(ArrayList<Monster> monsterList) {
+		this.monsterList = monsterList;
 	}
 	
     //take filename and load the board
@@ -74,6 +80,7 @@ public class Board{
 				Case currentCase = new Case();
     			
 				switch(c) {
+					/*
 	    			case "1":
 						this.playerList.add(new Player(0, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(0));
@@ -96,7 +103,10 @@ public class Board{
 						this.playerList.add(new Player(3, 0, 0, this));
 	    				currentCase.addMovableOnCase(this.playerList.get(3));
 	    				break;
-	    				
+					TO DO (15/04) random monsters as we do for walls in an other method
+					monsters shouldn't be too closed to players
+	    			*/
+					//TO DO (15/04) random monsters as we do for walls in an other method
 	    			case "E":
 	    				Random rand = new Random();
 	    				int r = rand.nextInt(101);
@@ -107,7 +117,6 @@ public class Board{
 	        				}
 	        			}
 	    				break;
-	    			
 	    			case "H":
 	    				currentCase.setWall(new Wall(false));
 	    				break;

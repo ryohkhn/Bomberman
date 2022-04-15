@@ -1,81 +1,90 @@
 package model;
 
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineEvent;
-
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
 import view.Gui;
 
 public class GamePVP extends Game{
-    private ArrayList<Player> playerList;
-    private PlayerInput key1,key2,key3,key4;
-    private Player player1,player2,player3,player4;
-    private Board board;
     private Gui gui;
-    public static double timer;
-    //private ArrayList<Monster> monsterList;
-    // should use game class as starter for choosing modes
+    private int nbPlayers;
+    private int nbAI;
     private String map;
     private double endTime = -1;
 
     public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
 		this.gui = gui;
 		this.map = map;
-        playerList = new ArrayList<Player>();
-        //monsterList = new ArrayList<Monster>();
+        players = new ArrayList<>();
+        nbPlayers = numberOfPlayers;
+        //if (nbAI == 0 && nbPlayers == 0) nbPlayers = 1; // à mettre dans game monstrer pour le choix de base
+        nbAI = numberOfAI;
     }
 
     public Board init() {
 		try {
-			board = new Board(this.map,playerList,null); // fait
+			board = new Board(this.map);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-        key1 = new PlayerInput(board.getPlayer(0));
-    	gui.addKeyListener(key1);
-        key2 = new PlayerInput(board.getPlayer(1));
-    	gui.addKeyListener(key2);
-        key3 = new PlayerInput(board.getPlayer(2));
-    	gui.addKeyListener(key3);
-        //monsterList.add(new WalkingMonster(0, 0, board));
-        //monsterList.add(new FlyingMonster(0, 0, board));
-        //monsterList.add(new MonstreDeux(0, 0, board));
-        key4 = new PlayerInput(board.getPlayer(3));
-        gui.addKeyListener(key4);
         this.addPlayers();
+        board.setPlayerList(players);
+        for (Player play: players) {
+            play.setPlayer();
+        }
         return board;
     }
 
     public void addPlayers() {
-        try {
-            player1 = board.getPlayer(0);
-            player1.setPlayer(0, 1.4F, 1.4F);
-            player1.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
-            player2 = board.getPlayer(1);
-            player2.setPlayer(1,1.4F,13.4F);
-            player2.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_ALT_GRAPH);
-            
-            player3 = board.getPlayer(2);
-            player3.setPlayer(2,11.4F, 1.4F);
-            player3.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
-            
-            player4 = board.getPlayer(3);
-            player4.setPlayer(3,11.4F, 13.4F);
-            player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
-            //board.getMonster(0).setMonster(11.4F, 13.4F);
-            //board.getMonster(1).setMonster(11.4F, 1.4F);
-            // should be in gamemonsters
-        } catch (Exception e) {
-            e.printStackTrace();
+        float x = 0;
+        float y = 0;
+        int i = 0;
+        Player player = null;
+        while (i < nbPlayers) {
+            if (i == 0) {
+                x = 1.4F;
+                y = 1.4F;
+                player = new Player(i, x, y, board);
+                player.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
+            } else if (i == 1) {
+                x = 11.4F;
+                y = 13.4F;
+                player = new Player(i, x, y, board);
+                player.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_ALT_GRAPH);
+            } else if (i == 2) {
+                x = 1.4F;
+                y = 13.4F;
+                player = new Player(i, x, y, board);
+                player.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
+            } else if (i==3) {
+                x = 11.4F;
+                y = 1.4F;
+                player = new Player(i, x, y, board);
+                player.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
+            }
+            board.getCases()[(int)x][(int)y].addMovableOnCase(player);
+            PlayerInput key = new PlayerInput(player);
+            gui.addKeyListener(key);
+            players.add(player);
+            i++;
+        }
+        while (i < nbPlayers + nbAI) {
+            if (i == 1) {
+                x = 11.4F;
+                y = 13.4F;
+            } else if (i == 2) {
+                x = 1.4F;
+                y = 13.4F;
+            } else if (i==3) {
+                x = 11.4F;
+                y = 1.4F;
+            }
+            player = new Bot(i, x, y, board);
+            board.getCases()[(int)x][(int)y].addMovableOnCase(player);
+            players.add(player);
+            i++;
         }
     }
 
@@ -146,7 +155,7 @@ public class GamePVP extends Game{
     }
 
     public void playerUpdate(double deltaTime) {
-        for(Player p : playerList){
+        for(Player p : players){
             p.update(deltaTime);
         }
     }
@@ -160,7 +169,7 @@ public class GamePVP extends Game{
     
     private int bombUpdate() {
     	int bombsExploded = 0;
-        for(Player p : playerList){
+        for(Player p : players){
         	bombsExploded += p.bombUpdate();
         }
         return bombsExploded;
@@ -175,8 +184,8 @@ public class GamePVP extends Game{
 
     @Override
     public boolean hasEnded() { // verification de la victoire
-        int alivePlayer = this.playerList.size();
-        for(Player p : this.playerList){
+        int alivePlayer = this.players.size();
+        for(Player p : this.players){
             if(!p.isAlive()){
                 alivePlayer -= 1;
             }
@@ -211,7 +220,7 @@ public class GamePVP extends Game{
 
 	private void bombPauseUpdate() {
 		timer -= (resumeTime - pauseTime);
-        for(Player p : playerList){
+        for(Player p : players){
         	for(Bomb b : p.getBombList()){
         		b.setStartTime(b.getStartTime() + resumeTime - pauseTime);
         	}
