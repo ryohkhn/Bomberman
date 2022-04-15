@@ -22,7 +22,7 @@ public class GamePVP extends Game{
     private Board board;
     private Gui gui;
     public static double timer;
-    private ArrayList<Monster> monsterList;
+    //private ArrayList<Monster> monsterList;
     // should use game class as starter for choosing modes
     private String map;
     private double endTime = -1;
@@ -31,12 +31,12 @@ public class GamePVP extends Game{
 		this.gui = gui;
 		this.map = map;
         playerList = new ArrayList<Player>();
-        monsterList = new ArrayList<Monster>();
+        //monsterList = new ArrayList<Monster>();
     }
 
     public Board init() {
 		try {
-			board = new Board(this.map,playerList,monsterList); // fait
+			board = new Board(this.map,playerList,null); // fait
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -46,8 +46,8 @@ public class GamePVP extends Game{
     	gui.addKeyListener(key2);
         //key3 = new PlayerInput(board.getPlayer(2));
     	//gui.addKeyListener(key3);
-        monsterList.add(new WalkingMonster(0, 0, board));
-        monsterList.add(new FlyingMonster(0, 0, board));
+        //monsterList.add(new WalkingMonster(0, 0, board));
+        //monsterList.add(new FlyingMonster(0, 0, board));
         //monsterList.add(new MonstreDeux(0, 0, board));
         //key4 = new PlayerInput(board.getPlayer(3));
         //gui.addKeyListener(key4);
@@ -71,8 +71,8 @@ public class GamePVP extends Game{
             //player4 = board.getPlayer(3);
             //player4.setPlayer(3,11.4F, 13.4F);
             //player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
-            board.getMonster(0).setMonster(11.4F, 13.4F);
-            board.getMonster(1).setMonster(11.4F, 1.4F);
+            //board.getMonster(0).setMonster(11.4F, 13.4F);
+            //board.getMonster(1).setMonster(11.4F, 1.4F);
             // should be in gamemonsters
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,7 +128,7 @@ public class GamePVP extends Game{
 				} catch (Exception e) {}
             }
             playerUpdate(loopTimeInterval);
-            monsterUpdate(loopTimeInterval);
+            //monsterUpdate(loopTimeInterval);
             gui.repaint();
             gui.revalidate();
             //fin des instructions de jeu
@@ -150,12 +150,13 @@ public class GamePVP extends Game{
             p.update(deltaTime);
         }
     }
-
+    /*
     private void monsterUpdate(double deltaTime) {
         for(Monster m : monsterList){
             m.update(deltaTime);
         }
     }
+    */
     
     private int bombUpdate() {
     	int bombsExploded = 0;

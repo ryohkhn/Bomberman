@@ -96,7 +96,7 @@ public class Bomb extends GameObject{
         int columnTop = Math.max(((int) position.x - firepower), 0);
         int columnDown = Math.min(((int) position.x + firepower), 12);
         Case current = c[(int)position.x][(int)position.y];
-        current.killMoveables();
+        pointsCount += current.killMoveables(player);
         int i;
         boolean end = false;
         for(i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
@@ -111,7 +111,7 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables();
+                pointsCount += current.killMoveables(player);
             }
 		}
         stopRight = i;
@@ -130,7 +130,7 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables();
+                pointsCount += current.killMoveables(player);
 
             }
         }
@@ -150,7 +150,7 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables();
+                pointsCount += current.killMoveables(player);
 
             }
         }
@@ -169,7 +169,7 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables();
+                pointsCount += current.killMoveables(player);
 
             }
         }

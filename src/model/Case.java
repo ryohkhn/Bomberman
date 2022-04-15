@@ -66,13 +66,13 @@ public class Case{
 		return nav_update;
 	}
 
-	public int killMoveables() {
+	public int killMoveables(Player player) {
 		Iterator<Movable> iterator = movablesOnCase.iterator();
 		int pointsCount = 0;
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
 			if (m instanceof Player) {
-				pointsCount += 100;
+				if (player != m) pointsCount += 100;
 				((Player)m).setAlive(false);
 				iterator.remove();
 			}
