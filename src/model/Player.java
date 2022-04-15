@@ -23,6 +23,7 @@ public class Player extends GameObject implements Movable{
 	private boolean pierce = false;
 	private boolean isset;
 	private int firepower = 3; //max 6
+	private boolean coop;
 
 
 
@@ -74,6 +75,10 @@ public class Player extends GameObject implements Movable{
 				isset =false;
 			}
 		}
+	}
+
+	public boolean getCoop() {
+		return coop;
 	}
 
 	public int getId() {
@@ -318,8 +323,9 @@ public class Player extends GameObject implements Movable{
 		return false;
 	}
 
-	public void setPlayer() {
+	public void setPlayer(boolean c) {
 		isset = true;
+		coop = c;
 	}
 
 	public int getSpriteIndex() {

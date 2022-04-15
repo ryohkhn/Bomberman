@@ -2,6 +2,7 @@ package view;
 
 import model.Board;
 import model.Game;
+import model.GameMonster;
 import model.GamePVP;
 
 import javax.sound.sampled.Clip;
@@ -52,12 +53,12 @@ public class Gui extends JFrame implements KeyListener{
 		menuMusic.stop();
 		switch(guiMenu.getGamemode()) {
 		case 0:
-			game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);
+            game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),this);
 			break;
 		case 1:
+            game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);
 			break;
 		}
-
 		board = game.init();
         this.guiBar=new GuiBar(board.getPlayerList());
         this.guiBoard=new GuiBoard(board);

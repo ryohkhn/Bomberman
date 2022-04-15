@@ -7,19 +7,21 @@ import java.awt.event.KeyEvent;
 import controller.PlayerInput;
 import view.Gui;
 
-public class GamePVP extends Game{
+public class GameMonster extends Game{
     private Gui gui;
     private int nbPlayers;
     private int nbAI;
     private String map;
     private double endTime = -1;
-
-    public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
+    // monsters not created yet
+    // jeu en coop
+    public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
         players = new ArrayList<>();
+        monsters = new ArrayList<>();
         nbPlayers = numberOfPlayers;
-        nbAI = numberOfAI;
+        if (nbAI == 0 && nbPlayers == 0) nbPlayers = 1; // à mettre dans game monstrer pour le choix de base
     }
 
     public Board init() {
@@ -31,7 +33,7 @@ public class GamePVP extends Game{
         this.addPlayers();
         board.setPlayerList(players);
         for (Player play: players) {
-            play.setPlayer(false);
+            play.setPlayer(true);
         }
         return board;
     }
@@ -158,13 +160,11 @@ public class GamePVP extends Game{
             p.update(deltaTime);
         }
     }
-    /*
     private void monsterUpdate(double deltaTime) {
-        for(Monster m : monsterList){
+        for(Monster m : monsters){
             m.update(deltaTime);
         }
     }
-    */
     
     private int bombUpdate() {
     	int bombsExploded = 0;
@@ -190,6 +190,7 @@ public class GamePVP extends Game{
             }
         }
         return alivePlayer <= 1;
+        // check monsters
     }
 
     

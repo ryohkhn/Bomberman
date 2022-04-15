@@ -13,10 +13,10 @@ public abstract class Game{
     public static double timer = 0;
     public final int FPS = 60;
     protected ArrayList<Player> players;
-	protected ArrayList<Player> monsters;
+	protected ArrayList<Monster> monsters;
     protected File boardTemplate;
     protected Board board;
-	
+
     
     private final Object pauseLock = new Object();
     private volatile boolean paused;

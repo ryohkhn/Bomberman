@@ -100,10 +100,10 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        
 	        switch(getGamemode()) {
 		        case 0:
-		        	gamePvpButton.setSelected(true);
+					gameMonsterButton.setSelected(true);
 		        	break;
 		        case 1:
-		        	gameMonsterButton.setSelected(true);
+					gamePvpButton.setSelected(true);
 		        	break;
 	        }
 	        
@@ -114,14 +114,14 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        gamePvpButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	                gamemode = 0;
+	                gamemode = 1;
 	            }
 	        });
 	        
 	        gameMonsterButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	                gamemode = 1;
+	                gamemode = 0;
 	            }
 	        });
 	        
