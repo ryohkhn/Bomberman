@@ -4,6 +4,7 @@ import model.Board;
 import model.Game;
 import model.GamePVP;
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -19,6 +20,7 @@ public class Gui extends JFrame implements KeyListener{
     private Game game;
     public static Thread gameThread;
     public static boolean isPaused=false;
+    private Clip menuMusic;
 
     public Gui(){
         width = this.getWidth();
@@ -32,6 +34,10 @@ public class Gui extends JFrame implements KeyListener{
 
         this.setLayout(new BorderLayout());
         this.add(guiMenu,BorderLayout.CENTER);
+        try {
+			menuMusic = Game.playSound("resources/SFX/MenuMusic.wav", true);
+		} catch (Exception e) {}
+        
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -43,6 +49,7 @@ public class Gui extends JFrame implements KeyListener{
 
 	public void startGame(){
 		this.remove(guiMenu);
+		menuMusic.stop();
 		switch(guiMenu.getGamemode()) {
 		case 0:
 			game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);

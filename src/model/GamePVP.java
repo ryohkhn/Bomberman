@@ -44,13 +44,13 @@ public class GamePVP extends Game{
     	gui.addKeyListener(key1);
         key2 = new PlayerInput(board.getPlayer(1));
     	gui.addKeyListener(key2);
-        //key3 = new PlayerInput(board.getPlayer(2));
-    	//gui.addKeyListener(key3);
+        key3 = new PlayerInput(board.getPlayer(2));
+    	gui.addKeyListener(key3);
         //monsterList.add(new WalkingMonster(0, 0, board));
         //monsterList.add(new FlyingMonster(0, 0, board));
         //monsterList.add(new MonstreDeux(0, 0, board));
-        //key4 = new PlayerInput(board.getPlayer(3));
-        //gui.addKeyListener(key4);
+        key4 = new PlayerInput(board.getPlayer(3));
+        gui.addKeyListener(key4);
         this.addPlayers();
         return board;
     }
@@ -63,14 +63,14 @@ public class GamePVP extends Game{
             player2 = board.getPlayer(1);
             player2.setPlayer(1,1.4F,13.4F);
             player2.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_ALT_GRAPH);
-            /*
+            
             player3 = board.getPlayer(2);
             player3.setPlayer(2,11.4F, 1.4F);
             player3.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
-            */
-            //player4 = board.getPlayer(3);
-            //player4.setPlayer(3,11.4F, 13.4F);
-            //player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
+            
+            player4 = board.getPlayer(3);
+            player4.setPlayer(3,11.4F, 13.4F);
+            player4.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
             //board.getMonster(0).setMonster(11.4F, 13.4F);
             //board.getMonster(1).setMonster(11.4F, 1.4F);
             // should be in gamemonsters
@@ -184,19 +184,7 @@ public class GamePVP extends Game{
         return alivePlayer <= 1;
     }
 
-    void playSound(String soundFile, boolean loop) throws Exception {
-	    File f = new File(soundFile);
-	    AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
-	    Clip clip = AudioSystem.getClip();
-	    clip.addLineListener(event -> {
-	        if(LineEvent.Type.STOP.equals(event.getType())) {
-	            clip.close();
-	        }
-	    });
-	    clip.open(audioIn);
-	    clip.start();
-	    if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
-	}
+    
 
     public static void main(String[] args){
         Gui gui = new Gui();

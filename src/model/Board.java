@@ -88,13 +88,13 @@ public class Board{
 	    				break;
 	    				
 	    			case "3":
-						//this.playerList.add(new Player(2, 0, 0, this));
-	    				//currentCase.addMovableOnCase(this.playerList.get(1));
+						this.playerList.add(new Player(2, 0, 0, this));
+	    				currentCase.addMovableOnCase(this.playerList.get(2));
 	    				break;
 	    				
 	    			case "4":
-						//this.playerList.add(new Player(3, 0, 0, this));
-	    				//currentCase.addMovableOnCase(this.playerList.get(2));
+						this.playerList.add(new Player(3, 0, 0, this));
+	    				currentCase.addMovableOnCase(this.playerList.get(3));
 	    				break;
 	    				
 	    			case "E":

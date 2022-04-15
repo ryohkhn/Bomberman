@@ -161,7 +161,7 @@ public class GuiBoard extends JPanel{
         try{
             paintBoard(g2);
             paintPlayers(g2);
-            paintMonsters(g2);
+            //paintMonsters(g2);
         } catch(IOException e){
             e.printStackTrace();
         }
