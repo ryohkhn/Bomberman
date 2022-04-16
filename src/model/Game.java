@@ -2,6 +2,7 @@ package model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 
 import javax.sound.sampled.AudioInputStream;
@@ -16,6 +17,7 @@ public abstract class Game{
 	protected ArrayList<Monster> monsters;
     protected File boardTemplate;
     protected Board board;
+	protected Random random = new Random();
 
     
     private final Object pauseLock = new Object();

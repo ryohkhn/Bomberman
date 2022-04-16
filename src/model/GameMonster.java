@@ -2,6 +2,8 @@ package model;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
@@ -13,8 +15,9 @@ public class GameMonster extends Game{
     private int nbAI;
     private String map;
     private double endTime = -1;
-    // monsters not created yet
+    private final int MONSTERMAX = 6;
     // jeu en coop
+    // TODO ajouter un timer à décompter pour la fin de jeu
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
@@ -26,17 +29,79 @@ public class GameMonster extends Game{
 
     public Board init() {
 		try {
-			board = new Board(this.map);
+			board = new Board(this.map,true);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
         this.addPlayers();
+        this.addMonsters();
         board.setPlayerList(players);
+        board.setMonsterList(monsters);
         for (Player play: players) {
             play.setPlayer(true);
         }
         return board;
     }
+
+    public void addMonsters() {
+        Monster monster = null;
+        int i = monsters.size();
+        if (i < MONSTERMAX) {
+            int r = random.nextInt(3);
+            if (r != 2) monster = new WalkingMonster(0, 0, board);
+            else monster = new FlyingMonster(0, 0, board);
+            monsters.add(monster);
+            placeMonster(monster);
+        }
+    }
+
+    public void placeMonster(Monster monster) {
+        int x;
+        int y;
+        do {
+            x = random.nextInt(11) + 1;
+            y = random.nextInt(13) + 1;
+        }while (!checkplace(x,y));
+        monster.setMonster(x+0.4F, y+0.4F);
+        board.getCases()[x][y].addMovableOnCase(monster);
+    }
+
+    private boolean checkplace(int x,int y) {
+        boolean check = false;
+        if (x == 0 || y == 0 || x == 12 || y == 14) {
+            return false;
+        }
+        Case current = board.getCases()[x][y];
+        if (current.getWall() != null || !current.getMovablesOnCase().isEmpty()) {
+            return false;
+        }
+        if (x-1 > 0) {
+            check = check || board.getCases()[x-1][y].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            if (y-1 > 0) {
+                check = check || board.getCases()[x-1][y-1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            }
+            if (y+1 > 0) {
+                check = check || board.getCases()[x-1][y+1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            }
+        }
+        if (y-1 > 0) {
+            check = check || board.getCases()[x][y-1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+        }
+        if (y+1 > 0) {
+            check = check || board.getCases()[x][y+1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+        }
+        if (x+1 < 12) {
+            check = check || board.getCases()[x+1][y].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            if (y-1 > 0) {
+                check = check || board.getCases()[x+1][y-1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            }
+            if (y+1 < 14) {
+                check = check || board.getCases()[x+1][y+1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            }
+        }
+        return !check;
+    }
+
 
     public void addPlayers() {
         float x = 0;
@@ -138,7 +203,7 @@ public class GameMonster extends Game{
 				} catch (Exception e) {}
             }
             playerUpdate(loopTimeInterval);
-            //monsterUpdate(loopTimeInterval);
+            monsterUpdate(loopTimeInterval);
             gui.repaint();
             gui.revalidate();
             //fin des instructions de jeu
@@ -161,6 +226,8 @@ public class GameMonster extends Game{
         }
     }
     private void monsterUpdate(double deltaTime) {
+        addMonsters();
+        monsters.removeIf(m -> !m.isAlive());
         for(Monster m : monsters){
             m.update(deltaTime);
         }
@@ -184,12 +251,13 @@ public class GameMonster extends Game{
     @Override
     public boolean hasEnded() { // verification de la victoire
         int alivePlayer = this.players.size();
+        int aliveMonsters = this.monsters.size();
         for(Player p : this.players){
             if(!p.isAlive()){
                 alivePlayer -= 1;
             }
         }
-        return alivePlayer <= 1;
+        return alivePlayer == 0 || aliveMonsters == 0;
         // check monsters
     }
 

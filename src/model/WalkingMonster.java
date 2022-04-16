@@ -8,7 +8,7 @@ public class WalkingMonster extends Monster implements AI{
         this.board = board;
 		isAlive = true;
 		nextInvoke = 0;
-		this.speed = 1.25F;
+		this.speed = 0.75F;
 		thinkTime = 20;
     }
 
@@ -75,9 +75,10 @@ public class WalkingMonster extends Monster implements AI{
 			}
 		} 
 		else{
-			position.y+=nextColumn-(nextY+hitboxWidthRight);
-			position.y=roundFloat(position.y);
 			stop();
+		}
+		if (board.getCases()[line][nextColumn].getBomb() != null) {
+			direction = 2;
 		}
 		//System.out.println("update");
 		//System.out.println(direction);
@@ -107,6 +108,9 @@ public class WalkingMonster extends Monster implements AI{
 			}
 		} else {
 			stop();
+		}
+		if (board.getCases()[nextLine][column].getBomb() != null) {
+			direction = 0;
 		}
 		//System.out.println("update");
 		//System.out.println(direction);
@@ -139,6 +143,9 @@ public class WalkingMonster extends Monster implements AI{
 		} else {
 			stop();
 		}
+		if (board.getCases()[line][nextColumn].getBomb() != null) {
+			direction = 3;
+		}
 		//System.out.println("update");
 		//System.out.println(direction);
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
@@ -168,6 +175,9 @@ public class WalkingMonster extends Monster implements AI{
 			}
 		} else {
 			stop();
+		}
+		if (board.getCases()[nextLine][column].getBomb() != null) {
+			direction = 1;
 		}
 		//System.out.println("update");
 		//System.out.println(direction);

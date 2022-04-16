@@ -24,7 +24,7 @@ public class GamePVP extends Game{
 
     public Board init() {
 		try {
-			board = new Board(this.map);
+			board = new Board(this.map,false);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -158,13 +158,6 @@ public class GamePVP extends Game{
             p.update(deltaTime);
         }
     }
-    /*
-    private void monsterUpdate(double deltaTime) {
-        for(Monster m : monsterList){
-            m.update(deltaTime);
-        }
-    }
-    */
     
     private int bombUpdate() {
     	int bombsExploded = 0;

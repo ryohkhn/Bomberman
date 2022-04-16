@@ -16,12 +16,15 @@ public class Board{
 	private BufferedReader bufferedReader;
 	private ArrayList<Player> playerList;
 	private ArrayList<Monster> monsterList;
+
 	public static int sizeRow;
 	public static int sizeCol;
 	private Thread thread;
+	private boolean monstermode;
     
-	public Board(String filename) throws FileNotFoundException {
+	public Board(String filename,boolean mode) throws FileNotFoundException {
 		this.loadBoardFile(filename);
+		monstermode = mode;
 		this.loadCases();
 		//this.printCases();
 	}
@@ -36,6 +39,10 @@ public class Board{
 
 	public void setMonsterList(ArrayList<Monster> monsterList) {
 		this.monsterList = monsterList;
+	}
+
+	public boolean getMonsterMode() {
+		return monstermode;
 	}
 	
     //take filename and load the board
@@ -110,9 +117,15 @@ public class Board{
 	    			case "E":
 	    				Random rand = new Random();
 	    				int r = rand.nextInt(101);
-	        			if(r<81) {
+	        			if(!monstermode && r<81) {
 	        				currentCase.setWall(new Wall(true));
 	        				if(r<31) {
+	        					currentCase.setBonus(new Bonus(Bonus.randomBonus()));
+	        				}
+	        			}
+						if(monstermode && r<45) {
+	        				currentCase.setWall(new Wall(true));
+	        				if(r<10) {
 	        					currentCase.setBonus(new Bonus(Bonus.randomBonus()));
 	        				}
 	        			}
@@ -120,7 +133,9 @@ public class Board{
 	    			case "H":
 	    				currentCase.setWall(new Wall(false));
 	    				break;
-	    				
+	    			case "M":
+						
+						break;
 	    			default:
 	    				break;
     			}

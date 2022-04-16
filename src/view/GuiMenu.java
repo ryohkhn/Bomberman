@@ -403,6 +403,10 @@ public class GuiMenu extends JPanel implements ActionListener{
 		switch(this.map) {
 		case 1:
 			return "maps/default.csv";
+		case 2:
+			return "maps/empty.csv";
+		case 3:
+			return "maps/map2.csv";
 		default:
 			return "maps/default.csv";
 		}

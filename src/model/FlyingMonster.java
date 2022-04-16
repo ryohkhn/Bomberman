@@ -8,7 +8,7 @@ public class FlyingMonster extends Monster implements AI {
         super(x, y);
         this.board = board;
 		this.isAlive = true;
-		this.speed = 0.65F;
+		this.speed = 0.45F;
 		this.thinkTime = 50;
 		this.spriteTimer = 0;
     }
@@ -80,9 +80,10 @@ public class FlyingMonster extends Monster implements AI {
 			}
 		} 
 		else{
-			position.y+=nextColumn-(nextY+hitboxWidthRight);
-			position.y=roundFloat(position.y);
 			stop();
+		}
+		if (board.getCases()[line][nextColumn].getBomb() != null) {
+			direction = 2;
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
     }
@@ -108,6 +109,9 @@ public class FlyingMonster extends Monster implements AI {
 			}
 		} else {
 			stop();
+		}
+		if (board.getCases()[nextLine][column].getBomb() != null) {
+			direction = 0;
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
@@ -136,6 +140,9 @@ public class FlyingMonster extends Monster implements AI {
 			}
 		} else {
 			stop();
+		}
+		if (board.getCases()[line][nextColumn].getBomb() != null) {
+			direction = 3;
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
@@ -166,6 +173,9 @@ public class FlyingMonster extends Monster implements AI {
 			}
 		} else {
 			stop();
+		}
+		if (board.getCases()[nextLine][column].getBomb() != null) {
+			direction = 1;
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         

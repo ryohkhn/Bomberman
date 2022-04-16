@@ -284,10 +284,6 @@ public class Player extends GameObject implements Movable{
 			}
 
 		}
-		else{
-			position.y+=nextColumn-(nextY+hitboxWidthRight);
-			position.y=roundFloat(position.y);
-		}
 		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 			Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
 		}
@@ -362,7 +358,7 @@ public class Player extends GameObject implements Movable{
 		int bombsExploded = 0;
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
-			if(System.currentTimeMillis() - b.getStartTime() > 3900) {
+			if(System.currentTimeMillis() - b.getStartTime() > 2900) {
 				b.setFuse(b.getFuse()-1);
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
@@ -370,37 +366,37 @@ public class Player extends GameObject implements Movable{
 				bombCount -= 1;
 				//TODO: bomb not disappearing after kick
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3800){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2800){
 				b.setSpriteIndex(0);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3700){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2700){
 				b.setSpriteIndex(1);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3600){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2600){
 				b.setSpriteIndex(2);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3500){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2500){
 				b.setSpriteIndex(3);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3400){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2400){
 				b.setSpriteIndex(4);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3300){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2300){
 				b.setSpriteIndex(3);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3200){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2200){
 				b.setSpriteIndex(2);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3100){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2100){
 				b.setSpriteIndex(1);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 3000){
+			else if(System.currentTimeMillis() - b.getStartTime() > 2000){
 				b.explode();
 				bombsExploded += 1;
 				b.setSpriteIndex(0);
 			}
 			if (b.getFuse() == 1) {
-				b.setStartTime(System.currentTimeMillis() - Math.max(System.currentTimeMillis() - b.getStartTime(),2999));
+				b.setStartTime(System.currentTimeMillis() - Math.max(System.currentTimeMillis() - b.getStartTime(),1999));
 				b.setFuse(0);
 
 			}
@@ -413,7 +409,7 @@ public class Player extends GameObject implements Movable{
 					}
 					if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() > 0 && (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() != 1 || !board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
 						
-						b.setStartTime(System.currentTimeMillis() - 3000);
+						b.setStartTime(System.currentTimeMillis() - 2000);
 						//board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
 						//System.out.println("bomb delete");
 					} else if ((int) b.position.x + b.getKick().getVelocity().x != (int) b.position.x || (int) b.position.y + b.getKick().getVelocity().y != (int) b.position.y) {
