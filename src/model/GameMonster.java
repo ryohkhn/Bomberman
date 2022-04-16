@@ -15,7 +15,8 @@ public class GameMonster extends Game{
     private int nbAI;
     private String map;
     private double endTime = -1;
-    private final int MONSTERMAX = 6;
+    private final int MONSTERMAX;
+    private int numberOfMonstersTotal;
     // jeu en coop
     // TODO ajouter un timer à décompter pour la fin de jeu
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
@@ -24,7 +25,10 @@ public class GameMonster extends Game{
         players = new ArrayList<>();
         monsters = new ArrayList<>();
         nbPlayers = numberOfPlayers;
-        if (nbAI == 0 && nbPlayers == 0) nbPlayers = 1; // à mettre dans game monstrer pour le choix de base
+        if (nbAI == 0 && nbPlayers == 0) {
+            nbPlayers = 1; // à mettre dans game monstrer pour le choix de base
+        }
+        MONSTERMAX = nbPlayers * 2;
     }
 
     public Board init() {
@@ -52,6 +56,7 @@ public class GameMonster extends Game{
             else monster = new FlyingMonster(0, 0, board);
             monsters.add(monster);
             placeMonster(monster);
+            numberOfMonstersTotal += 1;
         }
     }
 
@@ -227,9 +232,25 @@ public class GameMonster extends Game{
     }
     private void monsterUpdate(double deltaTime) {
         addMonsters();
+        updateSpeed();
         monsters.removeIf(m -> !m.isAlive());
         for(Monster m : monsters){
             m.update(deltaTime);
+        }
+    }
+
+    public void updateSpeed() {
+        if (numberOfMonstersTotal == 2 * MONSTERMAX) {
+            FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
+            WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
+        }
+        if (numberOfMonstersTotal == 3 * MONSTERMAX) {
+            FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
+            WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
+        }
+        if (numberOfMonstersTotal == 4 * MONSTERMAX) {
+            FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
+            WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
         }
     }
     
@@ -257,7 +278,7 @@ public class GameMonster extends Game{
                 alivePlayer -= 1;
             }
         }
-        return alivePlayer == 0 || aliveMonsters == 0;
+        return alivePlayer == 0 || aliveMonsters == 0 || (((int)(Game.timer/1000)%3600)/60 == 10 && ((int)(Game.timer/1000)%60) == 0);
         // check monsters
     }
 

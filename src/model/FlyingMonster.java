@@ -2,19 +2,27 @@ package model;
 
 
 public class FlyingMonster extends Monster implements AI {
-	static final int TYPE = 1;
+	private static final int TYPE = 1;
+	public static float speed = 0.45F;
 
     public FlyingMonster(float x, float y,Board board) {
         super(x, y);
         this.board = board;
 		this.isAlive = true;
-		this.speed = 0.45F;
 		this.thinkTime = 50;
 		this.spriteTimer = 0;
     }
 
 	public int getType() {
 		return TYPE;
+	}
+
+	public static float getSpeed() {
+		return speed;
+	}
+
+	public static void setSpeed(float speed) {
+		FlyingMonster.speed = speed;
 	}
 
 	public void update(double deltaTime) {

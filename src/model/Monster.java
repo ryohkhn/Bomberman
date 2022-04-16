@@ -6,7 +6,6 @@ public abstract class Monster extends GameObject implements Movable{
     protected boolean isset = false;
     protected boolean isAlive = false;
     protected Board board;
-    protected float speed;
     protected int direction;
     protected boolean move = false;
 	protected int spriteIndex;

@@ -2,19 +2,28 @@ package model;
 
 public class WalkingMonster extends Monster implements AI{
 	static final int TYPE = 0;
+	public static float speed = 0.75F;
 
     public WalkingMonster(float x, float y,Board board) {
         super(x, y);
         this.board = board;
 		isAlive = true;
 		nextInvoke = 0;
-		this.speed = 0.75F;
 		thinkTime = 20;
     }
 
 	public int getType() {
 		return TYPE;
 	}
+
+	public static float getSpeed() {
+		return speed;
+	}
+
+	public static void setSpeed(float speed) {
+		FlyingMonster.speed = speed;
+	}
+
 
 	public void update(double deltaTime) {
 		if (isAlive && isset) {

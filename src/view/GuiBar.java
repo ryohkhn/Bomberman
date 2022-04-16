@@ -1,6 +1,7 @@
 package view;
 
 import model.Board;
+import model.Game;
 import model.GamePVP;
 import model.Player;
 
@@ -57,8 +58,8 @@ public class GuiBar extends JPanel{
     }
 
     private void drawValues(Graphics2D g2) throws IOException{
-        int minutes=((int)(GamePVP.timer/1000)%3600)/60;
-        int seconds=((int)(GamePVP.timer/1000)%60);
+        int minutes=((int)(Game.timer/1000)%3600)/60;
+        int seconds=((int)(Game.timer/1000)%60);
         g2.drawString(minutes+":"+(seconds<10?"0"+seconds:seconds),(int)(this.getWidth()/6.5),2*(this.getHeight())/3);
         int multiplier=0;
         for(Player player : players){
