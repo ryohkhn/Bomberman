@@ -20,6 +20,9 @@ public class GamePVP extends Game{
         players = new ArrayList<>();
         nbPlayers = numberOfPlayers;
         nbAI = numberOfAI;
+        if (nbAI == 0 && nbPlayers == 0) {
+            nbPlayers = 2; // à mettre dans game monstrer pour le choix de base
+        }
     }
 
     public Board init() {
@@ -61,7 +64,7 @@ public class GamePVP extends Game{
                 x = 11.4F;
                 y = 1.4F;
                 player = new Player(i, x, y, board);
-                player.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_SPACE);
+                player.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_N);
             }
             board.getCases()[(int)x][(int)y].addMovableOnCase(player);
             PlayerInput key = new PlayerInput(player);

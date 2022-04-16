@@ -58,11 +58,11 @@ public class FlyingMonster extends Monster implements AI {
 		if (!isAlive() && isset) {
 			if (spriteTimer++ >= 15) {
                 spriteIndex++;
-                if (spriteIndex < 4) {
-                    spriteTimer = 0;
-                }
-			} else {
-				isset = false;
+				if (spriteIndex == 4) {
+					spriteIndex = 0;
+					isset =false;
+					return;
+				}
 			}
 		}
 	}
