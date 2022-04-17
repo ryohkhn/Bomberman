@@ -18,8 +18,6 @@ public class Bot extends Player implements AI {
 	private final Random random;
 	Case [][] cases;
 	private boolean init = false;
-	private int thinkTime=10;
-	private int nextInvoke=0;
 	//minimal ai
 	public Bot(int id, float x, float y, Board board) {
 		super(id, x, y, board);
@@ -34,54 +32,47 @@ public class Bot extends Player implements AI {
 		options.add(4);
 		super.setBombCount(0);
 		random = new Random();
-		//generateNavMap();
 	}
 
 	@Override
 	public void update(double deltaTime) {
-		/*
 		if (!init) {
 			cases = getBoard().getCases();
 			generateNavMap();
 			init = true;
 		}
 		if (isAlive()) {
-			nextInvoke = (++nextInvoke)%thinkTime; // moves are unique
-		 
-        	if(nextInvoke == 1) {
-				updateNav();
-				move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
+			updateNav();
+			if (moves != null) move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
 											// moving between cases.
-				if(move == 0 || !moveSafe(move) || enemyCheck()){ // reset if bombs or enemies ar nearby
-					moves.clear();
-					if(canPlaceBombAndEscape(moves)){ 
+			if(move == 0 || !moveSafe(move) || enemyCheck()){ // reset if bombs or enemies ar nearby
+				moves.clear();
+				if(canPlaceBombAndEscape(moves)){ 
+					//System.out.println(move);
+					move = -1;
+				} else {
+					move = 0;
+					Collections.shuffle(options);
+					for(int i = 0; i < 4; ++i){
+						move = options.get(i);
 						//System.out.println(move);
-						move = -1;
-					} else {
-						move = 0;
-						Collections.shuffle(options);
-						for(int i = 0; i < 4; ++i){
-							move = options.get(i);
-							//System.out.println(move);
-							if(moveSafe(move)){
-								break;
-							}
+						if(moveSafe(move)){
+							break;
 						}
 					}
 				}
+			}
 			
-				if(move != 0){
-					if (move == -1) {
-						setAction();
-					} else {
-						stop();
-						chooseDirection();
-					}
+			if(move != 0){
+				if (move == -1) {
+					setAction();
+				} else {
+					stop();
+					chooseDirection();
 				}
 			}
 		}
 		super.update(deltaTime);
-		*/
 	}
 
 	public void stop() {

@@ -5,6 +5,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Bomb objects that are created by players.
@@ -37,6 +38,8 @@ public class Bomb extends GameObject{
     private int stopRight;
     private boolean willBeExploding;
     private int fuse;
+    private ArrayList<Case> explodingCase;
+    private boolean kill;
 
 
     /**
@@ -59,6 +62,7 @@ public class Bomb extends GameObject{
         this.willBeExploding = false;
         this.fuse = 0;
         this.startTime = System.currentTimeMillis();
+        explodingCase = new ArrayList<>();
 
         //Set bomb in case
         board.getCases()[x][y].setBomb(this);
@@ -80,15 +84,21 @@ public class Bomb extends GameObject{
     public void setFuse(int fuse) {
         this.fuse = fuse;
     }
+    public boolean getKill() {
+        return kill;
+    }
+    public void setKill(boolean kill) {
+        this.kill = kill;
+    }
 
     /**
      * Function that kills players in a cross-shaped area (with each extension of length firepower)
      * and destroy wall (if allowed)
      */
     public void explode() {
+        kill = true;
         if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
         hasExploded = true;
-        int pointsCount = 0;
         
     	Case [][] c = board.getCases();
         int lineLeft = Math.max(((int) position.y - firepower), 0);
@@ -96,9 +106,9 @@ public class Bomb extends GameObject{
         int columnTop = Math.max(((int) position.x - firepower), 0);
         int columnDown = Math.min(((int) position.x + firepower), 12);
         Case current = c[(int)position.x][(int)position.y];
-        pointsCount += current.killMoveables(player);
         int i;
         boolean end = false;
+        explodingCase.add(current);
         for(i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
@@ -111,7 +121,7 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(player);
+                explodingCase.add(current);
             }
 		}
         stopRight = i;
@@ -130,7 +140,7 @@ public class Bomb extends GameObject{
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(player);
+                explodingCase.add(current);
 
             }
         }
@@ -145,12 +155,13 @@ public class Bomb extends GameObject{
                     current.setWall(null);
                     current.setNav_update(false);
                     end = (!pierce);
+                    explodingCase.add(current);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(player);
+                explodingCase.add(current);
 
             }
         }
@@ -164,17 +175,25 @@ public class Bomb extends GameObject{
                     current.setWall(null);
                     current.setNav_update(false);
                     end = (!pierce);
+                    explodingCase.add(current);
                 }
                 else {
                 	end = true;
                 }
             } else {
-                pointsCount += current.killMoveables(player);
-
+                explodingCase.add(current);
             }
         }
         stopDown = i;
-         this.player.setPoints(this.player.getPoints() + pointsCount + 1);
+        this.player.setPoints(this.player.getPoints() + kill());
+    }
+
+    public int kill() {
+        int pointsCount = 0;
+        for (Case c: explodingCase) {
+            pointsCount += c.killMoveables(player);
+        }
+        return pointsCount;
     }
     
     void playSound(String soundFile) throws Exception {

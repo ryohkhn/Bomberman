@@ -21,7 +21,7 @@ public class GamePVP extends Game{
         nbPlayers = numberOfPlayers;
         nbAI = numberOfAI;
         if (nbAI == 0 && nbPlayers == 0) {
-            nbPlayers = 2; // à mettre dans game monstrer pour le choix de base
+            nbPlayers = 2;
         }
     }
 

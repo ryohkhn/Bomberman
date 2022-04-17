@@ -15,10 +15,8 @@ public class GameMonster extends Game{
     private int nbAI;
     private String map;
     private double endTime = -1;
-    private final int MONSTERMAX;
+    private int monsterMAX;
     private int numberOfMonstersTotal;
-    // jeu en coop
-    // TODO ajouter un timer à décompter pour la fin de jeu
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
@@ -28,7 +26,9 @@ public class GameMonster extends Game{
         if (nbAI == 0 && nbPlayers == 0) {
             nbPlayers = 1; // à mettre dans game monstrer pour le choix de base
         }
-        MONSTERMAX = nbPlayers * 2;
+        if (map.equals("maps/default.csv")) monsterMAX = nbPlayers * 2;
+        else if (map.equals("maps/map2.csv")) monsterMAX = (nbPlayers + 1) * 2;
+        else monsterMAX = (nbPlayers + 2) * 2;
     }
 
     public Board init() {
@@ -50,9 +50,9 @@ public class GameMonster extends Game{
     public void addMonsters() {
         Monster monster = null;
         int i = monsters.size();
-        if (i < MONSTERMAX) {
+        if (i < monsterMAX) {
             int r = random.nextInt(3);
-            if (r != 2) monster = new WalkingMonster(0, 0, board);
+            if (r == 2) monster = new WalkingMonster(0, 0, board);
             else monster = new FlyingMonster(0, 0, board);
             monsters.add(monster);
             placeMonster(monster);
@@ -240,17 +240,10 @@ public class GameMonster extends Game{
     }
 
     public void updateSpeed() {
-        if (numberOfMonstersTotal == 2 * MONSTERMAX) {
+        if (numberOfMonstersTotal == 2 * monsterMAX) {
             FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
             WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
-        }
-        if (numberOfMonstersTotal == 3 * MONSTERMAX) {
-            FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
-            WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
-        }
-        if (numberOfMonstersTotal == 4 * MONSTERMAX) {
-            FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
-            WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
+            monsterMAX += monsterMAX/3;
         }
     }
     
