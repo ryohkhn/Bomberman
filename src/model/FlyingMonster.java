@@ -230,7 +230,7 @@ public class FlyingMonster extends Monster implements AI {
 			Case t = board.getCases()[xx][y];
 			for (Movable m :t.getMovablesOnCase()) {
 				if (m instanceof Player) {
-					System.out.println("col bas victime (x,y) :" + xx + "," + y);
+					//System.out.println("col bas victime (x,y) :" + xx + "," + y);
 					return 0;
 				}
 			}
@@ -262,7 +262,7 @@ public class FlyingMonster extends Monster implements AI {
 			t = board.getCases()[x][yy];
 			for (Movable m :t.getMovablesOnCase()) {
 				if (m instanceof Player) {
-					System.out.println("ligne droite victime (x,y) :" + x + "," + yy);
+					//System.out.println("ligne droite victime (x,y) :" + x + "," + yy);
 					return 3;
 				}
 			}
@@ -274,7 +274,7 @@ public class FlyingMonster extends Monster implements AI {
 			t = board.getCases()[x][yy];
 			for (Movable m :t.getMovablesOnCase()) {
 				if (m instanceof Player) {
-					System.out.println("ligne gauche victime (x,y) :" + x + "," + yy);
+					//System.out.println("ligne gauche victime (x,y) :" + x + "," + yy);
 					return 2;
 				}
 			}

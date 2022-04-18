@@ -22,7 +22,7 @@ public class Player extends GameObject implements Movable{
 	private boolean kick = false;
 	private boolean pierce = false;
 	private boolean isset;
-	private int firepower = 3; //max 6
+	private int firepower = 2; //max 6
 	private boolean coop;
 
 
@@ -363,7 +363,7 @@ public class Player extends GameObject implements Movable{
 				b.setFuse(b.getFuse()-1);
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
-				System.out.println("bomb delete");
+				//System.out.println("bomb delete");
 				bombCount -= 1;
 				//TODO: bomb not disappearing after kick
 			}

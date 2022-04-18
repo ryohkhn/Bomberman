@@ -96,7 +96,6 @@ public class Bomb extends GameObject{
      * and destroy wall (if allowed)
      */
     public void explode() {
-        kill = true;
         if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
         hasExploded = true;
         

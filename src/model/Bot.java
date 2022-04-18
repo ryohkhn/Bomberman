@@ -36,7 +36,7 @@ public class Bot extends Player implements AI {
 
 	@Override
 	public void update(double deltaTime) {
-		/*
+
 		if (!init) {
 			cases = getBoard().getCases();
 			generateNavMap();
@@ -44,19 +44,19 @@ public class Bot extends Player implements AI {
 		}
 		if (isAlive() && isSet()) {
 			updateNav();
-			if (moves != null) move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
+			if (!moves.isEmpty()) move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
 											// moving between cases.
 			if(move == 0 || !moveSafe(move) || enemyCheck()){ // reset if bombs or enemies ar nearby
 				moves.clear();
 				if(canPlaceBombAndEscape(moves)){ 
-					//System.out.println(move);
+					System.out.println(move);
 					move = -1;
 				} else {
 					move = 0;
 					Collections.shuffle(options);
 					for(int i = 0; i < 4; ++i){
 						move = options.get(i);
-						//System.out.println(move);
+						System.out.println(move);
 						if(moveSafe(move)){
 							break;
 						}
@@ -73,7 +73,6 @@ public class Bot extends Player implements AI {
 				}
 			}
 		}
-		*/
 		super.update(deltaTime);
 	}
 
@@ -268,12 +267,9 @@ public class Bot extends Player implements AI {
 
 
 	private class EnemyDistanceComp implements Comparator<IntPair> {
-		Collection<Player> players;	
-		EnemyDistanceComp(){
-			players = getBoard().getPlayerList();
-		}
 		@Override
 		public int compare(IntPair one, IntPair two){
+			ArrayList<Player> players = getBoard().getPlayerList();
 			int dist1 = Integer.MAX_VALUE;
 			int dist2 = Integer.MAX_VALUE;			
 			for(Player p : players){
