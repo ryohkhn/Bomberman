@@ -50,7 +50,7 @@ public class Gui extends JFrame implements KeyListener{
 
 	public void startGame(){
 		this.remove(guiMenu);
-		menuMusic.stop();
+		if (menuMusic != null) menuMusic.stop();
 		switch(guiMenu.getGamemode()) {
 		case 0:
             game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),this);
