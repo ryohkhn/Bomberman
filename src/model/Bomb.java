@@ -185,7 +185,6 @@ public class Bomb extends GameObject{
             }
         }
         stopDown = i;
-        this.player.setPoints(this.player.getPoints() + kill());
     }
 
     public int kill() {

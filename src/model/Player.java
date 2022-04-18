@@ -360,7 +360,6 @@ public class Player extends GameObject implements Movable{
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
 			if(System.currentTimeMillis() - b.getStartTime() > 2900) {
-				b.setKill(false);
 				b.setFuse(b.getFuse()-1);
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
@@ -370,6 +369,7 @@ public class Player extends GameObject implements Movable{
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 2800){
 				b.setSpriteIndex(0);
+				b.setKill(false);
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 2700){
 				b.setSpriteIndex(1);
@@ -391,6 +391,7 @@ public class Player extends GameObject implements Movable{
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 2100){
 				b.setSpriteIndex(1);
+				b.setKill(true);
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 2000){
 				b.explode();
