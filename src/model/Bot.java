@@ -36,12 +36,13 @@ public class Bot extends Player implements AI {
 
 	@Override
 	public void update(double deltaTime) {
+		/*
 		if (!init) {
 			cases = getBoard().getCases();
 			generateNavMap();
 			init = true;
 		}
-		if (isAlive()) {
+		if (isAlive() && isSet()) {
 			updateNav();
 			if (moves != null) move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
 											// moving between cases.
@@ -72,6 +73,7 @@ public class Bot extends Player implements AI {
 				}
 			}
 		}
+		*/
 		super.update(deltaTime);
 	}
 

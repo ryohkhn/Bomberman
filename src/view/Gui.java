@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.TimeUnit;
 
 public class Gui extends JFrame implements KeyListener{
     private GuiMenu guiMenu;
@@ -51,6 +52,7 @@ public class Gui extends JFrame implements KeyListener{
 	public void startGame(){
 		this.remove(guiMenu);
 		if (menuMusic != null) menuMusic.stop();
+        
 		switch(guiMenu.getGamemode()) {
 		case 0:
             game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),this);
@@ -59,6 +61,12 @@ public class Gui extends JFrame implements KeyListener{
             game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);
 			break;
 		}
+        try {
+			menuMusic = Game.playSound("resources/SFX/GameStart.wav", false);
+            TimeUnit.SECONDS.sleep(1);
+            menuMusic.close();
+		} catch (Exception e) {}
+        
 		board = game.init();
         this.guiBar=new GuiBar(board.getPlayerList());
         this.guiBoard=new GuiBoard(board);

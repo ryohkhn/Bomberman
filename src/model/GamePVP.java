@@ -23,6 +23,9 @@ public class GamePVP extends Game{
         if (nbAI == 0 && nbPlayers == 0) {
             nbPlayers = 2;
         }
+        if (nbAI != 0 && nbPlayers == 0) {
+            nbPlayers = 1;
+        }
     }
 
     public Board init() {
