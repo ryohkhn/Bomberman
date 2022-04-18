@@ -60,8 +60,8 @@ public class Gui extends JFrame implements KeyListener{
 			break;
 		}
 		board = game.init();
-        this.guiBar=new GuiBar(board.getPlayerList());
-        this.guiBoard=new GuiBoard(board);
+        this.guiBar=new GuiBar(game);
+        this.guiBoard=new GuiBoard(game);
         guiBar.setPreferredSize(new Dimension(this.getWidth()/15,this.getHeight()/13));
         this.add(guiBar,BorderLayout.NORTH);
 		this.add(guiBoard,BorderLayout.CENTER);
@@ -80,26 +80,24 @@ public class Gui extends JFrame implements KeyListener{
 		Gui gui = new Gui();
 	}
 
-    @Override
-    public void keyTyped(KeyEvent keyEvent){
 
-    }
-
-    
     @Override
     public void keyPressed(KeyEvent keyEvent){
         int k = keyEvent.getKeyCode();
         if(k==KeyEvent.VK_ESCAPE){
             if(!game.getPaused()){
+                guiBoard.showPauseButtons();
             	game.pause();
-            	} else{
+            } else{
+                guiBoard.removePauseButtons();
             	game.resume();
             }
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent keyEvent){
+    public void keyReleased(KeyEvent keyEvent){}
 
-    }
+    @Override
+    public void keyTyped(KeyEvent keyEvent){}
 }

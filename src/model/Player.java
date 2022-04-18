@@ -25,8 +25,6 @@ public class Player extends GameObject implements Movable{
 	private int firepower = 2; //max 6
 	private boolean coop;
 
-
-
 	private Board board; // utile pour les bombes, possiblement temporaire
 
     public Player(int id,float x,float y, Board board) {
@@ -78,30 +76,6 @@ public class Player extends GameObject implements Movable{
 		}
 	}
 
-	public boolean getCoop() {
-		return coop;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public int getBombCount() {
-		return bombCount;
-	}
-
-	public void setBombCount(int bombCount) {
-		this.bombCount = bombCount;
-	}
-
-	public void setAlive(boolean b) {
-		if (!b) {
-			spriteIndex = 0;
-			this.direction = 4;
-			//deathTimer = 0;
-		}
-		this.alive = b;
-	}
     public void bindKeys(int up, int down, int left, int right, int action) {
 
 		keyUp = up;
@@ -111,60 +85,6 @@ public class Player extends GameObject implements Movable{
 		keyAction = action;
 	}
 
-	public float getSpeed() {
-		return speed;
-	}
-
-	public int getKeyUp() {
-		return keyUp;
-	}
-	public int getKeyDown() {
-		return keyDown;
-	}
-	public int getKeyLeft() {
-		return keyLeft;
-	}
-	public int getKeyRight() {
-		return keyRight;
-	}
-
-	public int getKeyAction() {
-		return keyAction;
-	}
-
-	public void setAction() {
-		pressAction = true;
-	}
-
-	public void setReleasedDown() {
-		this.pressDown = false;
-	}
-	public void setReleasedUp() {
-		this.pressUp = false;
-	}
-	public void setReleasedLeft() {
-		this.pressLeft = false;
-	}
-	public void setReleasedRight() {
-		this.pressRight = false;
-	}
-
-	public void setReleasedAction() {
-		this.pressAction = false;
-	}
-
-	public void setPressDown() {
-		this.pressDown = true;
-	}
-	public void setPressUp() {
-		this.pressUp = true;
-	}
-	public void setPressLeft() {
-		this.pressLeft = true;
-	}
-	public void setPressRight() {
-		this.pressRight = true;
-	}
 	@Override
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
@@ -189,23 +109,16 @@ public class Player extends GameObject implements Movable{
 				Board.cases[nextLine][column].setBonus(null);
 			}
 		}
+		else{
+			position.x=nextLine-hitboxHeightBottom;
+			position.x=roundFloat(position.x);
+		}
 		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
 		}
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
-	public int getPositionXasInt() {
-		// TODO Auto-generated method stub
-		return (int)super.getPositionX();
-	}
-
-	public int getPositionYasInt() {
-		// TODO Auto-generated method stub
-		return (int)super.getPositionY();
-	}
-
-	
 
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
@@ -228,6 +141,10 @@ public class Player extends GameObject implements Movable{
 				Board.cases[nextLine][column].getBonus().grantBonus(this);
 				Board.cases[nextLine][column].setBonus(null);
 			}
+		}
+		else{
+			position.x=line+hitboxHeightTop;
+			position.x=roundFloat(position.x);
 		}
 		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
@@ -257,6 +174,10 @@ public class Player extends GameObject implements Movable{
 				Board.cases[line][nextColumn].setBonus(null);
 			}
 		}
+		else{
+			position.y=column+hitboxWidthLeft;
+			position.y=roundFloat(position.y);
+		}
 		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex()==-1){
 			Board.cases[line][nextColumn].getBomb().setKicked(true, KickDirection.FromRight);
 		}
@@ -283,7 +204,10 @@ public class Player extends GameObject implements Movable{
 				Board.cases[line][nextColumn].getBonus().grantBonus(this);
 				Board.cases[line][nextColumn].setBonus(null);
 			}
-
+		}
+		else{
+			position.y=nextColumn-hitboxWidthRight;
+			position.y=roundFloat(position.y);
 		}
 		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 			Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
@@ -292,56 +216,37 @@ public class Player extends GameObject implements Movable{
 	}
 
 
-	// detect diagonal collision when player is between two case
+	// detect diagonal collision when player is between two cases
 	public boolean detectDiagonalCollisionUpDown(int nextLine,int column){
-		if(position.y%1<hitboxWidthLeft && Board.cases[nextLine][column-1].getWall()==null){
+		if(position.y%1<=hitboxWidthLeft && Board.cases[nextLine][column-1].getWall()==null){
 			return true;
 		}
-		else if(position.y%1>1-hitboxWidthRight && Board.cases[nextLine][column+1].getWall()==null){
+		else if(position.y%1>=1-hitboxWidthRight && Board.cases[nextLine][column+1].getWall()==null){
 			return true;
 		}
-		else if(position.y%1>hitboxWidthLeft && position.y%1<1-hitboxWidthRight){
+		else if(position.y%1>=hitboxWidthLeft && position.y%1<=1-hitboxWidthRight){
 			return true;
 		}
 		return false;
 	}
 
-	// detect diagonal collision when player is between two case
+	// detect diagonal collision when player is between two cases
 	public boolean detectDiagonalCollisionRightLeft(int line,int nextColumn){
-		if(position.x%1<hitboxHeightTop && Board.cases[line-1][nextColumn].getWall()==null){
+		if(position.x%1<=hitboxHeightTop && Board.cases[line-1][nextColumn].getWall()==null){
 			return true;
 		}
-		else if(position.x%1>1-hitboxHeightBottom && Board.cases[line+1][nextColumn].getWall()==null){
+		else if(position.x%1>=1-hitboxHeightBottom && Board.cases[line+1][nextColumn].getWall()==null){
 			return true;
 		}
-		else if(position.x%1>hitboxHeightTop && position.x%1<1-hitboxHeightBottom){
+		else if(position.x%1>=hitboxHeightTop && position.x%1<=1-hitboxHeightBottom){
 			return true;
 		}
 		return false;
 	}
-
-	public void setPlayer(boolean c) {
-		isset = true;
-		coop = c;
-	}
-
-	public int getSpriteIndex() {
-		return spriteIndex;
-	}
-
-	public int getDirection() {
-		return direction;
-	}
-
-	public boolean isSet() {
-		return isset;
-	}
-
 
 	public float roundFloat(float f){
 		return (float)(Math.round((f)*100.0)/100.0);
 	}
-
 
 	public void dropBomb() {
 		if(bombCount < this.ammo && (this.board.getCases()[(int)position.x][(int)position.y].getBomb()==null)){
@@ -349,10 +254,6 @@ public class Player extends GameObject implements Movable{
 			bombList.add(new Bomb((int)position.x,(int)position.y, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
 			bombCount += 1;
 		}
-	}
-
-	public int getAmmo() {
-		return ammo;
 	}
 
 	public int bombUpdate() {
@@ -431,14 +332,131 @@ public class Player extends GameObject implements Movable{
 		return bombsExploded;
 	}
 
+	// Getters - Setters
+
+	public void setAlive(boolean b) {
+		if (!b) {
+			spriteIndex = 0;
+			this.direction = 4;
+			//deathTimer = 0;
+		}
+		this.alive = b;
+	}
+
+	public void addFirepower(boolean max) {
+		this.firepower = (max)?6:this.firepower+1;
+		if(this.firepower>6)this.firepower=6;
+	}
+
+	public void setPlayer(boolean c) {
+		isset = true;
+		coop = c;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public int getKeyUp() {
+		return keyUp;
+	}
+	public int getKeyDown() {
+		return keyDown;
+	}
+	public int getKeyLeft() {
+		return keyLeft;
+	}
+	public int getKeyRight() {
+		return keyRight;
+	}
+
+	public int getKeyAction() {
+		return keyAction;
+	}
+
+	public void setAction() {
+		pressAction = true;
+	}
+
+	public void setReleasedDown() {
+		this.pressDown = false;
+	}
+
+	public void setReleasedUp() {
+		this.pressUp = false;
+	}
+
+	public void setReleasedLeft() {
+		this.pressLeft = false;
+	}
+
+	public void setReleasedRight() {
+		this.pressRight = false;
+	}
+
+	public void setReleasedAction() {
+		this.pressAction = false;
+	}
+
+	public void setPressDown() {
+		this.pressDown = true;
+	}
+
+	public void setPressUp() {
+		this.pressUp = true;
+	}
+
+	public void setPressLeft() {
+		this.pressLeft = true;
+	}
+
+	public void setPressRight() {
+		this.pressRight = true;
+	}
+
+	public int getPositionXasInt() {
+		return (int)super.getPositionX();
+	}
+
+	public int getPositionYasInt() {
+		return (int)super.getPositionY();
+	}
+
+	public int getSpriteIndex() {
+		return spriteIndex;
+	}
+
+	public int getDirection() {
+		return direction;
+	}
+
+	public boolean isSet() {
+		return isset;
+	}
+
+	public int getAmmo() {
+		return ammo;
+	}
+
+	public boolean getCoop() {
+		return coop;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public int getBombCount() {
+		return bombCount;
+	}
+
+	public void setBombCount(int bombCount) {
+		this.bombCount = bombCount;
+	}
+
 	public Board getBoard() {
 		return board;
 	}
-    
-    public void addFirepower(boolean max) {
-    	this.firepower = (max)?6:this.firepower+1;
-    	if(this.firepower>6)this.firepower=6;
-    }
     
     public void addAmmo() {
     	this.ammo += 1;
@@ -448,7 +466,6 @@ public class Player extends GameObject implements Movable{
     	this.speed += 0.5;
     }
     
-
 	public void setPierce(boolean pierce) {
 		this.pierce = pierce;
 	}
@@ -487,6 +504,7 @@ public class Player extends GameObject implements Movable{
 	public ArrayList<Bomb> getBombList() {
 		return this.bombList;
 	}
+
 	public void setPoints(int points) {
 		this.points = points;
 	}

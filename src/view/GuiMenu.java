@@ -336,7 +336,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 		
 	}
 	
-	class StyledButtonUI extends BasicButtonUI {
+	static class StyledButtonUI extends BasicButtonUI {
 
 	    @Override
 	    public void installUI (JComponent c) {

@@ -15,13 +15,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class GuiBar extends JPanel{
+    private Game game;
     private ArrayList<Player> players;
     private BufferedImage barImage;
     private Font font;
     private LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
 
-    public GuiBar(ArrayList<Player> playerList){
-        this.players=playerList;
+    public GuiBar(Game game){
+        this.game=game;
+        this.players=game.getBoard().getPlayerList();
         try{
             loadPlayerImages();
             font=Font.createFont(Font.TRUETYPE_FONT,new File("resources/retro.ttf")).deriveFont(12F);
@@ -48,6 +50,9 @@ public class GuiBar extends JPanel{
             paintBar(g2);
             drawValues(g2);
             drawPlayersHeads(g2);
+            if(game.getPaused()){
+                paintFilter(g2);
+            }
         } catch(IOException e){
             e.printStackTrace();
         }
@@ -68,12 +73,18 @@ public class GuiBar extends JPanel{
         }
     }
 
-
     private void drawPlayersHeads(Graphics2D g2) throws IOException{
         int multiplier=0;
         for(int i=0; i<players.size(); i++){
             g2.drawImage(playerImagesList.get(i),(int)(this.getWidth()/20*((7.8)+multiplier)),this.getHeight()/5,this.getWidth()/Board.cases[0].length,this.getHeight()/2 ,null);
             multiplier+=3;
         }
+    }
+
+    private void paintFilter(Graphics2D g){
+        int alpha=157;
+        Color blackFilter=new Color(0, 0, 0,alpha);
+        g.setColor(blackFilter);
+        g.fillRect(0,0,this.getWidth(),this.getHeight());
     }
 }

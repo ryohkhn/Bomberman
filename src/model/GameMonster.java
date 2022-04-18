@@ -300,7 +300,12 @@ public class GameMonster extends Game{
         }
     }
 
-	private void bombPauseUpdate() {
+    @Override
+    public Board getBoard(){
+        return null;
+    }
+
+    private void bombPauseUpdate() {
 		timer -= (resumeTime - pauseTime);
         for(Player p : players){
         	for(Bomb b : p.getBombList()){

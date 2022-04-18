@@ -113,6 +113,7 @@ public class GamePVP extends Game{
         	synchronized (pauseLock) {
                 if (paused) {
                     try {
+                        gui.repaint();
                         synchronized (pauseLock) {
                             pauseLock.wait();
                         }
@@ -193,10 +194,6 @@ public class GamePVP extends Game{
 
     
 
-    public static void main(String[] args){
-        Gui gui = new Gui();
-    }
-
 	@Override
 	public boolean getPaused() {
 		return this.paused;
@@ -226,4 +223,9 @@ public class GamePVP extends Game{
         resumeTime = 0;
         pauseTime = 0;
 	}
+
+    @Override
+    public Board getBoard(){
+        return board;
+    }
 }

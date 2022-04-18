@@ -48,4 +48,5 @@ public abstract class Game{
 	    
 	    return clip;
 	}
+    public abstract Board getBoard();
 }

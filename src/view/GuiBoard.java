@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class GuiBoard extends JPanel{
+    private Game game;
     private final Board board;
     private ArrayList<Player> players;
     private ArrayList<Monster> monsters;
@@ -20,6 +21,9 @@ public class GuiBoard extends JPanel{
     private BufferedImage unbreakableBlock;
     private final int objectSizex = 32;
     private final int objectSizey = 48;
+    private JButton resumeButton;
+    private JButton quitButton;
+    private final JPanel buttonPanel = new JPanel();
     private final HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
     private final LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionWidthList=new LinkedList<>();
@@ -39,13 +43,17 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> minvoRightList =new LinkedList<>();
     private final LinkedList<BufferedImage> minvoDeadList =new LinkedList<>();
 
-    public GuiBoard(Board board){
-        this.board=board;
+    public GuiBoard(Game game){
+        this.game=game;
+        this.board=game.getBoard();
         this.players=board.getPlayerList();
         this.monsters=board.getMonsterList();
+
         GameObject.setSizeY(this.getHeight());
         GameObject.setSizeX(this.getWidth());
-        setBackground(Color.WHITE);
+
+        createPauseButtons();
+
         loadImages();
     }
 
@@ -161,7 +169,12 @@ public class GuiBoard extends JPanel{
         try{
             paintBoard(g2);
             paintPlayers(g2);
-            if (board.getMonsterMode())paintMonsters(g2);
+            if (board.getMonsterMode()){
+                paintMonsters(g2);
+            }
+            if(game.getPaused()){
+                paintFilter(g2);
+            }
         } catch(IOException e){
             e.printStackTrace();
         }
@@ -360,5 +373,54 @@ public class GuiBoard extends JPanel{
                 }
             }
         }
+    }
+
+    private void paintFilter(Graphics2D g){
+        int alpha=157;
+        Color blackFilter=new Color(0, 0, 0,alpha);
+        g.setColor(blackFilter);
+        g.fillRect(0,0,this.getWidth(),this.getHeight());
+    }
+
+    private void createPauseButtons(){
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setOpaque(true);
+        buttonPanel.setBackground(new Color(0,0,0,0));
+        resumeButton=new JButton("Resume");
+        quitButton=new JButton("Quit");
+        resumeButton.addActionListener(event -> {
+            removePauseButtons();
+            game.resume();
+            requestFocusAncestor();
+        });
+        quitButton.addActionListener(event -> System.exit(0));
+        JButton[] buttons = {resumeButton, quitButton};
+        for(JButton b : buttons) {
+            b.setAlignmentX(Component.CENTER_ALIGNMENT);
+            b.setPreferredSize(new Dimension(200,60));
+            b.setUI(new GuiMenu.StyledButtonUI());
+        }
+    }
+
+    public void showPauseButtons(){
+        buttonPanel.setPreferredSize(new Dimension(this.getWidth(),this.getHeight()));
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, this.getHeight()/3)));
+        buttonPanel.add(resumeButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, this.getHeight()/10)));
+        buttonPanel.add(quitButton);
+        this.add(buttonPanel,CENTER_ALIGNMENT);
+        repaint();
+        revalidate();
+    }
+
+    public void removePauseButtons(){
+        buttonPanel.removeAll();
+        this.remove(buttonPanel);
+        repaint();
+        revalidate();
+    }
+
+    public void requestFocusAncestor(){
+        SwingUtilities.getWindowAncestor(this).requestFocusInWindow();
     }
 }
