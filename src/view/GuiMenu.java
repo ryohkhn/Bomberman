@@ -21,10 +21,10 @@ public class GuiMenu extends JPanel implements ActionListener{
     private JButton quit;
     private Gui frame;
     
-    private int gamemode; // 0 pvp 1 monster TODO switch les deux game modes une fois monstres réalisés pour solo versus monstres
-    private int map; //0 non selected 1-3 selected
-    private int numberOfPlayers; // 1-4
-    private int numberOfAI;
+    private int gamemode = 1; // 0 monster 1 pvp TODO switch les deux game modes une fois monstres réalisés pour solo versus monstres
+    private int map = 0; //0 non selected 1-3 selected
+    private int numberOfPlayers = 4; // 1-4
+    private int numberOfAI = 0;
     
 	public GuiMenu(Gui frame) {
 		this.frame = frame;
@@ -103,7 +103,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 					gameMonsterButton.setSelected(true);
 		        	break;
 		        case 1:
-					gamePvpButton.setSelected(true);
+		        	gamePvpButton.setSelected(true);
 		        	break;
 	        }
 	        
@@ -166,19 +166,10 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        
 	        jComboBox.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
-	            	if(getNumberOfPlayers() == (int) jComboBox.getSelectedItem()) return;
-	            	else if(getNumberOfPlayers() < (int) jComboBox.getSelectedItem()) {
-		                numberOfPlayers = (int) jComboBox.getSelectedItem();
-		                jComboBoxAI.removeAllItems();
-		                for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
-			                jComboBoxAI.addItem(i);
-		                }
-	                }
-	                else {
-	                	numberOfPlayers = (int) jComboBox.getSelectedItem();
-		                for(int i = getNumberOfAI(); i < 5 - getNumberOfPlayers(); i++) {
-			                jComboBoxAI.addItem(i);
-		                }
+	                numberOfPlayers = (int) jComboBox.getSelectedItem();
+	                jComboBoxAI.removeAllItems();		                
+	                for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
+		                jComboBoxAI.addItem(i);
 	                }
 	            }
 	        });
