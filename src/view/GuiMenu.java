@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -32,11 +31,11 @@ public class GuiMenu extends JPanel implements ActionListener{
 
 		// Buttons
 		newGame = new JButton("Start Game");
-		newGame.setToolTipText("Click this button to start a new game.");
+		//newGame.setToolTipText("Click this button to start a new game.");
 		settings = new JButton("Settings");
-		settings.setToolTipText("Click this button change the settings of the game.");
+		//settings.setToolTipText("Click this button change the settings of the game.");
 		quit = new JButton("Quit");
-		quit.setToolTipText("Click this button quit the game.");
+		//quit.setToolTipText("Click this button quit the game.");
 		
 		newGame.addActionListener(newGameAction);
 		settings.addActionListener(settingsAction);
@@ -156,7 +155,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        nbAI.add(jComboBoxAI);
 	        nbAI.setOpaque(true);
 	        nbAI.setBackground(new Color(0,0,0,0));
-	        	        
+	        
 	        jComboBoxAI.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
 	                numberOfAI = (jComboBoxAI.getItemCount() == 0) ? 0 : (int) jComboBoxAI.getSelectedItem();
@@ -445,4 +444,6 @@ public class GuiMenu extends JPanel implements ActionListener{
 	         }
 	      }
 	   }
+
 }
+Salut ;P
