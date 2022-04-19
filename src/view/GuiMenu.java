@@ -446,4 +446,3 @@ public class GuiMenu extends JPanel implements ActionListener{
 	   }
 
 }
-Salut ;P
