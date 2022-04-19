@@ -22,7 +22,7 @@ public class Player extends GameObject implements Movable{
 	private boolean kick = false;
 	private boolean pierce = false;
 	private boolean isset;
-	private int firepower = 2; //max 6
+	private int firepower = 1; //max 6
 	private boolean coop;
 
 	private Board board; // utile pour les bombes, possiblement temporaire
@@ -77,7 +77,6 @@ public class Player extends GameObject implements Movable{
 	}
 
     public void bindKeys(int up, int down, int left, int right, int action) {
-
 		keyUp = up;
 		keyDown = down;
 		keyLeft = left;
@@ -118,7 +117,6 @@ public class Player extends GameObject implements Movable{
 		}
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
-
 
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
@@ -333,6 +331,11 @@ public class Player extends GameObject implements Movable{
 	}
 
 	// Getters - Setters
+	public void setPlayer(int ind,float x,float y) {
+		this.id = ind;
+		this.setAttributs(x,y);
+		isset = true;
+	}
 
 	public void setAlive(boolean b) {
 		if (!b) {
@@ -385,7 +388,6 @@ public class Player extends GameObject implements Movable{
 	public void setReleasedUp() {
 		this.pressUp = false;
 	}
-
 	public void setReleasedLeft() {
 		this.pressLeft = false;
 	}
@@ -438,7 +440,7 @@ public class Player extends GameObject implements Movable{
 		return ammo;
 	}
 
-	public boolean getCoop() {
+	public boolean getCoop(){
 		return coop;
 	}
 
