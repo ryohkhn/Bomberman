@@ -143,7 +143,6 @@ public class GamePVP extends Game{
 				} catch (Exception e) {}
             }
             playerUpdate(loopTimeInterval);
-            //monsterUpdate(loopTimeInterval);
             gui.repaint();
             gui.revalidate();
             //fin des instructions de jeu

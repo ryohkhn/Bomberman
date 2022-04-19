@@ -17,6 +17,7 @@ public class GameMonster extends Game{
     private double endTime = -1;
     private int monsterMAX;
     private int numberOfMonstersTotal;
+
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
@@ -179,6 +180,7 @@ public class GameMonster extends Game{
         	synchronized (pauseLock) {
                 if (paused) {
                     try {
+                        gui.repaint();
                         synchronized (pauseLock) {
                             pauseLock.wait();
                         }
@@ -275,12 +277,6 @@ public class GameMonster extends Game{
         // check monsters
     }
 
-    
-
-    public static void main(String[] args){
-        Gui gui = new Gui();
-    }
-
 	@Override
 	public boolean getPaused() {
 		return this.paused;
@@ -302,7 +298,7 @@ public class GameMonster extends Game{
 
     @Override
     public Board getBoard(){
-        return null;
+        return board;
     }
 
     private void bombPauseUpdate() {
