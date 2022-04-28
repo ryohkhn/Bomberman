@@ -39,6 +39,7 @@ public class Player extends GameObject implements Movable{
 		this.setAttributs(x,y);
     }
 
+	@Override
 	public void update(double deltaTime) {
 		if (alive && isset) {
 			if ((spriteTimer += speed) >= 20) {
@@ -85,6 +86,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	@Override
+	// move the player down if there's no wall, considering hitbox
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 1;
@@ -93,11 +95,12 @@ public class Player extends GameObject implements Movable{
 		int column= (int)position.y;
 		int nextLine=line+1;
 		double nextX=position.x+speedDelta;
-		// detect if player stay in the same case after moving
+		// detect if the player is still on the same case after moving
 		if((nextX+hitboxHeightBottom)<nextLine){
 			position.x+=speedDelta;
 			position.x=roundFloat(position.x);
 		}
+		// detect if there isn't a wall on the next case
 		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
 			if(detectDiagonalCollisionUpDown(nextLine,column)){
 				position.x+=speedDelta;
@@ -109,15 +112,18 @@ public class Player extends GameObject implements Movable{
 			}
 		}
 		else{
-			position.x=nextLine-hitboxHeightBottom;
+			position.x=nextLine-hitboxHeightBottom-0.01F;
 			position.x=roundFloat(position.x);
 		}
 		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
 		}
+		System.out.println("x: "+position.x);
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
+	@Override
+	// move the player up if there's no wall, considering hitbox
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 0;
@@ -126,10 +132,12 @@ public class Player extends GameObject implements Movable{
 		int column= (int)position.y;
 		int nextLine=line-1;
 		double nextX=position.x-speedDelta;
+		// detect if the player is still on the same case after moving
 		if((nextX-hitboxHeightTop)>line){
 			position.x-=speedDelta;
 			position.x=roundFloat(position.x);
 		}
+		// detect if there isn't a wall on the next case
 		else if(Board.cases[nextLine][column].getWall()==null && Board.cases[nextLine][column].getBomb() == null){
 			if(detectDiagonalCollisionUpDown(nextLine,column)){
 				position.x-=speedDelta;
@@ -141,15 +149,18 @@ public class Player extends GameObject implements Movable{
 			}
 		}
 		else{
-			position.x=line+hitboxHeightTop;
+			position.x=line+hitboxHeightTop+0.01F;
 			position.x=roundFloat(position.x);
 		}
+		System.out.println("x: "+position.x);
 		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
 		}
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
-	
+
+	@Override
+	// move the player left if there's no wall, considering hitbox
 	public void detectCollisionLeft(double deltaTime){
 		double speedDelta=speed/deltaTime;
 		direction=2;
@@ -158,10 +169,12 @@ public class Player extends GameObject implements Movable{
 		int column=(int) position.y;
 		int nextColumn=column-1;
 		double nextY=position.y-speedDelta;
+		// detect if the player is still on the same case after moving
 		if((nextY-hitboxWidthLeft)>column){
 			position.y-=speedDelta;
 			position.y=roundFloat(position.y);
 		}
+		// detect if there isn't a wall on the next case
 		else if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb()==null){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y-=speedDelta;
@@ -173,15 +186,18 @@ public class Player extends GameObject implements Movable{
 			}
 		}
 		else{
-			position.y=column+hitboxWidthLeft;
+			position.y=column+hitboxWidthLeft+0.01F;
 			position.y=roundFloat(position.y);
 		}
 		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex()==-1){
 			Board.cases[line][nextColumn].getBomb().setKicked(true, KickDirection.FromRight);
 		}
+		System.out.println("y: "+position.y);
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
-	
+
+	@Override
+	// move the player right if there's no wall, considering hitbox
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 3;
@@ -190,58 +206,78 @@ public class Player extends GameObject implements Movable{
 		int column= (int)position.y;
 		int nextColumn=column+1;
 		double nextY=position.y+speedDelta;
+		// detect if the player is still on the same case after moving
 		if((nextY+hitboxWidthRight)<nextColumn){
 			position.y+=speedDelta;
 			position.y=roundFloat(position.y);
 		}
+		// detect if there isn't a wall on the next case
 		else if(Board.cases[line][nextColumn].getWall()==null && Board.cases[line][nextColumn].getBomb() == null){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y+=speedDelta;
 				position.y=roundFloat(position.y);
-			}if(Board.cases[line][nextColumn].getBonus()!=null){
+			}
+			if(Board.cases[line][nextColumn].getBonus()!=null){
 				Board.cases[line][nextColumn].getBonus().grantBonus(this);
 				Board.cases[line][nextColumn].setBonus(null);
 			}
 		}
 		else{
-			position.y=nextColumn-hitboxWidthRight;
+			position.y=nextColumn-hitboxWidthRight-0.01F;
 			position.y=roundFloat(position.y);
 		}
 		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 			Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
 		}
+		System.out.println("y: "+position.y);
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
-
+	@Override
 	// detect diagonal collision when player is between two cases
 	public boolean detectDiagonalCollisionUpDown(int nextLine,int column){
+		// detect if the diagonal left case is empty
 		if(position.y%1<=hitboxWidthLeft && Board.cases[nextLine][column-1].getWall()==null){
+			System.out.println("1");
 			return true;
 		}
-		else if(position.y%1>=1-hitboxWidthRight && Board.cases[nextLine][column+1].getWall()==null){
+		// detect if the diagonal right case is empty
+		else if(position.y%1>=(1-hitboxWidthRight) && Board.cases[nextLine][column+1].getWall()==null){
+			System.out.println("2");
 			return true;
 		}
-		else if(position.y%1>=hitboxWidthLeft && position.y%1<=1-hitboxWidthRight){
+		// detect if the player is in the center of the case
+		else if(position.y%1>=hitboxWidthLeft && position.y%1<=(1-hitboxWidthRight)){
+			System.out.println("3");
 			return true;
 		}
+		System.out.println("False");
 		return false;
 	}
 
+	@Override
 	// detect diagonal collision when player is between two cases
 	public boolean detectDiagonalCollisionRightLeft(int line,int nextColumn){
+		// detect if the diagonal top case is empty
 		if(position.x%1<=hitboxHeightTop && Board.cases[line-1][nextColumn].getWall()==null){
+			System.out.println("1");
 			return true;
 		}
-		else if(position.x%1>=1-hitboxHeightBottom && Board.cases[line+1][nextColumn].getWall()==null){
+		// detect if the diagonal bottom case is empty
+		else if(position.x%1>=(1-hitboxHeightBottom) && Board.cases[line+1][nextColumn].getWall()==null){
+			System.out.println("2");
 			return true;
 		}
-		else if(position.x%1>=hitboxHeightTop && position.x%1<=1-hitboxHeightBottom){
+		// detect if the player is in the center of the case
+		else if(position.x%1>=hitboxHeightTop && position.x%1<=(1-hitboxHeightBottom)){
+			System.out.println("3");
 			return true;
 		}
+		System.out.println("False");
 		return false;
 	}
 
+	@Override
 	public float roundFloat(float f){
 		return (float)(Math.round((f)*100.0)/100.0);
 	}
@@ -331,6 +367,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	// Getters - Setters
+
 	public void setPlayer(int ind,float x,float y) {
 		this.id = ind;
 		this.setAttributs(x,y);

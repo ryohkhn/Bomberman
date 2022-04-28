@@ -13,9 +13,9 @@ public interface Movable{
     boolean detectDiagonalCollisionUpDown(int nextLine,int column);
     float roundFloat(float f);
     Random randi = new Random();
-    final float hitboxWidthLeft=0.38F;
+    final float hitboxWidthLeft=0.28F;
 	final float hitboxWidthRight=0.38F;
-	final float hitboxHeightTop=0.38F;
+	final float hitboxHeightTop=0.28F;
 	final float hitboxHeightBottom=0.55F;
     void update(double d);
     
