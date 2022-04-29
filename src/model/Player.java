@@ -34,7 +34,7 @@ public class Player extends GameObject implements Movable{
         position.x = x;
         position.y = y;
 		this.board=board;
-		this.direction = 1;
+		this.direction = 0;
 		this.spriteIndex = 0;
 		this.setAttributs(x,y);
     }
@@ -42,11 +42,11 @@ public class Player extends GameObject implements Movable{
 	@Override
 	public void update(double deltaTime) {
 		if (alive && isset) {
-			if ((spriteTimer += speed) >= 20) {
+			if ((spriteTimer += speed) >= 12) {
                 spriteIndex++;
                 spriteTimer = 0;
             }
-            if ((!pressUp && !pressDown && !pressLeft && !pressRight) || (this.spriteIndex >= 4)) {
+            if ((!pressUp && !pressDown && !pressLeft && !pressRight) || (this.spriteIndex >= 3)) {
                 spriteIndex = 0;
             }
 			if(pressUp){
@@ -64,15 +64,15 @@ public class Player extends GameObject implements Movable{
 				dropBomb();
 			}
 		}
-		if (!isAlive() && isset) {
-			if (spriteTimer++ >= 15) {
+		if (!alive && isset) {
+			if (spriteTimer++>=12) {
                 spriteIndex++;
-				if (spriteIndex == 4) {
-					spriteIndex = 0;
-					isset =false;
+				if (spriteIndex==8) {
+					spriteIndex=0;
+					isset=false;
 					return;
 				}
-                spriteTimer = 0;
+                spriteTimer=0;
 			}
 		}
 	}
@@ -89,7 +89,7 @@ public class Player extends GameObject implements Movable{
 	// move the player down if there's no wall, considering hitbox
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
-		direction = 1;
+		direction = 0;
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -126,7 +126,7 @@ public class Player extends GameObject implements Movable{
 	// move the player up if there's no wall, considering hitbox
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
-		direction = 0;
+		direction = 3;
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -200,7 +200,7 @@ public class Player extends GameObject implements Movable{
 	// move the player right if there's no wall, considering hitbox
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
-		direction = 3;
+		direction = 1;
 		Board.cases[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;

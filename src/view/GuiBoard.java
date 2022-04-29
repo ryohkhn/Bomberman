@@ -19,8 +19,8 @@ public class GuiBoard extends JPanel{
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
-    private final int objectSizex = 32;
-    private final int objectSizey = 48;
+    private final int objectSizex = 21;
+    private final int objectSizey = 22;
     private JButton resumeButton;
     private JButton quitButton;
     private final JPanel buttonPanel = new JPanel();
@@ -329,7 +329,7 @@ public class GuiBoard extends JPanel{
             int direction = player.getDirection();
             int spriteIndex = player.getSpriteIndex();
             if (!player.isSet()) continue;
-            if (player.getId() == 0) {
+            if (player.getId() == 0){
                 g2.drawImage(playerImagesList.get(0)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
             } else if (player.getId() == 1){
                 g2.drawImage(playerImagesList.get(1)[direction][spriteIndex], (int) (y * y_width), (int) (x * x_height), y_width, x_height, null);
