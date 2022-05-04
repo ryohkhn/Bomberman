@@ -1,7 +1,6 @@
 # bomberman
-*PI4 - BOMBERMAN*
-*Contributeurs* 
-*VYSHKA Tedi,THIRUKUMAR Kieran, RODRIGUEZ Lucas,  MARTINEAU Clément*
+*PI4 - BOMBERMAN Contributeurs :VYSHKA Tedi,THIRUKUMAR Kieran, RODRIGUEZ Lucas*
+*MARTINEAU Clément*
  
 ## Présentation 
 Bomberman est une série de jeux où vous 
