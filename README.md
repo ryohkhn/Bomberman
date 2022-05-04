@@ -16,7 +16,7 @@ une colonne sur deux. Les obstacles destructibles sont distribués sur la surfac
 sans contrainte particulière. Les joueurs peuvent faire usage de leur bombe pour les 
 détruire. Certains obstacles peuvent révéler des bonus lorsqu’ils sont détruits.
 
-![alt text](https://gaufre.informatique.univ-paris-diderot.fr/thirukum/bomberman/blob/main/resources/map3.png)
+![Screenshot](resources/map3.png)
 
 
 Le but du jeu est d’éliminer ses adversaires en usant de ses bombes et en faisant 
