@@ -187,13 +187,13 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        JPanel maps = new JPanel(mapLayout);
 	        boolean mapError = false;
 			try {
-				ImageIcon map1 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
-				ImageIcon map2 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
-				ImageIcon map3 = new ImageIcon(ImageIO.read(new File("resources/map.png")));
+				ImageIcon map1 = new ImageIcon(ImageIO.read(new File("resources/default_map.png")));
+				ImageIcon map2 = new ImageIcon(ImageIO.read(new File("resources/empty_map.png")));
+				ImageIcon map3 = new ImageIcon(ImageIO.read(new File("resources/open_map.png")));
 
-		        ImageIcon map1selected = new ImageIcon(ImageIO.read(new File("resources/map_selected.jpg")));
-		        ImageIcon map2selected = new ImageIcon(ImageIO.read(new File("resources/map_selected.jpg")));
-		        ImageIcon map3selected = new ImageIcon(ImageIO.read(new File("resources/map_selected.jpg")));
+		        ImageIcon map1selected = new ImageIcon(ImageIO.read(new File("resources/default_map_selected.jpg")));
+		        ImageIcon map2selected = new ImageIcon(ImageIO.read(new File("resources/empty_map_selected.jpg")));
+		        ImageIcon map3selected = new ImageIcon(ImageIO.read(new File("resources/open_map_selected.jpg")));
 		        
 		        JLabel map1label = new JLabel(map1);
 		        JLabel map2label = new JLabel(map2);
