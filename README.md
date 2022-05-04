@@ -16,7 +16,7 @@ une colonne sur deux. Les obstacles destructibles sont distribués sur la surfac
 sans contrainte particulière. Les joueurs peuvent faire usage de leur bombe pour les 
 détruire. Certains obstacles peuvent révéler des bonus lorsqu’ils sont détruits.
 
-![Screenshot][imageforreadme.png]
+![Screenshot](imageforreadme.png)
 
 Le but du jeu est d’éliminer ses adversaires en usant de ses bombes et en faisant 
 attention à ne pas périr sous ses propres bombes. Il faut pour cela se positionner à une 
