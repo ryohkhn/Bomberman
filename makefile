@@ -1,7 +1,7 @@
 SOURCE = src/
 BUILD = build/
 RESOURCE = resources/
-MAIN_CLASS = # à compléter
+MAIN_CLASS = view.Gui
 
 all:
 		@echo "test"
@@ -11,7 +11,7 @@ compile: clean
 		@javac -sourcepath $(SOURCE) -d $(BUILD) $(SOURCE)*/*.java
 		@echo "Compilation completed"
 
-run:
+run: compile
 		@java -cp $(BUILD) $(MAIN_CLASS)
 
 clean:
