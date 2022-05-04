@@ -212,7 +212,12 @@ public class GamePVP extends Game{
         }
     }
 
-	private void bombPauseUpdate() {
+    @Override
+    public boolean isGamePvp(){
+        return true;
+    }
+
+    private void bombPauseUpdate() {
 		timer -= (resumeTime - pauseTime);
         for(Player p : players){
         	for(Bomb b : p.getBombList()){
@@ -226,5 +231,15 @@ public class GamePVP extends Game{
     @Override
     public Board getBoard(){
         return board;
+    }
+
+    @Override
+    public int getNbPlayers(){
+        return nbPlayers;
+    }
+
+    @Override
+    public int getNbAI(){
+        return nbAI;
     }
 }

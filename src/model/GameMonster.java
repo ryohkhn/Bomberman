@@ -25,7 +25,7 @@ public class GameMonster extends Game{
         monsters = new ArrayList<>();
         nbPlayers = numberOfPlayers;
         if (nbAI == 0 && nbPlayers == 0) {
-            nbPlayers = 1; // à mettre dans game monstrer pour le choix de base
+            nbPlayers = 1; // à mettre dans game monster pour le choix de base
         }
         if (map.equals("maps/default.csv")) monsterMAX = nbPlayers * 2;
         else if (map.equals("maps/map2.csv")) monsterMAX = (nbPlayers + 1) * 2;
@@ -277,11 +277,7 @@ public class GameMonster extends Game{
         // check monsters
     }
 
-	@Override
-	public boolean getPaused() {
-		return this.paused;
-	}
-	
+
 	public void pause() {
         pauseTime = System.currentTimeMillis();
         this.paused = true;
@@ -296,11 +292,6 @@ public class GameMonster extends Game{
         }
     }
 
-    @Override
-    public Board getBoard(){
-        return board;
-    }
-
     private void bombPauseUpdate() {
 		timer -= (resumeTime - pauseTime);
         for(Player p : players){
@@ -311,4 +302,29 @@ public class GameMonster extends Game{
         resumeTime = 0;
         pauseTime = 0;
 	}
+
+    @Override
+    public boolean isGamePvp(){
+        return false;
+    }
+
+    @Override
+    public Board getBoard(){
+        return board;
+    }
+
+    @Override
+    public int getNbPlayers(){
+        return nbPlayers;
+    }
+
+    @Override
+    public int getNbAI(){
+        return nbAI;
+    }
+
+    @Override
+    public boolean getPaused() {
+        return this.paused;
+    }
 }

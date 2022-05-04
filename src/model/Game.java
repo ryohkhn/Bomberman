@@ -32,8 +32,12 @@ public abstract class Game{
 	public abstract boolean getPaused();
 	public abstract void pause();
 	public abstract void resume();
+	public abstract boolean isGamePvp();
+	public abstract Board getBoard();
+	public abstract int getNbPlayers();
+	public abstract int getNbAI();
 
-	public static Clip playSound(String soundFile, boolean loop) throws Exception {
+		public static Clip playSound(String soundFile, boolean loop) throws Exception {
 	    File f = new File(soundFile);
 	    AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
 	    Clip clip = AudioSystem.getClip();
@@ -48,5 +52,4 @@ public abstract class Game{
 	    
 	    return clip;
 	}
-    public abstract Board getBoard();
 }

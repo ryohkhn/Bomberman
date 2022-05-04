@@ -72,13 +72,13 @@ public class Case{
 		while(iterator.hasNext()) {
 			Movable m = iterator.next();
 			if (m instanceof Player && (!player.getCoop() || m == player)) {
-				if (player != m) pointsCount += 10;
+				if (player != m) pointsCount += 1;
 				((Player)m).setAlive(false);
 				iterator.remove();
 			}
 			if (m instanceof Monster) {
-				if (m instanceof FlyingMonster) pointsCount += 4;
-				if (m instanceof WalkingMonster) pointsCount += 3;
+				if (m instanceof FlyingMonster) pointsCount += 40;
+				if (m instanceof WalkingMonster) pointsCount += 30;
 				((Monster)m).setAlive(false);
 				iterator.remove();
 			}

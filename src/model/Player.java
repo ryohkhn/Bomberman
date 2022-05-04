@@ -118,7 +118,6 @@ public class Player extends GameObject implements Movable{
 		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromTop);
 		}
-		System.out.println("x: "+position.x);
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
@@ -152,7 +151,6 @@ public class Player extends GameObject implements Movable{
 			position.x=line+hitboxHeightTop+0.01F;
 			position.x=roundFloat(position.x);
 		}
-		System.out.println("x: "+position.x);
 		if(Board.cases[nextLine][column].getBomb()!=null && this.kick && Board.cases[nextLine][column].getBomb().getSpriteIndex() == -1) {
 			Board.cases[nextLine][column].getBomb().setKicked(true,KickDirection.FromBottom);
 		}
@@ -192,7 +190,6 @@ public class Player extends GameObject implements Movable{
 		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex()==-1){
 			Board.cases[line][nextColumn].getBomb().setKicked(true, KickDirection.FromRight);
 		}
-		System.out.println("y: "+position.y);
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
@@ -229,7 +226,6 @@ public class Player extends GameObject implements Movable{
 		if(Board.cases[line][nextColumn].getBomb()!=null && this.kick && Board.cases[line][nextColumn].getBomb().getSpriteIndex() == -1) {
 			Board.cases[line][nextColumn].getBomb().setKicked(true,KickDirection.FromLeft);
 		}
-		System.out.println("y: "+position.y);
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
@@ -238,20 +234,16 @@ public class Player extends GameObject implements Movable{
 	public boolean detectDiagonalCollisionUpDown(int nextLine,int column){
 		// detect if the diagonal left case is empty
 		if(position.y%1<=hitboxWidthLeft && Board.cases[nextLine][column-1].getWall()==null){
-			System.out.println("1");
 			return true;
 		}
 		// detect if the diagonal right case is empty
 		else if(position.y%1>=(1-hitboxWidthRight) && Board.cases[nextLine][column+1].getWall()==null){
-			System.out.println("2");
 			return true;
 		}
 		// detect if the player is in the center of the case
 		else if(position.y%1>=hitboxWidthLeft && position.y%1<=(1-hitboxWidthRight)){
-			System.out.println("3");
 			return true;
 		}
-		System.out.println("False");
 		return false;
 	}
 
@@ -260,20 +252,16 @@ public class Player extends GameObject implements Movable{
 	public boolean detectDiagonalCollisionRightLeft(int line,int nextColumn){
 		// detect if the diagonal top case is empty
 		if(position.x%1<=hitboxHeightTop && Board.cases[line-1][nextColumn].getWall()==null){
-			System.out.println("1");
 			return true;
 		}
 		// detect if the diagonal bottom case is empty
 		else if(position.x%1>=(1-hitboxHeightBottom) && Board.cases[line+1][nextColumn].getWall()==null){
-			System.out.println("2");
 			return true;
 		}
 		// detect if the player is in the center of the case
 		else if(position.x%1>=hitboxHeightTop && position.x%1<=(1-hitboxHeightBottom)){
-			System.out.println("3");
 			return true;
 		}
-		System.out.println("False");
 		return false;
 	}
 
