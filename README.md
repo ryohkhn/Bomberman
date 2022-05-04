@@ -1,6 +1,6 @@
 # bomberman
-*PI4 - BOMBERMAN* 
-(Linux- JDE Environment version 11)
+*PI4 - BOMBERMAN* (Linux- JDE Environment version 11)
+Contributeurs : VYSHKA Tedi,   THIRUKUMAR Kieran, RODRIGUEZ Lucas,  MARTINEAU Clément
  
 ## Présentation 
 Bomberman est une série de jeux originellement développés par Hudson Soft où vous 
