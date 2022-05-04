@@ -1,5 +1,6 @@
 # bomberman
 *PI4 - BOMBERMAN* 
+(Linux- JDE Environment version 11)
  
 ## Présentation 
 Bomberman est une série de jeux originellement développés par Hudson Soft où vous 
@@ -54,6 +55,18 @@ vous souhaitez être plus original, demandez-moi au préalable.
     ```
     cd bomberman
     ```
+3. Install make
+    ```
+    sudo install make
+    ```
+4. Compile the project
+    ```
+    make compile
+    ```
 
 ### Utiliser le logiciel
+1. Run the programe
+    ```
+    make run
+    ```
 
