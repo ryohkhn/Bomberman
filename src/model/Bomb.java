@@ -124,9 +124,7 @@ public class Bomb extends GameObject{
             }
 		}
         stopRight = i;
-
         end = false;
-        
         for(i = (int)position.y - 1 ;i >= lineLeft && !end; i-- ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
@@ -144,9 +142,7 @@ public class Bomb extends GameObject{
             }
         }
         stopLeft = i;
-
         end = false;
-        
         for(i = (int)position.x - 1 ; i >= columnTop && !end; i-- ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
@@ -165,7 +161,6 @@ public class Bomb extends GameObject{
             }
         }
         stopTop = i;
-
         end = false;
         for(i = (int)position.x + 1 ; i <= columnDown && !end; i++ ){
             current = c[i][(int)position.y];

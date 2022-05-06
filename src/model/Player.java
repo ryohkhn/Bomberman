@@ -156,9 +156,12 @@ public class Player extends GameObject implements Movable{
 		}
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
-
+	
+	/**
+	 * move the player left if there's no wall, considering hitbox
+	 * @param deltaTime is used to establish speedDelta.
+	 */
 	@Override
-	// move the player left if there's no wall, considering hitbox
 	public void detectCollisionLeft(double deltaTime){
 		double speedDelta=speed/deltaTime;
 		direction=2;
@@ -193,8 +196,11 @@ public class Player extends GameObject implements Movable{
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
+	/**
+	 * move the player right if there's no wall, considering hitbox
+	 * @param deltaTime is used to establish speedDelta.
+	 */
 	@Override
-	// move the player right if there's no wall, considering hitbox
 	public void detectCollisionRight(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 1;
@@ -229,8 +235,10 @@ public class Player extends GameObject implements Movable{
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
+	/**
+	 * 	detect diagonal collision when player is between two cases
+	 */
 	@Override
-	// detect diagonal collision when player is between two cases
 	public boolean detectDiagonalCollisionUpDown(int nextLine,int column){
 		// detect if the diagonal left case is empty
 		if(position.y%1<=hitboxWidthLeft && Board.cases[nextLine][column-1].getWall()==null){
@@ -247,8 +255,10 @@ public class Player extends GameObject implements Movable{
 		return false;
 	}
 
+	/**
+	 * 	detect diagonal collision when player is between two cases
+	 */
 	@Override
-	// detect diagonal collision when player is between two cases
 	public boolean detectDiagonalCollisionRightLeft(int line,int nextColumn){
 		// detect if the diagonal top case is empty
 		if(position.x%1<=hitboxHeightTop && Board.cases[line-1][nextColumn].getWall()==null){
@@ -270,14 +280,23 @@ public class Player extends GameObject implements Movable{
 		return (float)(Math.round((f)*100.0)/100.0);
 	}
 
+	/**
+	 * Adds dropped bomb to player bombs list and increase the count.
+	 */
 	public void dropBomb() {
 		if(bombCount < this.ammo && (this.board.getCases()[(int)position.x][(int)position.y].getBomb()==null)){
-			//System.out.println("Ammo " + this.ammo + " Bombs " + bombCount);
-			bombList.add(new Bomb((int)position.x,(int)position.y, this, board)); // on ajoute la bombe aux coordonnées de la case (plus besoin du détail apres la virgule)
+			bombList.add(new Bomb((int)position.x,(int)position.y, this, board));
 			bombCount += 1;
 		}
 	}
 
+	/**
+	 * Update bombs :
+	 * change the sprite index for the explosion.
+	 * give points when bombs kill a player.
+	 * operate kick action.
+	 * @return the counts of bombs who exploded
+	 */
 	public int bombUpdate() {
 		int bombsExploded = 0;
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
@@ -286,9 +305,7 @@ public class Player extends GameObject implements Movable{
 				b.setFuse(b.getFuse()-1);
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
-				//System.out.println("bomb delete");
 				bombCount -= 1;
-				//TODO: bomb not disappearing after kick
 			}
 			else if(System.currentTimeMillis() - b.getStartTime() > 2800){
 				b.setSpriteIndex(0);
@@ -338,10 +355,8 @@ public class Player extends GameObject implements Movable{
 						b.stopKick();
 					}
 					if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() > 0 && (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() != 1 || !board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
-						
 						b.setStartTime(System.currentTimeMillis() - 2000);
-						//board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
-						//System.out.println("bomb delete");
+						b.stopKick();
 					} else if ((int) b.position.x + b.getKick().getVelocity().x != (int) b.position.x || (int) b.position.y + b.getKick().getVelocity().y != (int) b.position.y) {
 						board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
 						board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].setBomb(b);
@@ -356,17 +371,10 @@ public class Player extends GameObject implements Movable{
 
 	// Getters - Setters
 
-	public void setPlayer(int ind,float x,float y) {
-		this.id = ind;
-		this.setAttributs(x,y);
-		isset = true;
-	}
-
 	public void setAlive(boolean b) {
 		if (!b) {
 			spriteIndex = 0;
 			this.direction = 4;
-			//deathTimer = 0;
 		}
 		this.alive = b;
 	}
@@ -388,12 +396,15 @@ public class Player extends GameObject implements Movable{
 	public int getKeyUp() {
 		return keyUp;
 	}
+
 	public int getKeyDown() {
 		return keyDown;
 	}
+
 	public int getKeyLeft() {
 		return keyLeft;
 	}
+
 	public int getKeyRight() {
 		return keyRight;
 	}
@@ -413,6 +424,7 @@ public class Player extends GameObject implements Movable{
 	public void setReleasedUp() {
 		this.pressUp = false;
 	}
+
 	public void setReleasedLeft() {
 		this.pressLeft = false;
 	}
@@ -505,19 +517,8 @@ public class Player extends GameObject implements Movable{
 		this.kick = kick;
 	}
 
-	public void reduceTimer(int time) {
-		
-	}
-
 	public boolean isAlive() {
 		return this.alive;
-	}
-
-	@Override
-	public String toString() {
-		return "Player{" +
-				"id=" + id +
-				'}';
 	}
 
 	public int getFirepower() {
