@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 
 public class Gui extends JFrame implements KeyListener{
     private GuiMenu guiMenu;
@@ -17,10 +18,10 @@ public class Gui extends JFrame implements KeyListener{
     private GuiBoard guiBoard;
     public static int width;
     public static int height; 
-    private Board board;
+    private Board board; // TODO: 05/05/2022 suppr ?
     private Game game;
     public static Thread gameThread;
-    public static boolean isPaused=false;
+    public static boolean isPaused=false; // TODO: 05/05/2022 suppr ?
     private Clip menuMusic;
 
     public Gui(){
@@ -48,6 +49,20 @@ public class Gui extends JFrame implements KeyListener{
         guiBoard.repaint();
     }
 
+    public void endGame(){
+        this.remove(guiBoard);
+        this.remove(guiBar);
+        this.game = null;
+
+        this.guiMenu=new GuiMenu(this);
+        addKeyListener(this);
+        this.setLayout(new BorderLayout());
+        this.add(guiMenu,BorderLayout.CENTER);
+        try {
+            menuMusic = Game.playSound("resources/SFX/MenuMusic.wav", true);
+        } catch (Exception e) {}
+    }
+
 	public void startGame(){
 		this.remove(guiMenu);
 		if (menuMusic != null) menuMusic.stop();
@@ -61,7 +76,7 @@ public class Gui extends JFrame implements KeyListener{
 		}
 		board = game.init();
         this.guiBar=new GuiBar(game);
-        this.guiBoard=new GuiBoard(game);
+        this.guiBoard=new GuiBoard(game, this);
         guiBar.setPreferredSize(new Dimension(this.getWidth()/15,this.getHeight()/13));
         this.add(guiBar,BorderLayout.NORTH);
 		this.add(guiBoard,BorderLayout.CENTER);
@@ -75,9 +90,6 @@ public class Gui extends JFrame implements KeyListener{
         });
 
         gameThread.start();
-	}
-	public static void main(String[] args) {
-		Gui gui = new Gui();
 	}
 
 
@@ -100,4 +112,9 @@ public class Gui extends JFrame implements KeyListener{
 
     @Override
     public void keyTyped(KeyEvent keyEvent){}
+
+
+    public static void main(String[] args){
+        Gui gui = new Gui();
+    }
 }

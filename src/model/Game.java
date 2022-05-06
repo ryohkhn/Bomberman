@@ -18,9 +18,11 @@ public abstract class Game{
     protected File boardTemplate;
     protected Board board;
 	protected Random random = new Random();
+	protected boolean gameEnd = false;
 
-    
-    private final Object pauseLock = new Object();
+
+
+	private final Object pauseLock = new Object();
     private volatile boolean paused;
     
     public abstract void gameLoop();
@@ -33,7 +35,6 @@ public abstract class Game{
 	public abstract void pause();
 	public abstract void resume();
 	public abstract boolean isGamePvp();
-	public abstract Board getBoard();
 	public abstract int getNbPlayers();
 	public abstract int getNbAI();
 
@@ -51,5 +52,13 @@ public abstract class Game{
 	    if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
 	    
 	    return clip;
+	}
+
+	public Board getBoard(){
+		return board;
+	}
+
+	public boolean getGameEnd(){
+		return gameEnd;
 	}
 }

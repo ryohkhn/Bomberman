@@ -14,6 +14,11 @@ public class GamePVP extends Game{
     private String map;
     private double endTime = -1;
 
+    private final Object pauseLock = new Object();
+    private volatile boolean paused = false;
+    private long pauseTime;
+    private long resumeTime;
+
     public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
 		this.gui = gui;
 		this.map = map;
@@ -28,6 +33,10 @@ public class GamePVP extends Game{
         }
     }
 
+    /**
+     * Create a new board.
+     * @return new board
+     */
     public Board init() {
 		try {
 			board = new Board(this.map,false);
@@ -42,6 +51,10 @@ public class GamePVP extends Game{
         return board;
     }
 
+    /**
+     * Adds players to the model and assigns keys to them.
+     * Adds AI.
+     */
     public void addPlayers() {
         float x = 0;
         float y = 0;
@@ -93,32 +106,31 @@ public class GamePVP extends Game{
         }
     }
 
-    private final Object pauseLock = new Object();
-    private volatile boolean paused = false;
-    private long pauseTime;
-    private long resumeTime;
-    
+    /**
+     * the main loop of the game.
+     */
     @Override
     public void gameLoop() {
 
         double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
-        double currentTime;
 
         try {
 			playSound("resources/SFX/BackgroundMusic.wav", true);
 		} catch (Exception e1) {}
-        boolean endLoop = false;
-        while(!endLoop){
-        	synchronized (pauseLock) {
-                if (paused) {
-                    try {
-                        gui.repaint();
-                        synchronized (pauseLock) {
-                            pauseLock.wait();
+        while(true){
+            gameEnd = hasEnded();
+            if(!this.gameEnd) {
+                synchronized (pauseLock) {
+                    if (paused) {
+                        try {
+                            gui.repaint();
+                            synchronized (pauseLock) {
+                                pauseLock.wait();
+                            }
+                        } catch (InterruptedException ex) {
+                            break;
                         }
-                    } catch (InterruptedException ex) {
-                        break;
                     }
                 }
             }
@@ -132,12 +144,8 @@ public class GamePVP extends Game{
 
             //début des instructions de jeu
             
-            bombUpdate();
-            if(this.hasEnded()){
-                if(endTime == -1) endTime = System.currentTimeMillis();
-                else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
-            }
-            if(bombUpdate() != 0) {
+            int bombUpdate = bombUpdate();
+            if(bombUpdate != 0) {
 				try {
 					playSound("resources/SFX/BombeExplode.wav", false);
 				} catch (Exception e) {}
@@ -159,12 +167,20 @@ public class GamePVP extends Game{
         //gui.endScreen();
     }
 
+    /**
+     * updating player(s) position.
+     * @param deltaTime loop time interval.
+     */
     public void playerUpdate(double deltaTime) {
         for(Player p : players){
             p.update(deltaTime);
         }
     }
-    
+
+    /**
+     * updating bomb(s).
+     * @return the number of exploded bombs.
+     */
     private int bombUpdate() {
     	int bombsExploded = 0;
         for(Player p : players){
@@ -173,13 +189,10 @@ public class GamePVP extends Game{
         return bombsExploded;
     }
 
-    private double printTime(double timer2) {
-        if(timer >= timer2 + 100){
-            return timer;
-        }
-        return timer2;
-    }
-
+    /**
+     * Verify if victory state has been reached.
+     * (if there is only one player alive).
+     */
     @Override
     public boolean hasEnded() { // verification de la victoire
         int alivePlayer = this.players.size();
@@ -191,18 +204,17 @@ public class GamePVP extends Game{
         return alivePlayer <= 1;
     }
 
-    
-
-	@Override
-	public boolean getPaused() {
-		return this.paused;
-	}
-	
+    /**
+     * set pause.
+     */
 	public void pause() {
         pauseTime = System.currentTimeMillis();
         this.paused = true;
     }
 
+    /**
+     * resume game.
+     */
     public void resume() {
         resumeTime = System.currentTimeMillis();
         bombPauseUpdate();
@@ -217,7 +229,10 @@ public class GamePVP extends Game{
         return true;
     }
 
-    private void bombPauseUpdate() {
+    /**
+     * update bomb(s) timer with the pause duration.
+     */
+	private void bombPauseUpdate() {
 		timer -= (resumeTime - pauseTime);
         for(Player p : players){
         	for(Bomb b : p.getBombList()){
@@ -229,17 +244,16 @@ public class GamePVP extends Game{
 	}
 
     @Override
-    public Board getBoard(){
-        return board;
-    }
-
-    @Override
     public int getNbPlayers(){
         return nbPlayers;
     }
 
     @Override
-    public int getNbAI(){
+    public int getNbAI() {
         return nbAI;
+    }
+
+    public boolean getPaused(){
+        return this.paused;
     }
 }

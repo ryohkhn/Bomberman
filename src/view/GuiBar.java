@@ -65,6 +65,7 @@ public class GuiBar extends JPanel{
         } catch(IOException e){
             e.printStackTrace();
         }
+        if(game.getGameEnd()) paintFilter(g2);
     }
 
     private void drawBarImage(Graphics2D g2) throws IOException{

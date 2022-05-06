@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -14,6 +13,7 @@ import java.util.*;
 public class GuiBoard extends JPanel{
     private Game game;
     private final Board board;
+    private final Gui gui;
     private ArrayList<Player> players;
     private ArrayList<Monster> monsters;
     private BufferedImage block;
@@ -22,8 +22,11 @@ public class GuiBoard extends JPanel{
     private final int objectSizex = 21;
     private final int objectSizey = 22;
     private JButton resumeButton;
+    private JButton restartButton;
     private JButton quitButton;
     private final JPanel buttonPanel = new JPanel();
+    protected boolean close = false;
+    protected boolean endButtonsPrinted = false;
     private final HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
     private final LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionWidthList=new LinkedList<>();
@@ -43,8 +46,9 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> minvoRightList =new LinkedList<>();
     private final LinkedList<BufferedImage> minvoDeadList =new LinkedList<>();
 
-    public GuiBoard(Game game){
+    public GuiBoard(Game game, Gui gui){
         this.game=game;
+        this.gui = gui;
         this.board=game.getBoard();
         this.players=board.getPlayerList();
         this.monsters=board.getMonsterList();
@@ -70,6 +74,7 @@ public class GuiBoard extends JPanel{
             e.printStackTrace();
         }
     }
+
     private void loadExplosionImages() throws IOException{
         bombImage = ImageIO.read(new File("resources/bomb.png"));
 
@@ -110,6 +115,7 @@ public class GuiBoard extends JPanel{
         explosionDownList.add(ImageIO.read(new File("resources/explosion/explosion_bas_4.png")));
 
     }
+
     private void loadBonusImages() throws IOException{
         bonusMap.put(Bonus.Type.Bomb,ImageIO.read(new File("resources/bonus_bomb.png")));
         bonusMap.put(Bonus.Type.Firemax,ImageIO.read(new File("resources/bonus_firemax.png")));
@@ -119,6 +125,7 @@ public class GuiBoard extends JPanel{
         bonusMap.put(Bonus.Type.Speed,ImageIO.read(new File("resources/bonus_speed.png")));
         //bonusMap.put(Bonus.Type.Timer,ImageIO.read(new File("resources/bonus_timer.png")));
     }
+
     private void loadPlayerImages() throws IOException{
         for (int i = 0; i <4; i++) {
             BufferedImage image = ImageIO.read(new File("resources/playersheet_"+ i+".png"));
@@ -134,6 +141,7 @@ public class GuiBoard extends JPanel{
             playerImagesList.add(walkFrames);
         }
     }
+
     private void loadMonsterImages() throws IOException{
         kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left1.png")));
         kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left2.png")));
@@ -178,9 +186,17 @@ public class GuiBoard extends JPanel{
         } catch(IOException e){
             e.printStackTrace();
         }
+        if(game.getGameEnd()){
+            paintFilter(g2);
+            if(!endButtonsPrinted) {
+                endButtonsPrinted = true;
+                createEndButtons();
+            }
+        }
+
     }
 
-    private void paintBoard(Graphics2D g2) throws IOException{ // attention dans les appels a g2.drawImage, la hauteur et la largeur sont inversés
+    private void paintBoard(Graphics2D g2) throws IOException{
         Case[][] cases=board.getCases();
         int height=this.getHeight()/cases.length;
         int width=this.getWidth()/cases[0].length;
@@ -188,24 +204,22 @@ public class GuiBoard extends JPanel{
         for(int x = 0; x < cases.length; x++){
             for(int y = 0; y < cases[x].length; y++){
                 if(cases[x][y].getWall() == null) {
-                    g2.drawImage(block, y * width, x * height, width, height, null); // on affiche l'herbe
+                    g2.drawImage(block, y * width, x * height, width, height, null); // grass paint
                     if(cases[x][y].getBonus() != null) {
-                        g2.drawImage(bonusMap.get(cases[x][y].getBonus().getType()), y * width, x * height, width, height, null); // on affiche le bonus
+                        g2.drawImage(bonusMap.get(cases[x][y].getBonus().getType()), y * width, x * height, width, height, null); // bonus paint
                     }
-                    if(cases[x][y].getBomb()!=null) bombs.add(new Point(x,y));
-
-                    }
+                    if(cases[x][y].getBomb()!=null) bombs.add(new Point(x, y)); // adding bomb(s) into list
+                }
                 else if(cases[x][y].getWall().isBreakable()){
-                    g2.drawImage(breakableBlock,y * width,x * height,width,height,null);
+                    g2.drawImage(breakableBlock,y * width,x * height,width,height,null); // breakable blocks paint
                 }
                 else{
-                    g2.drawImage(unbreakableBlock,y * width,x * height,width,height,null);
+                    g2.drawImage(unbreakableBlock,y * width,x * height,width,height,null);// unbreakable blocks paint
                 }
 
             }
         }
-        // TODO: 05/04/2022 bombs casse bonus a regler 
-        for(Point p : bombs){
+        for(Point p : bombs){ // bombs paint
             paintBomb(board, g2, p.x, p.y, width, height);
         }
     }
@@ -265,7 +279,6 @@ public class GuiBoard extends JPanel{
     }
 
     private BufferedImage getBombImageState(String explosion, int spriteIndex) {
-
         switch (explosion) {
             case "mid" : switch (spriteIndex) {
                 case 1 : return explosionMidList.get(1);
@@ -340,6 +353,7 @@ public class GuiBoard extends JPanel{
             }
         }
     }
+
     private void paintMonsters(Graphics2D g2) throws IOException {
         for (Monster monster: monsters) {
             float x = monster.getPositionX() - 0.4F;
@@ -375,6 +389,10 @@ public class GuiBoard extends JPanel{
         }
     }
 
+    /**
+     * Create a grey filter that makes the board fade into the background during the pause and the end of game screen.
+     * @param g
+     */
     private void paintFilter(Graphics2D g){
         int alpha=157;
         Color blackFilter=new Color(0, 0, 0,alpha);
@@ -402,6 +420,33 @@ public class GuiBoard extends JPanel{
         }
     }
 
+    protected void createEndButtons(){
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setOpaque(true);
+        buttonPanel.setBackground(new Color(0,0,0,0));
+        restartButton=new JButton("Restart");
+        quitButton=new JButton("Quit");
+        restartButton.addActionListener(event -> {
+            close = true;
+            gui.endGame();
+        });
+        quitButton.addActionListener(event -> System.exit(0));
+        JButton[] buttons = {restartButton, quitButton};
+        for(JButton b : buttons) {
+            b.setAlignmentX(Component.CENTER_ALIGNMENT);
+            b.setPreferredSize(new Dimension(200,60));
+            b.setUI(new GuiMenu.StyledButtonUI());
+        }
+        buttonPanel.setPreferredSize(new Dimension(this.getWidth(),this.getHeight()));
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, this.getHeight()/3)));
+        buttonPanel.add(restartButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, this.getHeight()/10)));
+        buttonPanel.add(quitButton);
+        this.add(buttonPanel,CENTER_ALIGNMENT);
+        repaint();
+        revalidate();
+    }
+
     public void showPauseButtons(){
         buttonPanel.setPreferredSize(new Dimension(this.getWidth(),this.getHeight()));
         buttonPanel.add(Box.createRigidArea(new Dimension(0, this.getHeight()/3)));
@@ -423,4 +468,5 @@ public class GuiBoard extends JPanel{
     public void requestFocusAncestor(){
         SwingUtilities.getWindowAncestor(this).requestFocusInWindow();
     }
+
 }
