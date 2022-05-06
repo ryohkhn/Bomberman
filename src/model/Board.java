@@ -87,33 +87,6 @@ public class Board{
 				Case currentCase = new Case();
     			
 				switch(c) {
-					/*
-	    			case "1":
-						this.playerList.add(new Player(0, 0, 0, this));
-	    				currentCase.addMovableOnCase(this.playerList.get(0));
-	    				break;
-	    				
-	    			case "2":
-						this.playerList.add(new Player(1, 0, 0, this));
-						//this.playerList.add(new Bot(1, 0, 0, this));
-						currentCase.addMovableOnCase(this.playerList.get(1));
-						//this.monsterList.add(new MonstreUn(0, 0, this));
-						//currentCase.addMovableOnCase(this.monsterList.get(0));
-	    				break;
-	    				
-	    			case "3":
-						this.playerList.add(new Player(2, 0, 0, this));
-	    				currentCase.addMovableOnCase(this.playerList.get(2));
-	    				break;
-	    				
-	    			case "4":
-						this.playerList.add(new Player(3, 0, 0, this));
-	    				currentCase.addMovableOnCase(this.playerList.get(3));
-	    				break;
-					TO DO (15/04) random monsters as we do for walls in an other method
-					monsters shouldn't be too closed to players
-	    			*/
-					//TO DO (15/04) random monsters as we do for walls in an other method
 	    			case "E":
 	    				Random rand = new Random();
 	    				int r = rand.nextInt(101);

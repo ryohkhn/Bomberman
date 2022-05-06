@@ -3,7 +3,7 @@ package model;
 
 public class FlyingMonster extends Monster implements AI {
 	private static final int TYPE = 1;
-	public static float speed = 0.45F;
+	public static float speed = 0.3F;
 
     public FlyingMonster(float x, float y,Board board) {
         super(x, y);

@@ -76,7 +76,7 @@ public class Player extends GameObject implements Movable{
 			}
 		}
 	}
-
+	/* stock inputs into varaibles */
     public void bindKeys(int up, int down, int left, int right, int action) {
 		keyUp = up;
 		keyDown = down;

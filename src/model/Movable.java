@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Random;
 
 public interface Movable{
+    // methods of moving entities
     Point point=new Point();
     void detectCollisionRight(double d);
     void detectCollisionUp(double d);

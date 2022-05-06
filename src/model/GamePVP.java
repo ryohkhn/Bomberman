@@ -60,6 +60,7 @@ public class GamePVP extends Game{
         float y = 0;
         int i = 0;
         Player player = null;
+        // add numberof players playing and their positions of board
         while (i < nbPlayers) {
             if (i == 0) {
                 x = 1.4F;

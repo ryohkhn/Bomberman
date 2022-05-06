@@ -4,7 +4,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import model.Player;
-import view.Gui;
 
 public class PlayerInput extends KeyAdapter{
 	
@@ -14,6 +13,7 @@ public class PlayerInput extends KeyAdapter{
 		this.player = player;
 	}
 	
+	@Override
 	public void keyPressed(KeyEvent e){
 		int k = e.getKeyCode();
 		if(k == player.getKeyUp()) {
@@ -32,6 +32,7 @@ public class PlayerInput extends KeyAdapter{
 			player.setAction();
 		}
 	}
+	@Override
 	public void keyReleased(KeyEvent e){
 		int k = e.getKeyCode();
 		if(k == player.getKeyUp()) {

@@ -16,7 +16,7 @@ public abstract class Monster extends GameObject implements Movable{
         super(x, y);
         //TODO Auto-generated constructor stub
     }
-
+    // setters - getters
     public boolean isSet() {
         return isset;
     }

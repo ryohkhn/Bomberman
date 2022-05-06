@@ -24,7 +24,7 @@ public class WalkingMonster extends Monster implements AI{
 		FlyingMonster.speed = speed;
 	}
 
-
+	/* Main function of the program updating the monster */
 	public void update(double deltaTime) {
 		if (isAlive && isset) {
 			killPlayers();
