@@ -50,22 +50,6 @@ public class Case{
 		else this.bomb = bomb;
 	}
 
-	public void setNav_group(int nav_group) {
-		this.nav_group = nav_group;
-	}
-
-	public int getNav_group() {
-		return nav_group;
-	}
-
-	public void setNav_update(boolean nav_update) {
-		this.nav_update = nav_update;
-	}
-	
-	public boolean getNav_update() {
-		return nav_update;
-	}
-
 	public int killMoveables(Player player) {
 		Iterator<Movable> iterator = movablesOnCase.iterator();
 		int pointsCount = 0;
@@ -102,6 +86,28 @@ public class Case{
 				iter.remove();
 			}
 		}
+	}
+
+	public boolean hasPlayers(Player p) {
+		Iterator<Movable> iter = movablesOnCase.iterator();
+		while(iter.hasNext()) {
+			Movable m = iter.next();
+			if (m instanceof Player && m != p) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Player getPlayerOnCase(Player p) {
+		Iterator<Movable> iter = movablesOnCase.iterator();
+		while(iter.hasNext()) {
+			Movable m = iter.next();
+			if (m instanceof Player && m != p) {
+				return (Player)m;
+			}
+		}
+		return null;
 	}
 
 	@Override

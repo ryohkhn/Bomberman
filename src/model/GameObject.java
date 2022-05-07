@@ -25,11 +25,6 @@ public class GameObject {
         return sizeY;
     }
       
-      
-    public void translate(float dx, float dy) {
-    	position.translate(dx, dy);
-    }
-      
     public float getPositionX() {
     	return position.x;
     }
@@ -68,19 +63,5 @@ public class GameObject {
             this(vector.x, vector.y);
         }
         
-        public void translate(float dx, float dy) {
-            x += dx;
-            y += dy;
-        }
-        
-        public void scale(float s) {
-            x = x*s;
-            y = y*s;
-        }
-        
-        public void scale(float sx, float sy) {
-            x = x * sx;
-            y = y * sy;
-        }
     }
 }

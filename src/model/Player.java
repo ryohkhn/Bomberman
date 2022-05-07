@@ -12,7 +12,6 @@ public class Player extends GameObject implements Movable{
     private float speed = 1F;
     private int keyUp, keyDown, keyLeft, keyRight,keyAction;
     private boolean pressDown = false, pressUp = false, pressLeft = false, pressRight = false, pressAction = false;
-	boolean ai;
 	private int spriteTimer;
 	private int spriteIndex;
 	private int direction;
@@ -24,10 +23,12 @@ public class Player extends GameObject implements Movable{
 	private boolean isset;
 	private int firepower = 1; //max 6
 	private boolean coop;
+	private boolean ai;
+	private Bot bot;
 
 	private Board board; // utile pour les bombes, possiblement temporaire
 
-    public Player(int id,float x,float y, Board board) {
+    public Player(int id,float x,float y, Board board,boolean isAi) {
         super(x,y);
     	this.id = id;
     	this.alive = true;
@@ -37,11 +38,17 @@ public class Player extends GameObject implements Movable{
 		this.direction = 0;
 		this.spriteIndex = 0;
 		this.setAttributs(x,y);
+		this.ai = isAi;
+		System.out.println(this.id + ": est bot" + this.ai);
+		if (ai) bot = new Bot(board,this); 
     }
 
 	@Override
 	public void update(double deltaTime) {
 		if (alive && isset) {
+			if (ai) {
+				bot.update();
+			}
 			if ((spriteTimer += speed) >= 12) {
                 spriteIndex++;
                 spriteTimer = 0;

@@ -25,6 +25,7 @@ public class GamePVP extends Game{
         players = new ArrayList<>();
         nbPlayers = numberOfPlayers;
         nbAI = numberOfAI;
+        System.out.println(nbAI);
         if (nbAI == 0 && nbPlayers == 0) {
             nbPlayers = 2;
         }
@@ -65,22 +66,22 @@ public class GamePVP extends Game{
             if (i == 0) {
                 x = 1.4F;
                 y = 1.4F;
-                player = new Player(i, x, y, board);
+                player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
             } else if (i == 1) {
                 x = 11.4F;
                 y = 13.4F;
-                player = new Player(i, x, y, board);
+                player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_ALT_GRAPH);
             } else if (i == 2) {
                 x = 1.4F;
                 y = 13.4F;
-                player = new Player(i, x, y, board);
+                player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
             } else if (i==3) {
                 x = 11.4F;
                 y = 1.4F;
-                player = new Player(i, x, y, board);
+                player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_U, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K,KeyEvent.VK_N);
             }
             board.getCases()[(int)x][(int)y].addMovableOnCase(player);
@@ -100,7 +101,7 @@ public class GamePVP extends Game{
                 x = 11.4F;
                 y = 1.4F;
             }
-            player = new Bot(i, x, y, board);
+            player = new Player(i, x, y, board,true);
             board.getCases()[(int)x][(int)y].addMovableOnCase(player);
             players.add(player);
             i++;

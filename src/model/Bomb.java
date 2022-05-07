@@ -113,7 +113,6 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
@@ -130,7 +129,6 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    current.setNav_update(false);
                     end = (!pierce);
                 }
                 else {
@@ -148,7 +146,6 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    current.setNav_update(false);
                     end = (!pierce);
                     explodingCase.add(current);
                 }
@@ -167,7 +164,6 @@ public class Bomb extends GameObject{
             if (current.getWall() != null) {
                 if(current.getWall().isBreakable()) {
                     current.setWall(null);
-                    current.setNav_update(false);
                     end = (!pierce);
                     explodingCase.add(current);
                 }

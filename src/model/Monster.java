@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Random;
-
 public abstract class Monster extends GameObject implements Movable{
     protected boolean isset = false;
     protected boolean isAlive = false;

@@ -19,8 +19,8 @@ public class GuiBoard extends JPanel{
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
-    private final int objectSizex = 21;
-    private final int objectSizey = 22;
+    public static final int objectSizex = 21;
+    public static final int objectSizey = 22;
     private JButton resumeButton;
     private JButton restartButton;
     private JButton quitButton;

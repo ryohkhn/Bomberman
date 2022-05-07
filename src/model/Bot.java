@@ -1,384 +1,430 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Random;
+import view.GuiBoard;
 
-public class Bot extends Player implements AI {
+public class Bot implements AI {
 
-	private ArrayList<Integer> options;
-	private final LinkedList<Integer> moves;
-	private int move;
 	private EnemyDistanceComp edc;
-	private BonusDistanceComp bdc;
-	private final Random random;
-	Case [][] cases;
-	private boolean init = false;
-	//minimal ai
-	public Bot(int id, float x, float y, Board board) {
-		super(id, x, y, board);
-		super.ai = true;
+	private int maxDepth = 4;
+	private int traverseValue = 999999;
+	private int bestPath = 0;
+
+	private int moveToRow = 0;
+	private int moveToCol = 0;
+	private boolean iReached = true;
+	
+	private int powerDepth=1;
+	private int powerCurrent = 1;
+	private int currDir = 0;
+	private int path = 0;
+	
+	private boolean localReached = true;
+	private int trapTimeLimit = 200;
+	private int timeElapsed = 0;
+	
+	private int runFromBombTimeLimit = 25*2;
+	
+	private int bombRow, bombCol;
+	
+	private int[] proximity = new int[9];
+	
+	private int runFromBombTime;
+
+	private boolean decidedToBreak = false;
+	private boolean kill = false;
+	private Player player;
+	private Board board;
+	private boolean bombAround;
+	private int runDir;
+
+	public Bot(Board b,Player p) {
+		player = p;
+		board = b;
 		edc = new EnemyDistanceComp();
-		bdc = new BonusDistanceComp();
-		options = new ArrayList<>();
-		moves = new LinkedList<>();
-		options.add(1);
-		options.add(2);
-		options.add(3);
-		options.add(4);
-		super.setBombCount(0);
-		random = new Random();
+		for(int i=0; i<maxDepth-1; i++) {
+			powerDepth*=10;
+		}
 	}
 
-	@Override
-	public void update(double deltaTime) {
+	
 
-		if (!init) {
-			cases = getBoard().getCases();
-			generateNavMap();
-			init = true;
+
+	public void update() {
+		if(iReached) {
+			moveToRow = player.getPositionXasInt();
+			moveToCol = player.getPositionYasInt();
+			//System.out.println("current position : ( "+moveToRow+" , "+moveToCol+" ) ");
+			traverseValue = 9999999;
+			bestPath = 0;
+			Player enemy = getAccessibleCases();
+			//System.out.println("nearest enemy : ( "+enemy.getId()+" ) ");
+			findPath(enemy,0,0,0, player.getPositionXasInt(), player.getPositionYasInt());
+			path = bestPath; // use bestPath directly if everything fine
+			//System.out.println("path to traverse ::  "+path);
+     		iReached = false;
+     		powerCurrent = powerDepth;
+     		timeElapsed = 0;
+		}else {
+			if(!bombAround)
+                traverse();
+			else
+				runAwayFromBomb();
 		}
-		if (isAlive() && isSet()) {
-			updateNav();
-			if (!moves.isEmpty()) move = moves.poll(); // moves are unique, find solutions for the AI to move in an other case while
-											// moving between cases.
-			if(move == 0 || !moveSafe(move) || enemyCheck()){ // reset if bombs or enemies ar nearby
-				moves.clear();
-				if(canPlaceBombAndEscape(moves)){ 
-					System.out.println(move);
-					move = -1;
-				} else {
-					move = 0;
-					Collections.shuffle(options);
-					for(int i = 0; i < 4; ++i){
-						move = options.get(i);
-						System.out.println(move);
-						if(moveSafe(move)){
-							break;
+	}
+	private Player getAccessibleCases(){
+		// détermine les cases accessibles
+		ArrayList<Player> tiles = new ArrayList<>();
+		for(int x = 0; x < board.getCases().length; ++x){
+			for(int y = 0; y < board.getCases()[0].length; ++y){
+				if(board.getCases()[x][y].hasPlayers(player))
+					tiles.add(board.getCases()[x][y].getPlayerOnCase(player));
+			}
+		}
+		Collections.sort(tiles, edc); // to the closest enemy
+		return tiles.get(0);
+	}
+
+
+	public void stop() {
+		player.setReleasedDown();
+		player.setReleasedLeft();
+		player.setReleasedRight();
+		player.setReleasedUp();
+		player.setReleasedAction();
+	}
+
+	private class EnemyDistanceComp implements Comparator<Player> {
+		@Override
+		public int compare(Player one, Player two){			
+			int dist1 = Math.abs(one.getPositionXasInt() - player.getPositionXasInt()) + Math.abs(one.getPositionYasInt() - player.getPositionYasInt());
+			int dist2 = Math.abs(two.getPositionXasInt() - player.getPositionXasInt()) + Math.abs(two.getPositionYasInt() - player.getPositionYasInt());
+			return dist1 - dist2;
+		}
+	}
+
+
+	private void traverse() {
+		if(path==0) {
+			timeElapsed = 0;
+	        stop();
+			powerCurrent = powerDepth;
+			iReached = true;
+			//System.out.println(" path " + bestPath + " is fully traversed ");
+			return;
+		}else if(localReached){ // not reached final but reached next local
+			localReached = false;
+			currDir = path/powerCurrent;
+			System.out.println(":::: Direction chosen ::::: "+currDir);
+			path = path%powerCurrent;
+			powerCurrent = powerCurrent/10;
+			if(currDir == 1) {// up
+				moveToRow -= 1 ;
+			}else if(currDir== 2) {// right
+				moveToCol += 1;	
+			}else if(currDir== 3) {// down
+				moveToRow += 1;
+			}else if(currDir == 4) {// left
+				moveToCol -= 1;	
+			}
+			//System.out.println("I have to reach : ( "+moveToRow+" , "+moveToCol+" ) ");
+		}else if(!localReached ) {
+			if( Math.abs(player.getPositionY() - moveToRow*GameObject.sizeY) <= player.getSpeed()  && Math.abs(player.getPositionX() - moveToCol*GameObject.sizeX) <= player.getSpeed()) {
+			//	System.out.println("I reached at  : ( "+moveToRow+" , "+moveToCol+" ) ");
+				player.setPosition(moveToCol*GameObject.sizeX/board.getCases().length + (GameObject.sizeX - GuiBoard.objectSizex)/2, moveToRow*GameObject.sizeY/board.getCases()[0].length  + (GameObject.sizeY - Player.sizeY)/2);
+				//Engine.updateStage = true;
+				localReached = true;
+				stop();
+       		}else {
+				timeElapsed++;
+				if(timeElapsed > trapTimeLimit) {
+                   timeElapsed = 0;
+                   localReached = true;
+                   stop();
+                  // me.setPosition(me.getCenterCol()*Window.width/StageMatrix.size, me.getCenterRow()*Window.height/StageMatrix.size);
+                   path = 0;
+                   iReached = true;
+				}else {
+				//	System.out.println("Going towards " + currDir);
+					if(detectBomb(bombRow,bombCol)) {
+						//runThink = true;
+					    bombAround = true;
+					    path = 0;
+					    iReached = true;
+					    localReached = true;
+					    stop();
+					   
+					    timeElapsed = 0;
+					    currDir = 0;
+					  //  return;
+					}else if(kill) {
+						if(runFromBombTime <= 0) {
+							stop();
+							player.setAction();
 						}
+						runFromBombTime++;
+						moveAway();
+						if(runFromBombTime >= runFromBombTimeLimit) {
+							kill = false;
+							path = 0;
+							iReached = true;
+							localReached = true;
+							timeElapsed = 0;
+							currDir = 0;
+							runFromBombTime = 0;
+							player.setPosition((player.getPositionY()*GameObject.sizeX/board.getCases().length + (GameObject.sizeX - GuiBoard.objectSizex)/2), player.getPositionX()*GameObject.sizeY/board.getCases()[0].length  + (GameObject.sizeY - Player.sizeY)/2);
+							stop();
+						}
+					}
+					else if(decidedToBreak) {
+						stop();
+						player.setAction();
+						 
+						decidedToBreak = false;
+					    path = 0;
+					    iReached = true;
+					    localReached = true;
+					    timeElapsed = 0;
+					    currDir = 0;
+					}
+					else {
+		               chooseDirection();
 					}
 				}
 			}
-			
-			if(move != 0){
-				if (move == -1) {
-					setAction();
-				} else {
-					stop();
-					chooseDirection();
-				}
-			}
-		}
-		super.update(deltaTime);
-	}
-
-	public void stop() {
-		setReleasedDown();
-		setReleasedLeft();
-		setReleasedRight();
-		setReleasedUp();
-		setReleasedAction();
-	}
-
-	public void chooseDirection() {
-		
-		if (move == 1) { // first letter of move
-			setPressUp();
-		} else if(move == 2) {
-			setPressDown();
-		} else if(move == 3) {
-			setPressLeft();
-		} else if (move == 4) {
-			setPressRight();
-		}
-	}
-
-	private void generateNavMap() {
-		int group = 0;
-		int nextGroup = 0;
-		boolean inc = true;
-		for (int x = 0; x < cases.length; ++x) {
-			for(int y = 0; y < cases[0].length; ++y){
-				Case t = cases[x][y];
-				if(t.getWall() != null){
-					inc = true;
-					continue;
-				}
-				if(inc){
-					group = ++nextGroup;
-					inc = false;
-				}
-				t.setNav_group(group);
-				if(x > 0) {
-					int leftGroup = cases[x-1][y].getNav_group();
-					if(leftGroup == 0) continue;
-					int min = Math.min(t.getNav_group(), leftGroup);
-					int max = Math.max(t.getNav_group(), leftGroup);
-					changeNavGroup(max, min);
-					group = min;
-				}
-			}
-			inc = true;
-		}
-
-	}
-
-	private void changeNavGroup(int from, int to){
-		for(int x = 0; x < cases.length; ++x){
-			for(int y = 0; y < cases[0].length; ++y){
-				Case t = cases[x][y];
-				if(t.getNav_group() == from)
-					t.setNav_group(to);
-			}
-		}
-	}
-
-
-	private void updateNav(){
-		for(int x = 0; x < cases.length; ++x){
-			for(int y = 0; y < cases[0].length; ++y){
-				Case t = cases[x][y];
-				if(!t.getNav_update()) continue;
-				int u = 999;
-				int d = 999;
-				int l = 999;
-				int r = 999;
-				int g;
-				if(y > 0 && (g = cases[x][y-1].getNav_group()) != 0) u = g;
-				if(y < cases[0].length-1 && (g = cases[x][y+1].getNav_group()) != 0) d = g;
-				if(x > 0 && (g = cases[x-1][y].getNav_group()) != 0) l = g;
-				if(x < cases.length-1 && (g = cases[x+1][y].getNav_group()) != 0) r = g;
-				
-				int min = Math.min(Math.min(u, d), Math.min(l, r));
-				
-				if(u != 999) changeNavGroup(u, min);
-				if(d != 999) changeNavGroup(d, min);
-				if(l != 999) changeNavGroup(l, min);
-				if(r != 999) changeNavGroup(r, min);
-				
-				t.setNav_group(min);
-				t.setNav_update(false);
-			}
-		}
-	}
-
-	public boolean enemyCheck() {
-		// determine wheter an enemy is in the range of the possible placements of your bomb
-		if (getBombCount() >= getAmmo()) return false;
-		ArrayList<IntPair> tiles = getCasesInBombRange((int)position.x, (int)position.y);
-		for(IntPair t : tiles){
-			for(Player e : getBoard().getPlayerList()){
-				int p = e.getId();
-				if(p != this.getId() && e.getPositionXasInt() == t.getX() && e.getPositionYasInt() == t.getY())
-					return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean bonusCheck() {
-		// determine wheter an enemy is in the range of the placements of your bonus
-		for(int i = 0; i < cases.length; i++){
-			for(int j = 0; j < cases[0].length; j++){
-				if(cases[i][j].getWall() == null && cases[i][j].getBonus() != null)
-					return true;
-			}
-		}
-		return false;
-	}
-
-
-	private void getCasesInBombDir(int x, int y, int xdir, int ydir,ArrayList<IntPair> tiles){
-		// détermine les cases où les bombes peuvent tuer
-		for(int i = 1; i < getFirepower(); ++i){
-			int xx = x + (i * xdir);
-			int yy = y + (i * ydir);
-			if(xx < 0 || xx >= cases.length || yy < 0 || yy >= cases[0].length) break;
-			Case t = cases[xx][yy];
-			if(t.getWall() == null || t.getWall().isBreakable()) {
-				tiles.add(new IntPair(x, y));
-			}
-			else if(!t.getWall().isBreakable()) break;
 		}
 	}
 	
-	public ArrayList<IntPair> getCasesInBombRange(int x, int y){
-		// détermine les cases où les bombes peuvent tuer
-		ArrayList<IntPair> tiles = new ArrayList<>();
-		tiles.add(new IntPair(x, y));
-		getCasesInBombDir(x, y, 1, 0,tiles); // droite
-		getCasesInBombDir(x, y, -1, 0,tiles); // gauche
-		getCasesInBombDir(x, y, 0, 1,tiles); // bas
-		getCasesInBombDir(x, y, 0, -1,tiles); // haut
-		return tiles;
-	}
-
-	private ArrayList<IntPair> getAccessibleCases(Case from){
-		// détermine les cases accessibles
-		ArrayList<IntPair> tiles = new ArrayList<>();
-		for(int x = 0; x < cases.length; ++x){
-			for(int y = 0; y < cases[0].length; ++y){
-				if(cases[x][y].getNav_group() == from.getNav_group())
-					tiles.add(new IntPair(x, y));
-			}
+	public void chooseDirection() {
+		if(currDir == 0) { // do nothing
+			player.setReleasedDown();
+			player.setReleasedLeft();
+			player.setReleasedRight();
+			player.setReleasedUp();		
 		}
-		if(enemyCheck()){
-			Collections.shuffle(tiles);
-		} else if(bonusCheck()){
-			Collections.sort(tiles, bdc); // to the closest bonus
-		}else {
-			Collections.sort(tiles, edc); // to the closest enemy
+		if(currDir == 1) {// go up
+			player.setPressUp();
 		}
-		return tiles;
-	}
-
-
-	private IntPair xyFromMove(int ox, int oy, int move){
-		int x = ox;
-		int y = oy;
-		if (move == 1) {
-			--y;
-		} else if(move == 2) {
-			++y;
-		} else if(move == 3) {
-			--x;
-		} else if (move == 4) {
-			++x;
+		if(currDir == 2) { // go right
+			player.setPressRight();
 		}
-		x = Math.max(0, Math.min(x, cases.length-1));
-		y = Math.max(0, Math.min(y, cases[0].length-1));
-		if(cases[x][y].getWall() == null)
-			return new IntPair(x, y);
-		else
-			return new IntPair(ox, oy);
-	}
-
-	private void bfsCheck(BFSCase bt, Queue<BFSCase> tqueue, ArrayList<IntPair> tiles, boolean[][] visited, int dir){
-		IntPair pos = xyFromMove(bt.c.getX(), bt.c.getY(), dir);
-		if(!visited[pos.getX()][pos.getY()]){
-			visited[pos.getX()][pos.getY()] = true;
-			if(tiles.contains(pos)) tqueue.add(new BFSCase(pos, bt, dir));
+		if(currDir == 3) {// go down
+			player.setPressDown();
 		}
-	}
-
-
-	private class EnemyDistanceComp implements Comparator<IntPair> {
-		@Override
-		public int compare(IntPair one, IntPair two){
-			ArrayList<Player> players = getBoard().getPlayerList();
-			int dist1 = Integer.MAX_VALUE;
-			int dist2 = Integer.MAX_VALUE;			
-			for(Player p : players){
-				if(!p.isAlive() || p.getId() == getId()) continue;
-				dist1 = Math.min(Math.abs(one.getX() - p.getPositionXasInt()) + Math.abs(one.getY() - p.getPositionYasInt()), dist1);
-				dist2 = Math.min(Math.abs(two.getY() - p.getPositionYasInt()) + Math.abs(two.getY() - p.getPositionYasInt()), dist2);
-			}
-			return dist1 - dist2;
+		if(currDir == 4) { // go left
+			player.setPressLeft();
 		}
-	}
-
-	private class BonusDistanceComp implements Comparator<IntPair> {
 		
-		@Override
-		public int compare(IntPair one, IntPair two){
-			int dist1 = Integer.MAX_VALUE;
-			int dist2 = Integer.MAX_VALUE;			
-			for(int i = 0; i < cases.length; i++){
-				for(int j = 0; j < cases[0].length; j++){
-					if(cases[i][j].getWall() == null && cases[i][j].getBonus() != null) {
-						dist1 = Math.min(Math.abs(one.getX() - getPositionXasInt()) + Math.abs(one.getY() - getPositionYasInt()), dist1);
-						dist2 = Math.min(Math.abs(two.getY() - getPositionYasInt()) + Math.abs(two.getY() - getPositionYasInt()), dist2);
-					}
-				}
-			}
-			return dist1 - dist2;
+	}
+    
+	private void moveAway() {
+		int row = player.getPositionXasInt();
+		int col = player.getPositionYasInt();
+		
+		
+		if(row-1 > 0 && col-1 > 0 && board.getCases()[row-1][col-1].getWall() == null && board.getCases()[row-1][col-1].getBomb() == null ) {
+			player.setPressUp();
+			player.setPressLeft();
 		}
+		else if(row-1 > 0 && col+1 < board.getCases()[0].length && board.getCases()[row-1][col+1].getWall() == null && board.getCases()[row-1][col+1].getBomb() == null ) {
+			player.setPressUp();
+			player.setPressRight();
+		}
+		else if(row+1 < board.getCases().length  && col-1 > 0 && board.getCases()[row+1][col-1].getWall() == null && board.getCases()[row+1][col-1].getBomb() == null ) {
+			player.setPressDown();
+			player.setPressLeft();
+		}
+		else if(row+1 < board.getCases().length && col+1 < board.getCases()[0].length && board.getCases()[row+1][col+1].getWall() == null && board.getCases()[row+1][col+1].getBomb() == null ) {
+			player.setPressDown();
+			player.setPressRight();
+		}
+		
 	}
 
-	private boolean getRouteToCase(Case to, LinkedList<Integer> route){
-		if(cases[(int)position.x][(int)position.y].getNav_group() != to.getNav_group()) return false;
+	
+	
+	private void findPath(Player enemy, int depth, int direction, int path, int row, int col) {
+
 		
-		boolean [][] visited = new boolean[cases.length][cases[0].length];
-		
-		ArrayList<IntPair> tiles = getAccessibleCases(cases[getPositionXasInt()][getPositionYasInt()]);
-		Queue<BFSCase> tqueue = new LinkedList<>();
-		tqueue.add(new BFSCase(new IntPair(getPositionXasInt(),getPositionYasInt()), null, 0));
-		
-		while(true){
-			BFSCase bt = tqueue.peek();
-			if(bt == null) return false;
-			if(cases[bt.c.getX()][bt.c.getY()] == to) break;
+		if(depth > maxDepth) {
+			int distanceCol = enemy.getPositionXasInt() - col;
+			int distanceRow = enemy.getPositionYasInt() - row;
+			System.out.println(distanceCol);
+			System.out.println(distanceRow);
+			int distance = distanceCol*distanceCol + distanceRow*distanceRow;
 			
-			if(bt.c.getY() > 0) bfsCheck(bt, tqueue, tiles, visited, 1);
-			if(bt.c.getY() < cases[0].length-1) bfsCheck(bt, tqueue, tiles, visited, 2);
-			if(bt.c.getX() > 0) bfsCheck(bt, tqueue, tiles, visited, 3);
-			if(bt.c.getX() < cases.length-1) bfsCheck(bt, tqueue, tiles, visited, 4);
-
-			tqueue.poll();
+			if(distance < traverseValue) {
+				traverseValue = distance;
+				bestPath = path;
+			}
+			
+			return;
+		}
+		
+		if(direction == 0 || depth == 0) {     									// initial four iterations
+			findPath(enemy,depth+1, 1, path, row, col);
+			findPath(enemy,depth+1, 2, path, row, col);
+			findPath(enemy,depth+1, 3, path, row, col);
+			findPath(enemy,depth+1, 4, path, row, col);
+			return;
+		}
+		
+	
+		if(direction == 1) {// up
+			row -= 1 ;
+		}else if(direction== 2) {// right
+			col += 1;	
+		}else if(direction== 3) {// down
+			row += 1;
+		}else if(direction== 4) {// left
+			col -= 1;	
 		}
 
-		for(BFSCase t = tqueue.poll(); t != null; t = t.prev)
-			if(t.dir != 0) route.addFirst(t.dir);
-
-		return true;
+		if(board.getCases()[row][col].hasPlayers(player)) {		// Player
+			if(depth <= 1) {
+				kill = true;
+			}
+	
+		}
+		else if(board.getCases()[row][col].getWall() != null && !board.getCases()[row][col].getWall().isBreakable()) {    // Solid Bricks
+			return;
+		}
+		else if(board.getCases()[row][col].getWall() != null) {    // Breakable Bricks
+			decidedToBreak = true;
+			return;
+		}
+		else if(board.getCases()[row][col].getBomb() != null) {
+			bombRow = row; bombCol = col;
+			System.out.println("Bomb!!");
+			return;
+		}
+		
+		path = path*10 + direction;
+		
+		if(direction!=3)
+			findPath(enemy,depth+1, 1, path, row, col);
+		if(direction!=4)
+			findPath(enemy,depth+1, 2, path, row, col);
+		if(direction!=1)
+			findPath(enemy,depth+1, 3, path, row, col);
+		if(direction!=2)
+			findPath(enemy,depth+1, 4, path, row, col);
+		
+	}
+	
+	
+	private boolean detectBomb(int row, int col) {
+		// détermine les cases où les bombes peuvent tuer
+		proximity[0] = getBombsInPlayerDir(row, col, -1, -1);
+		proximity[1] = getBombsInPlayerDir(row, col, -1, 0);
+		proximity[2] = getBombsInPlayerDir(row, col, -1, 1);
+		proximity[3] = getBombsInPlayerDir(row, col, 0, -1);
+		proximity[4] = getBombsInPlayerDir(row, col, 0, 0);
+		proximity[5] = getBombsInPlayerDir(row, col, 0, 1);
+		proximity[6] = getBombsInPlayerDir(row, col, 1, -1);
+		proximity[7] = getBombsInPlayerDir(row, col, 1, 0);
+		proximity[8] = getBombsInPlayerDir(row, col, 1, 1);
+		for(int i=0; i<9; i++) {
+			if(proximity[i] == 5) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	private boolean canPlaceBombAndEscape(LinkedList<Integer> moves){
-		if(getBombCount() >= getAmmo() || !moveSafe(0)) {
-			//System.out.println("oui");
-			return false;
+	private int getBombsInPlayerDir(int x, int y, int xdir, int ydir){
+		// détermine les cases où les bombes peuvent tuer
+		int xx = x + xdir;
+		int yy = y + ydir;
+		if(xx < 0 || xx >= board.getCases().length || yy < 0 || yy >= board.getCases()[0].length) {
+			return 0;
 		}
-		ArrayList<IntPair> bombtiles = getCasesInBombRange(getPositionXasInt(), getPositionYasInt());
-		ArrayList<IntPair> movetiles = getAccessibleCases(cases[getPositionXasInt()][getPositionYasInt()]);
-		boolean goodPlace = false;
-		boolean safe = false;
-		for(IntPair t : bombtiles){
-			if(!goodPlace && cases[t.getX()][t.getY()].getWall() != null && cases[t.getX()][t.getY()].getWall().isBreakable())
-				goodPlace = true;
+		Case t = board.getCases()[xx][yy];
+		if (t.getBomb() != null) return 5;
+		if (t.getWall() != null && t.getWall().isBreakable()) {
+			return 3;
+		} else if(t.getWall() != null){
+			return 4;
 		}
-		// always place a bomb if an enemy is nearby, or on a random chance
-		if(enemyCheck() || random.nextInt(5) == 0) goodPlace = true;
-		if(!goodPlace) return false;
-		for(IntPair t : movetiles){
-			if(!safe && !bombtiles.contains(t) && getRouteToCase(cases[t.getX()][t.getY()], moves))
-				safe = true;
-		}
-		System.out.println(safe);
-		return safe;
+		return 0;
+		
 	}
-
-	private boolean moveSafe(int move){
-		// check if the case is a safe place
-		IntPair pos = xyFromMove(getPositionXasInt(), getPositionYasInt(), move);
-		Case t = cases[pos.getX()][pos.getY()];
-		return (t.getBomb() == null || !t.getBomb().getwillBeExploding());
+	
+	private void runAwayFromBomb() {
+		 // start thinking
+	//		System.out.println("Deciding where to run ......");
+		if(proximity[0] == 5 || proximity[2] == 5 ||proximity[6] == 5 || proximity[8] == 5 ) {
+			// stop
+			runDir = 0;
+		}
+		else if(proximity[3] == 5 || proximity[5] == 5) {
+			if(proximity[1] == 4 || proximity[1] == 3) {
+				//move down
+				runDir = 3;
+			}
+			else {
+				//move up
+				runDir = 1;
+			}				
+		}
+		else if(proximity[1] == 5 || proximity[7] == 5) {
+			if(proximity[3] == 4 || proximity[3] == 3) {
+				//move right
+				runDir = 2;
+			}
+			else {
+				//move left
+				runDir = 4;
+			}				
+		}
+		else if(proximity[4] == 5) {
+			if(proximity[0] == 4 || proximity[0] == 3) {
+				// move diagonal right up ie go to vicinity[2]
+			    runDir = 6;
+			}
+			if(proximity[2] == 4 || proximity[2] == 3) {
+				// move diagonal right down ie go to vicinity[8]
+			    runDir = 7;
+			}
+			if(proximity[8] == 4 || proximity[8] == 3) {
+				// move diagonal left down ie go to vicinity[6]
+			   runDir = 8;
+			}
+			if(proximity[6] == 4 || proximity[6] == 3) {
+				// move diagonal left up ie go to vicinity[0]
+			   runDir = 5;
+			}
+		}
+		runTo(runDir);
 	}
-
-	private class BFSCase {
-		IntPair c;
-		BFSCase prev;
-		int dir;
-		BFSCase(IntPair t, BFSCase b, int s){
-			c = t;
-			prev = b;
-			dir = s;
+	
+	
+	public void runTo(int i) {
+		if (i == 0) {
+			stop();
+		} else if (i == 1) {
+			player.setPressUp();
+		} else if (i == 2) {
+			player.setPressRight();
+		} else if (i == 3) {
+			player.setPressDown();
+		} else if (i == 4) {
+			player.setPressLeft();
+		} else if (i == 5) {
+			player.setPressUp();
+			player.setPressLeft();
+		} else if (i == 6) {
+			player.setPressUp();
+			player.setPressRight();
+		} else if (i == 7) {
+			player.setPressDown();
+			player.setPressRight();
+		} else {
+			player.setPressDown();
+			player.setPressLeft();
 		}
 	}
-
-
-	private class IntPair {
-		// cordonnées de cases as int,int
-		private int l;
-		private int r;
-		public IntPair(int l, int r){
-			this.l = l;
-			this.r = r;
-		}
-		public int getX(){ return l; }
-		public int getY(){ return r; }
-	}
+	
 }
