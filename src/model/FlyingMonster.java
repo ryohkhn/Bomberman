@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Iterator;
 
 public class FlyingMonster extends Monster implements AI {
 	private static final int TYPE = 1;
@@ -228,21 +229,22 @@ public class FlyingMonster extends Monster implements AI {
 			xx = x + i;
 			if(xx < 0 || xx >= board.getCases().length) break;
 			Case t = board.getCases()[xx][y];
-			for (Movable m :t.getMovablesOnCase()) {
+			Iterator<Movable> iter = t.getMovablesOnCase().iterator();
+			while(iter.hasNext()) {
+				Movable m = iter.next();
 				if (m instanceof Player) {
-					//System.out.println("col bas victime (x,y) :" + xx + "," + y);
 					return 0;
 				}
 			}
-
 		}
 		for(int i = 1; i < board.getCases().length; i++){
 			xx = x - i;
 			if(xx < 0 || xx >= board.getCases().length) break;
 			Case t = board.getCases()[xx][y];
-			for (Movable m :t.getMovablesOnCase()) {
+			Iterator<Movable> iter = t.getMovablesOnCase().iterator();
+			while(iter.hasNext()) {
+				Movable m = iter.next();
 				if (m instanceof Player) {
-					//System.out.println("col haut victime (x,y) :" + xx + "," + y);
 					return 1;
 				}
 			}
@@ -260,9 +262,10 @@ public class FlyingMonster extends Monster implements AI {
 			yy = y + i;
 			if(yy < 0 || yy >= board.getCases()[0].length) break;
 			t = board.getCases()[x][yy];
-			for (Movable m :t.getMovablesOnCase()) {
+			Iterator<Movable> iter = t.getMovablesOnCase().iterator();
+			while(iter.hasNext()) {
+				Movable m = iter.next();
 				if (m instanceof Player) {
-					//System.out.println("ligne droite victime (x,y) :" + x + "," + yy);
 					return 3;
 				}
 			}
@@ -272,10 +275,11 @@ public class FlyingMonster extends Monster implements AI {
 			yy = y - i;
 			if(yy < 0 || yy >= board.getCases()[0].length) break;
 			t = board.getCases()[x][yy];
-			for (Movable m :t.getMovablesOnCase()) {
+			Iterator<Movable> iter = t.getMovablesOnCase().iterator();
+			while(iter.hasNext()) {
+				Movable m = iter.next();
 				if (m instanceof Player) {
-					//System.out.println("ligne gauche victime (x,y) :" + x + "," + yy);
-					return 2;
+					return 4;
 				}
 			}
 

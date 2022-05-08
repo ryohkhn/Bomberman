@@ -77,7 +77,7 @@ public class GameMonster extends Game{
     }
 
     private boolean checkplace(int x,int y) {
-        boolean check = false;
+        boolean free = true;
         if (x == 0 || y == 0 || x == 12 || y == 14) {
             return false;
         }
@@ -86,30 +86,30 @@ public class GameMonster extends Game{
             return false;
         }
         if (x-1 > 0) {
-            check = check || board.getCases()[x-1][y].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            free = board.getCases()[x-1][y].getMovablesOnCase().isEmpty();
             if (y-1 > 0) {
-                check = check || board.getCases()[x-1][y-1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+                free = free && !board.getCases()[x-1][y-1].hasPlayers();
             }
-            if (y+1 > 0) {
-                check = check || board.getCases()[x-1][y+1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            if (y+1 < 14) {
+                free = free && !board.getCases()[x-1][y+1].hasPlayers();
             }
         }
         if (y-1 > 0) {
-            check = check || board.getCases()[x][y-1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            free = free && board.getCases()[x][y-1].getMovablesOnCase().isEmpty();
         }
-        if (y+1 > 0) {
-            check = check || board.getCases()[x][y+1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+        if (y+1 < 14) {
+            free = free && board.getCases()[x][y+1].getMovablesOnCase().isEmpty();
         }
         if (x+1 < 12) {
-            check = check || board.getCases()[x+1][y].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+            free = free && board.getCases()[x+1][y].getMovablesOnCase().isEmpty();
             if (y-1 > 0) {
-                check = check || board.getCases()[x+1][y-1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+                free = free && !board.getCases()[x+1][y-1].hasPlayers();
             }
             if (y+1 < 14) {
-                check = check || board.getCases()[x+1][y+1].getMovablesOnCase().stream().filter(play -> play instanceof Movable).findFirst().isPresent();
+                free = free && !board.getCases()[x+1][y+1].hasPlayers();
             }
         }
-        return !check;
+        return free;
     }
 
 
@@ -240,9 +240,12 @@ public class GameMonster extends Game{
         addMonsters();
         updateSpeed();
         monsters.removeIf(m -> !m.isAlive());
-        for(Monster m : monsters){
-            m.update(deltaTime);
-        }
+        Iterator<Monster> iter = monsters.iterator();
+		while(iter.hasNext()) {
+			Monster m = iter.next();
+			if (m.isAlive()) m.update(deltaTime);
+            else iter.remove();
+		}
     }
 
     public void updateSpeed() {

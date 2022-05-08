@@ -81,7 +81,7 @@ public class Case{
 		Iterator<Movable> iter = movablesOnCase.iterator();
 		while(iter.hasNext()) {
 			Movable m = iter.next();
-			if (m instanceof Player) {
+			if (m instanceof Player && ((Player)m).isAlive()) {
 				((Player)m).setAlive(false);
 				iter.remove();
 			}
@@ -97,6 +97,10 @@ public class Case{
 			}
 		}
 		return false;
+	}
+
+	public boolean hasPlayers() {
+		return hasPlayers(null);
 	}
 
 	public Player getPlayerOnCase(Player p) {
