@@ -52,6 +52,7 @@ public class Gui extends JFrame implements KeyListener{
     public void endGame(){
         this.remove(guiBoard);
         this.remove(guiBar);
+        this.game.stopMusic();
         this.game = null;
 
         this.guiMenu=new GuiMenu(this);
@@ -74,7 +75,7 @@ public class Gui extends JFrame implements KeyListener{
             game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);
 			break;
 		}
-		game.timer = 0;
+		Game.timer = 0;
 		board = game.init();
         this.guiBar=new GuiBar(game);
         this.guiBoard=new GuiBoard(game, this);

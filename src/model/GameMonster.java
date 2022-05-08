@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+
+import javax.sound.sampled.Clip;
+
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
@@ -17,6 +20,7 @@ public class GameMonster extends Game{
     private double endTime = -1;
     private int monsterMAX;
     private int numberOfMonstersTotal;
+    private Clip gameMusic;
 
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
@@ -173,7 +177,7 @@ public class GameMonster extends Game{
         double currentTime;
 
         try {
-			playSound("resources/SFX/BackgroundMusic.wav", true);
+			gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
 		} catch (Exception e1) {}
         boolean endLoop = false;
         while(!endLoop){
@@ -327,4 +331,9 @@ public class GameMonster extends Game{
     public boolean getPaused() {
         return this.paused;
     }
+
+	@Override
+	public void stopMusic() {
+		this.gameMusic.stop();
+	}
 }

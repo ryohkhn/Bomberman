@@ -2,6 +2,9 @@ package model;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import javax.sound.sampled.Clip;
+
 import java.awt.event.KeyEvent;
 
 import controller.PlayerInput;
@@ -18,6 +21,7 @@ public class GamePVP extends Game{
     private volatile boolean paused = false;
     private long pauseTime;
     private long resumeTime;
+    private Clip gameMusic;
 
     public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
 		this.gui = gui;
@@ -26,7 +30,7 @@ public class GamePVP extends Game{
         nbPlayers = numberOfPlayers;
         nbAI = numberOfAI;
         System.out.println(nbAI);
-        if (nbAI == 0 && nbPlayers == 0) {
+        if (nbAI == 0 && nbPlayers < 2) {
             nbPlayers = 2;
         }
         if (nbAI != 0 && nbPlayers == 0) {
@@ -118,7 +122,7 @@ public class GamePVP extends Game{
         double lastTime = System.currentTimeMillis();
 
         try {
-			playSound("resources/SFX/BackgroundMusic.wav", true);
+			gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
 		} catch (Exception e1) {}
         while(true){
             gameEnd = hasEnded();
@@ -257,5 +261,9 @@ public class GamePVP extends Game{
 
     public boolean getPaused(){
         return this.paused;
+    }
+    
+    public void stopMusic() {
+    	this.gameMusic.stop();
     }
 }

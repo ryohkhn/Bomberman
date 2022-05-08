@@ -61,4 +61,8 @@ public abstract class Game{
 	public boolean getGameEnd(){
 		return gameEnd;
 	}
+	
+
+	private static Clip gameMusic;
+    public abstract void stopMusic();
 }
