@@ -56,6 +56,7 @@ public class WalkingMonster extends Monster implements AI{
 				if (spriteIndex == 4) {
 					spriteIndex = 0;
 					isset =false;
+					dead = true;
 					return;
 				}
 			}

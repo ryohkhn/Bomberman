@@ -27,6 +27,7 @@ public class Player extends GameObject implements Movable{
 	private Bot bot;
 
 	private Board board; // utile pour les bombes, possiblement temporaire
+	private boolean dead;
 
     public Player(int id,float x,float y, Board board,boolean isAi) {
         super(x,y);
@@ -77,11 +78,16 @@ public class Player extends GameObject implements Movable{
 				if (spriteIndex==8) {
 					spriteIndex=0;
 					isset=false;
+					dead = true;
 					return;
 				}
                 spriteTimer=0;
 			}
 		}
+	}
+
+	public boolean getDead() {
+		return dead;
 	}
 	/* stock inputs into varaibles */
     public void bindKeys(int up, int down, int left, int right, int action) {

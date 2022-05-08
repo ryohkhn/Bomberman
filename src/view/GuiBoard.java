@@ -355,6 +355,7 @@ public class GuiBoard extends JPanel{
     }
 
     private void paintMonsters(Graphics2D g2) throws IOException {
+        System.out.println("monstersboard" + monsters.size());
         for (Monster monster: monsters) {
             float x = monster.getPositionX() - 0.4F;
             float y = monster.getPositionY() - 0.4F;

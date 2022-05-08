@@ -56,24 +56,31 @@ public class GameMonster extends Game{
         Monster monster = null;
         int i = monsters.size();
         if (i < monsterMAX) {
+            //System.out.println("monstersgame" + monsters.size());
+            //System.out.println("numofmonsterstot" + numberOfMonstersTotal);
             int r = random.nextInt(3);
             if (r == 2) monster = new WalkingMonster(0, 0, board);
             else monster = new FlyingMonster(0, 0, board);
-            monsters.add(monster);
-            placeMonster(monster);
-            numberOfMonstersTotal += 1;
+            if (placeMonster(monster)) {
+                monsters.add(monster);
+                numberOfMonstersTotal += 1;
+            }
         }
     }
 
-    public void placeMonster(Monster monster) {
+    public boolean placeMonster(Monster monster) {
         int x;
         int y;
+        int timing = 0;
         do {
             x = random.nextInt(11) + 1;
             y = random.nextInt(13) + 1;
-        }while (!checkplace(x,y));
+            timing++; // avoid loopholes
+        }while (!checkplace(x,y) && timing <= 25);
+        if (timing > 25) return false;
         monster.setMonster(x+0.4F, y+0.4F);
         board.getCases()[x][y].addMovableOnCase(monster);
+        return true;
     }
 
     private boolean checkplace(int x,int y) {
@@ -239,12 +246,11 @@ public class GameMonster extends Game{
     private void monsterUpdate(double deltaTime) {
         addMonsters();
         updateSpeed();
-        monsters.removeIf(m -> !m.isAlive());
         Iterator<Monster> iter = monsters.iterator();
 		while(iter.hasNext()) {
 			Monster m = iter.next();
-			if (m.isAlive()) m.update(deltaTime);
-            else iter.remove();
+            if (m.getDead()) iter.remove();
+			else m.update(deltaTime);
 		}
     }
 

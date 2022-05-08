@@ -62,6 +62,7 @@ public class FlyingMonster extends Monster implements AI {
 				if (spriteIndex == 4) {
 					spriteIndex = 0;
 					isset =false;
+					dead = true;
 					return;
 				}
 			}
@@ -187,14 +188,6 @@ public class FlyingMonster extends Monster implements AI {
 			direction = 1;
 		}
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
-        
-    }
-
-    @Override
-    public void killPlayers() {
-		int line= (int)position.x;
-		int column= (int)position.y;
-		board.getCases()[line][column].killPlayers();
         
     }
 

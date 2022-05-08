@@ -10,6 +10,7 @@ public abstract class Monster extends GameObject implements Movable{
     protected int nextInvoke;
 	protected int thinkTime;
     protected double spriteTimer;
+    protected boolean dead;
     protected Monster(float x, float y) {
         super(x, y);
         //TODO Auto-generated constructor stub
@@ -33,6 +34,9 @@ public abstract class Monster extends GameObject implements Movable{
 		isset = true;
         direction = -1;
 	}
+    public boolean getDead() {
+		return dead;
+	}    
 
     public void setAlive(boolean b) {
 		if (!b) {
@@ -56,4 +60,6 @@ public abstract class Monster extends GameObject implements Movable{
     public float roundFloat(float f) {
         return (float)(Math.round((f)*100.0)/100.0);
     }
+
+    public abstract void update(double d);
 }
