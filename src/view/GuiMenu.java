@@ -15,6 +15,14 @@ import javax.swing.plaf.basic.BasicButtonUI;
 
 public class GuiMenu extends JPanel implements ActionListener{
 	private final JPanel buttonPanel = new JPanel();
+    private JPanel settingPanel = new JPanel();
+	private JRadioButton gamePvpButton = new JRadioButton();
+    private JRadioButton gameMonsterButton = new JRadioButton();
+    private JPanel nbAI = new JPanel();
+    private JPanel nbPlayers = new JPanel();
+    private JPanel maps;
+    private JButton returnButton;
+    
 	private JButton newGame;
     private JButton settings;
     private JButton quit;
@@ -28,14 +36,15 @@ public class GuiMenu extends JPanel implements ActionListener{
 	public GuiMenu(Gui frame) {
 		this.frame = frame;
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-
-		// Buttons
+		addButtons();
+		add(buttonPanel);
+		setVisible(true);
+	}
+	
+	private void addButtons() {
 		newGame = new JButton("Start Game");
-		//newGame.setToolTipText("Click this button to start a new game.");
 		settings = new JButton("Settings");
-		//settings.setToolTipText("Click this button change the settings of the game.");
 		quit = new JButton("Quit");
-		//quit.setToolTipText("Click this button quit the game.");
 		
 		newGame.addActionListener(newGameAction);
 		settings.addActionListener(settingsAction);
@@ -55,10 +64,6 @@ public class GuiMenu extends JPanel implements ActionListener{
 			b.setUI(new StyledButtonUI());
 		}
 		
-		//////////////////
-		//End of buttons//
-		//////////////////
-		
 		try
 		{
 		    setUIFont(new javax.swing.plaf.FontUIResource("Courier",Font.BOLD,12));
@@ -67,10 +72,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 		
 		buttonPanel.setOpaque(true);
 		buttonPanel.setBackground(new Color(0,0,0,0));
-		add(buttonPanel);
-		setVisible(true);
 	}
-	
 	 /**
      * This Action disposes the current frame to make room for a new game.
      */
@@ -82,111 +84,76 @@ public class GuiMenu extends JPanel implements ActionListener{
     /**
      * This Action is called when the user clicks on the settings button, it creates a new SettingsFrame.
      */
+    JPanel gamemodes = null;
+    JPanel game;
     public Action settingsAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 		    
-	        JPanel settingPanel = new JPanel();
 	        settingPanel.setLayout(new BoxLayout(settingPanel, BoxLayout.Y_AXIS));
 	        
-	        //
-	        // Gamemode
-	        //
-	                
-	        JRadioButton gamePvpButton = new JRadioButton();
-	        JRadioButton gameMonsterButton = new JRadioButton();
-	        gamePvpButton.setText("PVP");
-	        gameMonsterButton.setText("Monsters");
-	        
-	        switch(getGamemode()) {
-		        case 0:
-					gameMonsterButton.setSelected(true);
-		        	break;
-		        case 1:
-		        	gamePvpButton.setSelected(true);
-		        	break;
+	        if(gamemodes == null) {
+		        gamemodes = setGamemode();	        
+		        setPlayersAI();
+		        setMaps();
+		        game = new JPanel();
+		        returnButton = setReturnButton();
+		        
+		        game.setLayout(new BoxLayout(game, BoxLayout.Y_AXIS));
+		        game.add(Box.createRigidArea(new Dimension(0, 20)));
+		        game.add(gamemodes);
+		        game.add(nbPlayers);
+		        game.add(nbAI);
+		        if(!mapError) {
+			        game.add(Box.createRigidArea(new Dimension(0, 10)));
+			        JLabel text = new JLabel("Select map:");
+			        text.setAlignmentX(Component.CENTER_ALIGNMENT);
+			        game.add(text);
+			        game.add(Box.createRigidArea(new Dimension(0, 10)));
+			        game.add(maps);
+		        }
+	
+		        game.add(Box.createRigidArea(new Dimension(0, 20)));
+		        settingPanel.add(game);
+		        settingPanel.add(returnButton);
+		        
+		        JComponent[] comp = {gamePvpButton, gameMonsterButton, game, settingPanel};
+		        for(JComponent c : comp) {
+		        	c.setOpaque(true);
+		        	c.setBackground(new Color(0,0,0,0));
+		        }
 	        }
-	        
-	        ButtonGroup editableGroup = new ButtonGroup();
-	        editableGroup.add(gamePvpButton);
-	        editableGroup.add(gameMonsterButton);
-	        
-	        gamePvpButton.addActionListener(new ActionListener() {
+	        buttonPanel.setVisible(false);
+	        remove(buttonPanel);
+	        settingPanel.setVisible(true);
+	        add(settingPanel);
+	        repaint();
+		}
+
+        private JButton setReturnButton() {
+        	JButton returnButton = new JButton("Return");
+	        returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        returnButton.setUI(new StyledButtonUI());
+	        returnButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	                gamemode = 1;
-	            }
-	        });
-	        
-	        gameMonsterButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                gamemode = 0;
-	            }
-	        });
-	        
-	        JPanel gamemodes = new JPanel();
-	        gamemodes.add(new JLabel("Select gamemode:"));
-	        gamemodes.add(gamePvpButton);
-	        gamemodes.add(gameMonsterButton);
-	        gamemodes.setOpaque(true);
-	        gamemodes.setBackground(new Color(0,0,0,0));
-	        
-	        //
-	        // Number of players and AI
-	        //
-	        
-	        JPanel nbPlayers = new JPanel();
-	        Integer[] optionsToChoose = {1,2,3,4};
-	        JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
-	        jComboBox.setSelectedItem(getNumberOfPlayers());
-	       
-	        
-	        nbPlayers.add(new JLabel("Number of players: "));
-	        nbPlayers.add(jComboBox);
-	        nbPlayers.setOpaque(true);
-	        nbPlayers.setBackground(new Color(0,0,0,0));
-
-	        JPanel nbAI = new JPanel();
-	        //Integer[] optionsToChooseAI = {0,1,2,3};
-			Integer[] optionsToChooseAI = {};
-	        JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
-	        for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
-                jComboBoxAI.addItem(i);
-            }
-	        jComboBoxAI.setSelectedItem(getNumberOfAI());
-
-	        nbAI.add(new JLabel("Number of AI: "));
-	        nbAI.add(jComboBoxAI);
-	        nbAI.setOpaque(true);
-	        nbAI.setBackground(new Color(0,0,0,0));
-	        
-	        jComboBoxAI.addActionListener (new ActionListener () {
-	            public void actionPerformed(ActionEvent e) {
-	                numberOfAI = (jComboBoxAI.getItemCount() == 0) ? 0 : (int) jComboBoxAI.getSelectedItem();
+	                settingPanel.setVisible(false);
+	                remove(settingPanel);
+	                add(buttonPanel);
+	    	        buttonPanel.setVisible(true);
 	                repaint();
 	            }
 	        });
-	        
-	        jComboBox.addActionListener (new ActionListener () {
-	            public void actionPerformed(ActionEvent e) {
-	                numberOfPlayers = (int) jComboBox.getSelectedItem();
-	                jComboBoxAI.removeAllItems();		                
-	                for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
-		                jComboBoxAI.addItem(i);
-	                }
-	            }
-	        });
-	        transparentBox(jComboBox);
-	        transparentBox(jComboBoxAI);
-	        
-	        //
-	        // Maps
-	        //
-	        
-	        GridLayout mapLayout = new GridLayout(1,3);
+	        returnButton.setPreferredSize(new Dimension(150,30));  
+	        return returnButton;
+		}
+
+		private boolean mapError = false;
+        
+		private void setMaps() {
+			GridLayout mapLayout = new GridLayout(1,3);
+			maps = new JPanel(mapLayout);
 	        mapLayout.setHgap(25);
-	        JPanel maps = new JPanel(mapLayout);
-	        boolean mapError = false;
+	        mapError = false;
 			try {
 				ImageIcon map1 = new ImageIcon(ImageIO.read(new File("resources/default_map.png")));
 				ImageIcon map2 = new ImageIcon(ImageIO.read(new File("resources/empty_map.png")));
@@ -272,59 +239,94 @@ public class GuiMenu extends JPanel implements ActionListener{
 				System.out.println("Maps not found");
 				mapError = true;
 			}
+		}
 
-			//
-			// Return
-			//
-			
-	        JButton returnButton = new JButton("Return");
-	        returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	        returnButton.setUI(new StyledButtonUI());
-	        returnButton.addActionListener(new ActionListener() {
-	            @Override
+		private void setPlayersAI() {
+			nbPlayers = new JPanel();
+	        Integer[] optionsToChoose = {1,2,3,4};
+	        JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
+	        jComboBox.setSelectedItem(getNumberOfPlayers());
+	       
+	        
+	        nbPlayers.add(new JLabel("Number of players: "));
+	        nbPlayers.add(jComboBox);
+	        nbPlayers.setOpaque(true);
+	        nbPlayers.setBackground(new Color(0,0,0,0));
+
+	        //Integer[] optionsToChooseAI = {0,1,2,3};
+			Integer[] optionsToChooseAI = {};
+	        JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
+	        for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
+                jComboBoxAI.addItem(i);
+            }
+	        jComboBoxAI.setSelectedItem(getNumberOfAI());
+
+	        nbAI.add(new JLabel("Number of AI: "));
+	        nbAI.add(jComboBoxAI);
+	        nbAI.setOpaque(true);
+	        nbAI.setBackground(new Color(0,0,0,0));
+	        
+	        jComboBoxAI.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
-	                settingPanel.setVisible(false);
-	                remove(settingPanel);
-	                add(buttonPanel);
-	    	        buttonPanel.setVisible(true);
+	                numberOfAI = (jComboBoxAI.getItemCount() == 0) ? 0 : (int) jComboBoxAI.getSelectedItem();
 	                repaint();
 	            }
 	        });
-	        returnButton.setPreferredSize(new Dimension(150,30));  
+	        
+	        jComboBox.addActionListener (new ActionListener () {
+	            public void actionPerformed(ActionEvent e) {
+	                numberOfPlayers = (int) jComboBox.getSelectedItem();
+	                jComboBoxAI.removeAllItems();		                
+	                for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
+		                jComboBoxAI.addItem(i);
+	                }
+	            }
+	        });
+	        transparentBox(jComboBox);
+	        transparentBox(jComboBoxAI);
+		}
 
-	        JPanel game = new JPanel();
-	        game.setLayout(new BoxLayout(game, BoxLayout.Y_AXIS));
+		private JPanel setGamemode() {
+	        gamePvpButton.setText("PVP");
+	        gameMonsterButton.setText("Monsters");
 	        
-	        game.add(Box.createRigidArea(new Dimension(0, 20)));
-	        game.add(gamemodes);
-	        game.add(nbPlayers);
-	        game.add(nbAI);
-	        if(!mapError) {
-		        game.add(Box.createRigidArea(new Dimension(0, 10)));
-		        JLabel text = new JLabel("Select map:");
-		        text.setAlignmentX(Component.CENTER_ALIGNMENT);
-		        game.add(text);
-		        game.add(Box.createRigidArea(new Dimension(0, 10)));
-		        game.add(maps);
-	        }
-
-	        game.add(Box.createRigidArea(new Dimension(0, 20)));
-	        settingPanel.add(game);
-	        settingPanel.add(returnButton);
-	        
-	        JComponent[] comp = {gamePvpButton, gameMonsterButton, game, settingPanel};
-	        for(JComponent c : comp) {
-	        	c.setOpaque(true);
-	        	c.setBackground(new Color(0,0,0,0));
+	        switch(getGamemode()) {
+		        case 0:
+					gameMonsterButton.setSelected(true);
+		        	break;
+		        case 1:
+		        	gamePvpButton.setSelected(true);
+		        	break;
 	        }
 	        
-	        buttonPanel.setVisible(false);
-	        remove(buttonPanel);
-	        settingPanel.setVisible(true);
-	        add(settingPanel);
-	        repaint();
+	        ButtonGroup editableGroup = new ButtonGroup();
+	        editableGroup.add(gamePvpButton);
+	        editableGroup.add(gameMonsterButton);
+	        
+	        gamePvpButton.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                gamemode = 1;
+	            }
+	        });
+	        
+	        gameMonsterButton.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                gamemode = 0;
+	            }
+	        });
+	        
+	        JPanel gamemodes = new JPanel();
+	        gamemodes.add(new JLabel("Select gamemode:"));
+	        gamemodes.add(gamePvpButton);
+	        gamemodes.add(gameMonsterButton);
+	        gamemodes.setOpaque(true);
+	        gamemodes.setBackground(new Color(0,0,0,0));
+	        return gamemodes;
 		}
     };
+    
     /**
      * This Action terminates the current process.
      */
