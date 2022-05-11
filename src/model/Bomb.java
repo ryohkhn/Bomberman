@@ -70,26 +70,6 @@ public class Bomb extends GameObject{
 
     }
 
-    public boolean getwillBeExploding() {
-        return willBeExploding;
-    }
-
-    public void setWillBeExploding() {
-        this.willBeExploding = true;
-    }
-    public int getFuse() {
-        return fuse;
-    }
-
-    public void setFuse(int fuse) {
-        this.fuse = fuse;
-    }
-    public boolean getKill() {
-        return kill;
-    }
-    public void setKill(boolean kill) {
-        this.kill = kill;
-    }
 
     /**
      * Function that kills players in a cross-shaped area (with each extension of length firepower)
@@ -185,6 +165,10 @@ public class Bomb extends GameObject{
         return pointsCount;
     }
     
+    /**
+     * Plays audio file
+     * @param soundfile: audio file path
+     */
     void playSound(String soundFile) throws Exception {
         File f = new File("resources/SFX/" + soundFile);
         AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
@@ -255,15 +239,25 @@ public class Bomb extends GameObject{
         return stopTop;
     }
 
-    @Override
-    public String toString() {
-        return "Bomb{" +
-                "player=" + player +
-                ", firepower=" + firepower +
-                ", pierce=" + pierce +
-                ", spriteIndex=" + spriteIndex +
-                ", hasExploded=" + hasExploded +
-                '}';
+    public boolean getwillBeExploding() {
+        return willBeExploding;
+    }
+
+    public void setWillBeExploding() {
+        this.willBeExploding = true;
+    }
+    public int getFuse() {
+        return fuse;
+    }
+
+    public void setFuse(int fuse) {
+        this.fuse = fuse;
+    }
+    public boolean getKill() {
+        return kill;
+    }
+    public void setKill(boolean kill) {
+        this.kill = kill;
     }
 }
 
