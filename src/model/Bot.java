@@ -84,6 +84,7 @@ public class Bot implements AI {
 			}
 		}
 		Collections.sort(tiles, edc); // to the closest enemy
+		if(tiles.size() == 0) return null;
 		return tiles.get(0);
 	}
 

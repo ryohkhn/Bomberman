@@ -23,7 +23,7 @@ public class Player extends GameObject implements Movable{
 	private boolean isset;
 	private int firepower = 1; //max 6
 	private boolean coop;
-	private boolean ai;
+	private boolean ai = false;
 	private Bot bot;
 
 	private Board board; // utile pour les bombes, possiblement temporaire
@@ -41,7 +41,7 @@ public class Player extends GameObject implements Movable{
 		this.setAttributs(x,y);
 		this.ai = isAi;
 		System.out.println(this.id + ": est bot" + this.ai);
-		if (ai) bot = new Bot(board,this); 
+		if (this.ai) bot = new Bot(board,this); 
     }
 
 	@Override
@@ -393,7 +393,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	public void addFirepower(boolean max) {
-		this.firepower = (max)?6:this.firepower+1;
+		this.firepower += (max)?2:1;
 		if(this.firepower>6)this.firepower=6;
 	}
 
@@ -515,7 +515,7 @@ public class Player extends GameObject implements Movable{
     }
     
     public void addSpeed() {
-    	this.speed += 0.5;
+    	this.speed += 0.2;
     }
     
 	public void setPierce(boolean pierce) {
