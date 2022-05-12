@@ -86,9 +86,7 @@ public class Player extends GameObject implements Movable{
 		}
 	}
 
-	public boolean getDead() {
-		return dead;
-	}
+
 	/* stock inputs into varaibles */
     public void bindKeys(int up, int down, int left, int right, int action) {
 		keyUp = up;
@@ -98,8 +96,11 @@ public class Player extends GameObject implements Movable{
 		keyAction = action;
 	}
 
+	/**
+	 * move the player down if there's no wall, considering hitbox
+	 * @param deltaTime is used to establish speedDelta.
+	 */
 	@Override
-	// move the player down if there's no wall, considering hitbox
     public void detectCollisionDown(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 0;
@@ -134,8 +135,11 @@ public class Player extends GameObject implements Movable{
 		Board.cases[(int)position.x][(int)position.y].addMovableOnCase(this);
 	}
 
+	/**
+	 * move the player up if there's no wall, considering hitbox
+	 * @param deltaTime is used to establish speedDelta.
+	 */
 	@Override
-	// move the player up if there's no wall, considering hitbox
 	public void detectCollisionUp(double deltaTime) {
 		double speedDelta=speed/deltaTime;
 		direction = 3;
@@ -294,7 +298,7 @@ public class Player extends GameObject implements Movable{
 	/**
 	 * Adds dropped bomb to player bombs list and increase the count.
 	 */
-	public void dropBomb() {
+	protected void dropBomb() {
 		if(bombCount < this.ammo && (this.board.getCases()[(int)position.x][(int)position.y].getBomb()==null)){
 			bombList.add(new Bomb((int)position.x,(int)position.y, this, board));
 			bombCount += 1;
@@ -308,7 +312,7 @@ public class Player extends GameObject implements Movable{
 	 * operate kick action.
 	 * @return the counts of bombs who exploded
 	 */
-	public int bombUpdate() {
+	protected int bombUpdate() {
 		int bombsExploded = 0;
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
@@ -546,5 +550,9 @@ public class Player extends GameObject implements Movable{
 
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	public boolean getDead() {
+		return dead;
 	}
 }

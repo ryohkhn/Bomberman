@@ -2,7 +2,6 @@ package view;
 
 import model.Board;
 import model.Game;
-import model.GamePVP;
 import model.Player;
 
 import javax.imageio.ImageIO;
@@ -51,28 +50,24 @@ public class GuiBar extends JPanel{
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        Graphics2D g2= (Graphics2D) g;
-        try{
-            g2.setFont(font);
-            g2.setColor(Color.WHITE);
-            drawBarImage(g2);
-            paintBar(g2);
-            drawValues(g2);
-            drawPlayersHeads(g2);
-            if(game.getPaused()){
-                paintFilter(g2);
-            }
-        } catch(IOException e){
-            e.printStackTrace();
+        Graphics2D g2=(Graphics2D) g;
+        g2.setFont(font);
+        g2.setColor(Color.WHITE);
+        drawBarImage(g2);
+        paintBar(g2);
+        drawValues(g2);
+        drawPlayersHeads(g2);
+        if(game.getPaused()){
+            paintFilter(g2);
         }
         if(game.getGameEndScreen()) paintFilter(g2);
     }
 
-    private void drawBarImage(Graphics2D g2) throws IOException{
+    private void drawBarImage(Graphics2D g2){
         g2.drawImage(barImage,0,0,this.getWidth(),this.getHeight(),null);
     }
 
-    private void paintBar(Graphics2D g2) throws IOException{
+    private void paintBar(Graphics2D g2){
         if(game.isGamePvp()){
             int multiplier=0;
             for(Player player : players){
@@ -85,7 +80,11 @@ public class GuiBar extends JPanel{
         }
     }
 
-    private void drawValues(Graphics2D g2) throws IOException{
+    /**
+     * Draw values on the bar related to time and player points
+     * @param g2 paintComponent object used to paint
+     */
+    private void drawValues(Graphics2D g2){
         int minutes=((int)(Game.timer/1000)%3600)/60;
         int seconds=((int)(Game.timer/1000)%60);
         int points=0;
@@ -106,7 +105,7 @@ public class GuiBar extends JPanel{
 
     }
 
-    private void drawPlayersHeads(Graphics2D g2) throws IOException{
+    private void drawPlayersHeads(Graphics2D g2){
         int multiplier=0;
         if(game.isGamePvp()){
             for(int i=0; i<players.size(); i++){
@@ -116,10 +115,14 @@ public class GuiBar extends JPanel{
         }
     }
 
-    private void paintFilter(Graphics2D g){
+    /**
+     * Paint a transparent filter when the game is paused or ended
+     * @param graphics paintComponent object used to paint
+     */
+    private void paintFilter(Graphics2D graphics){
         int alpha=157;
         Color blackFilter=new Color(0, 0, 0,alpha);
-        g.setColor(blackFilter);
-        g.fillRect(0,0,this.getWidth(),this.getHeight());
+        graphics.setColor(blackFilter);
+        graphics.fillRect(0,0,this.getWidth(),this.getHeight());
     }
 }

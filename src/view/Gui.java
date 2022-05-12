@@ -34,7 +34,9 @@ public class Gui extends JFrame implements KeyListener{
         this.add(guiMenu,BorderLayout.CENTER);
         try {
 			menuMusic = Game.playSound("resources/SFX/MenuMusic.wav", true);
-		} catch (Exception e) {}
+		} catch (Exception e){
+            e.printStackTrace();
+        }
         
         setLocationRelativeTo(null);
         setVisible(true);
@@ -67,12 +69,18 @@ public class Gui extends JFrame implements KeyListener{
         this.add(guiMenu,BorderLayout.CENTER);
         try {
             menuMusic = Game.playSound("resources/SFX/MenuMusic.wav", true);
-        } catch (Exception e) {}
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Create Model objects and Gui objects to start the game after menu configuration is done
+     */
 	public void startGame(){
 		this.remove(guiMenu);
 		if (menuMusic != null) menuMusic.stop();
+
 		switch(guiMenu.getGamemode()) {
 		case 0:
             game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),this);
@@ -81,10 +89,12 @@ public class Gui extends JFrame implements KeyListener{
             game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);
 			break;
 		}
+
 		Game.timer = 0;
 		board = game.init();
         this.guiBar=new GuiBar(game);
         this.guiBoard=new GuiBoard(game, this);
+
         guiBar.setPreferredSize(new Dimension(this.getWidth()/15,this.getHeight()/13));
         this.add(guiBar,BorderLayout.NORTH);
 		this.add(guiBoard,BorderLayout.CENTER);
@@ -97,16 +107,20 @@ public class Gui extends JFrame implements KeyListener{
 	}
 
 
+    /**
+     * Key event to pause the game and resume
+     * @param keyEvent key pressed
+     */
     @Override
     public void keyPressed(KeyEvent keyEvent){
         int k = keyEvent.getKeyCode();
-        if(k==KeyEvent.VK_ESCAPE){
+        if(!game.hasEnded() && k==KeyEvent.VK_ESCAPE){
             if(!game.getPaused()){
                 guiBoard.showPauseButtons();
-            	game.pause();
+                game.pause();
             } else{
                 guiBoard.removePauseButtons();
-            	game.resume();
+                game.resume();
             }
         }
     }

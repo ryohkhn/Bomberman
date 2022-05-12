@@ -21,6 +21,9 @@ public class GameMonster extends Game{
     private int numberOfMonstersTotal;
     private Clip gameMusic;
 
+    private int minutesTimer=3;
+    private int secondsTimer=0;
+
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
@@ -272,7 +275,7 @@ public class GameMonster extends Game{
                 alivePlayer -= 1;
             }
         }
-        return alivePlayer == 0 || aliveMonsters == 0 || (((int)(Game.timer/1000)%3600)/60 == 10 && ((int)(Game.timer/1000)%60) == 0);
+        return alivePlayer == 0 || aliveMonsters == 0 || (((int)(Game.timer/1000)%3600)/60 == minutesTimer && ((int)(Game.timer/1000)%60) == secondsTimer);
         // check monsters
     }
 
