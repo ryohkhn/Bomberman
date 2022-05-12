@@ -18,7 +18,7 @@ public class Bonus{
         },
 
         /**
-         *  Increases firepower
+         *  Increases firepower by 1
          */
         Fireup(){
             @Override
@@ -28,7 +28,7 @@ public class Bonus{
         },
 
         /**
-         *  Increases firepower to max
+         *  Increases firepower by 2
          */
         Firemax(){
             @Override
