@@ -29,13 +29,10 @@ Bombes:
 2. Sans bonus, quand l’explosion entre en contact avec un objet (pas un joueur ou un ennemi), elle le détruit si possible, mais ne détruit pas l’objet derrière
 
 Bonus :
-1. Traverser les monstres (pendant une durée) ?
-2. Vie supplémentaire
-3. Augmenter la portée des bombes
-4. Pousser les bombes
-5. Courir plus vite
-6. Bombe supplémentaire
-7. Passer à travers les blocs ?
+1. Augmenter la portée des bombes
+2. Pousser les bombes
+3. Courir plus vite
+4. Bombe supplémentaire
 
 Modes de jeu:
 1. Multijoueur local (avec ou sans bots) - Il s'agit d'un affrontement entre les joueurs. Le but étant d'éliminer tous les joueurs (portail à la fin)
@@ -55,7 +52,3 @@ Taches pour le jeu minimal:
 - Mode de base (JCJ)
 - Menu (choix de niveau)
 - Affichage tête haute
-
-- Intellij IDEA, VSC
-- Java 10 (adaptable aux machines du Script)
-
