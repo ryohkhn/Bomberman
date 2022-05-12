@@ -27,10 +27,14 @@ Contributeurs : VYSHKA Tedi,   THIRUKUMAR Kieran, RODRIGUEZ Lucas,  MARTINEAU Cl
     ```
 
 ### Utiliser le logiciel
-1. Exécuter le programe
+1. Exécuter le programme via make
     ```
     make run
     ```
+2. Exécuter le programme via un fichier JAR
+   ```
+   java -jar bomberman.jar
+   ```
 
 ## Controleur
 ### Joueur 1
