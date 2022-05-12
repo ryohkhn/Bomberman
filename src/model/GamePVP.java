@@ -32,7 +32,6 @@ public class GamePVP extends Game{
         players = new ArrayList<>();
         nbPlayers = numberOfPlayers;
         nbAI = numberOfAI;
-        System.out.println(nbAI);
         if (nbAI == 0 && nbPlayers < 2) {
             nbPlayers = 1;
             nbAI = 1;

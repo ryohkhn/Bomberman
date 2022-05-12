@@ -154,8 +154,6 @@ public class FlyingMonster extends Monster implements AI {
     @Override
     public void detectCollisionLeft(double d) {
         double speedDelta=speed/d;
-		//System.out.println("Kick :" + this.kick);
-		//System.out.println("Pierce :" + this.pierce);
 		board.getCases()[(int) position.x][(int) position.y].deleteMovableOnCase(this);
 		int line=(int) position.x;
 		int column=(int) position.y;

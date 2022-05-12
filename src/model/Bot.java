@@ -132,7 +132,6 @@ public class Bot implements AI {
 		}else if(localReached){ // use path
 			localReached = false;
 			currDir = path/powerCurrent;
-			System.out.println(":::: Direction chosen ::::: "+currDir);
 			path = path%powerCurrent;
 			powerCurrent = powerCurrent/10;
 			if(currDir == 1) {// up
@@ -276,8 +275,7 @@ public class Bot implements AI {
 		if(depth > maxDepth) {
 			int distanceCol = enemy.getPositionXasInt() - col;
 			int distanceRow = enemy.getPositionYasInt() - row;
-			System.out.println(distanceCol);
-			System.out.println(distanceRow);
+
 			int distance = distanceCol*distanceCol + distanceRow*distanceRow;
 			
 			if(distance < traverseValue) {
@@ -322,7 +320,6 @@ public class Bot implements AI {
 		}
 		else if(board.getCases()[row][col].getBomb() != null) {
 			bombRow = row; bombCol = col;
-			System.out.println("Bomb!!");
 			return;
 		}
 		

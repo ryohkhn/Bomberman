@@ -105,8 +105,6 @@ public class Gui extends JFrame implements KeyListener{
         requestFocusInWindow();
 
         gameThread=new Thread(() -> game.gameLoop());
-        System.out.println("start gameThread\n");
-
         gameThread.start();
 	}
 
