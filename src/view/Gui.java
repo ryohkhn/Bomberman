@@ -87,10 +87,10 @@ public class Gui extends JFrame implements KeyListener{
 
 		switch(guiMenu.getGamemode()) {
 		case 0:
-            game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(), guiMenu.getNumberOfAI(),this);
+            game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),this);
 			break;
 		case 1:
-            game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);
+            game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),this);
 			break;
 		}
 
@@ -105,6 +105,7 @@ public class Gui extends JFrame implements KeyListener{
         requestFocusInWindow();
 
         gameThread=new Thread(() -> game.gameLoop());
+        
         gameThread.start();
 	}
 

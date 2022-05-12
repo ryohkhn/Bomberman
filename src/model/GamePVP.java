@@ -23,22 +23,13 @@ public class GamePVP extends Game{
      * Constructor for GamePVP
      * @param map
      * @param numberOfPlayers
-     * @param numberOfAI
      * @param gui
      */
-    public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
+    public GamePVP(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
         players = new ArrayList<>();
         nbPlayers = numberOfPlayers;
-        nbAI = numberOfAI;
-        if (nbAI == 0 && nbPlayers < 2) {
-            nbPlayers = 1;
-            nbAI = 1;
-        }
-        if (nbAI != 0 && nbPlayers == 0) {
-            nbPlayers = 1;
-        }
     }
 
     /**

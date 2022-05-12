@@ -108,6 +108,8 @@ public class WalkingMonster extends Monster implements AI{
 			}
 		} 
 		else{
+			position.y=nextColumn-hitboxWidthRight-0.01F;
+			position.y=roundFloat(position.y);
 			stop();
 		}
 		if (board.getCases()[line][nextColumn].getBomb() != null) {
@@ -139,6 +141,8 @@ public class WalkingMonster extends Monster implements AI{
 				stop();
 			}
 		} else {
+			position.x=line+hitboxHeightTop+0.01F;
+			position.x=roundFloat(position.x);
 			stop();
 		}
 		if (board.getCases()[nextLine][column].getBomb() != null) {
@@ -171,6 +175,8 @@ public class WalkingMonster extends Monster implements AI{
 				stop();
 			}
 		} else {
+			position.y=column+hitboxWidthLeft+0.01F;
+			position.y=roundFloat(position.y);
 			stop();
 		}
 		if (board.getCases()[line][nextColumn].getBomb() != null) {
@@ -179,11 +185,11 @@ public class WalkingMonster extends Monster implements AI{
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
     }
 
-    @Override
 	/**
 	 * move the player down if there's no wall, considering hitbox
-	 * @param deltaTime is used to establish speedDelta.
+	 * @param d is used to establish speedDelta.
 	 */
+    @Override
     public void detectCollisionDown(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -204,6 +210,8 @@ public class WalkingMonster extends Monster implements AI{
 				stop();
 			}
 		} else {
+			position.x=nextLine-hitboxHeightBottom-0.01F;
+			position.x=roundFloat(position.x);
 			stop();
 		}
 		if (board.getCases()[nextLine][column].getBomb() != null) {
@@ -226,15 +234,14 @@ public class WalkingMonster extends Monster implements AI{
     @Override
     public void chooseDirection() {
 		if (direction == -1) {
-			direction = randi.nextInt(3);
+			direction = randi.nextInt(4);
 			return;
 		}
-		int d = direction;
+		int d;
         do {
-			d = randi.nextInt(5);
-		} while ((direction == d && !move) || d == 4);
-		if (d == 5) spriteIndex = 0;
-		if (d != 5 && d != -1) direction = d;
+			d=randi.nextInt(4);
+		} while ((direction == d && !move));
+		direction=d;
     }
 
 

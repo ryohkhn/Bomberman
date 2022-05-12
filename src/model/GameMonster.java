@@ -30,17 +30,12 @@ public class GameMonster extends Game{
     private int minutesTimer=3;
     private int secondsTimer=0;
 
-    public GameMonster(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
+    public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
         players = new ArrayList<>();
         monsters = new ArrayList<>();
         nbPlayers = numberOfPlayers;
-        nbAI = numberOfAI;
-        if (nbPlayers == 0) {
-            nbPlayers = 1;
-        }
-        // the value of monstermax is different for every map
         if (map.equals("maps/default.csv")) monsterMAX = nbPlayers * 2;
         else if (map.equals("maps/map2.csv")) monsterMAX = (nbPlayers + 1) * 2;
         else monsterMAX = (nbPlayers + 2) * 2;

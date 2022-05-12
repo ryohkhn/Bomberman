@@ -18,7 +18,6 @@ public class GuiMenu extends JPanel implements ActionListener{
     private final JPanel settingPanel = new JPanel();
 	private final JRadioButton gamePvpButton = new JRadioButton();
     private final JRadioButton gameMonsterButton = new JRadioButton();
-    private final JPanel nbAI = new JPanel();
     private JPanel nbPlayers = new JPanel();
     private JPanel maps;
 
@@ -28,11 +27,10 @@ public class GuiMenu extends JPanel implements ActionListener{
 	private int gamemode = 1; // 0 monster 1 pvp
     private int map = 0; //0 non selected 1-3 selected
     private int numberOfPlayers = 4; // 1-4
-    private int numberOfAI = 0;
-    
+
     /**
      * Constructor for GuiMenu
-     * @param frame
+     * @param frame Gui JFrame object
      */
 	public GuiMenu(Gui frame) {
 		this.frame = frame;
@@ -99,7 +97,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        
 	        if(gamemodes == null) {
 		        gamemodes = setGamemode();	        
-		        setPlayersAI();
+		        setPlayers();
 		        setMaps();
 				JPanel game = new JPanel();
 				JButton returnButton = setReturnButton();
@@ -108,7 +106,6 @@ public class GuiMenu extends JPanel implements ActionListener{
 		        game.add(Box.createRigidArea(new Dimension(0, 20)));
 		        game.add(gamemodes);
 		        game.add(nbPlayers);
-		        game.add(nbAI);
 		        if(!mapError) {
 			        game.add(Box.createRigidArea(new Dimension(0, 10)));
 			        JLabel text = new JLabel("Select map:");
@@ -118,7 +115,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 			        game.add(maps);
 		        }
 	
-		        game.add(Box.createRigidArea(new Dimension(0, 20)));
+		        game.add(Box.createRigidArea(new Dimension(0, 80)));
 		        settingPanel.add(game);
 		        settingPanel.add(returnButton);
 		        
@@ -247,10 +244,21 @@ public class GuiMenu extends JPanel implements ActionListener{
 			}
 		}
 
-		private void setPlayersAI() {
+		private void setPlayers() {
 			nbPlayers = new JPanel();
-	        Integer[] optionsToChoose = {1,2,3,4};
-	        JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
+			Integer[] optionsToChoose;
+			switch(gamemode){
+				case 0:
+					optionsToChoose =new Integer[]{1, 2, 3, 4};
+					break;
+				case 1:
+					optionsToChoose =new Integer[]{2, 3, 4};
+					break;
+				default:
+					optionsToChoose=new Integer[]{0};
+					break;
+			}
+			JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
 	        jComboBox.setSelectedItem(getNumberOfPlayers());
 	       
 	        
@@ -259,36 +267,12 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        nbPlayers.setOpaque(true);
 	        nbPlayers.setBackground(new Color(0,0,0,0));
 
-			Integer[] optionsToChooseAI = {};
-			JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
-	        for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
-                jComboBoxAI.addItem(i);
-            }
-	        jComboBoxAI.setSelectedItem(getNumberOfAI());
-
-	        nbAI.add(new JLabel("Number of AI: "));
-	        nbAI.add(jComboBoxAI);
-	        nbAI.setOpaque(true);
-	        nbAI.setBackground(new Color(0,0,0,0));
-	        
-	        jComboBoxAI.addActionListener (new ActionListener () {
-	            public void actionPerformed(ActionEvent e) {
-	                numberOfAI = (jComboBoxAI.getItemCount() == 0) ? 0 : (int) jComboBoxAI.getSelectedItem();
-	                repaint();
-	            }
-	        });
-	        
 	        jComboBox.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
 	                numberOfPlayers = (int) jComboBox.getSelectedItem();
-	                jComboBoxAI.removeAllItems();		                
-	                for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
-		                jComboBoxAI.addItem(i);
-	                }
 	            }
 	        });
 	        transparentBox(jComboBox);
-	        transparentBox(jComboBoxAI);
 		}
 
 		private JPanel setGamemode() {
@@ -464,9 +448,4 @@ public class GuiMenu extends JPanel implements ActionListener{
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
 	}
-
-	public int getNumberOfAI() {
-		return numberOfAI;
-	}
-	
 }

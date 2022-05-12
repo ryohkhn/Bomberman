@@ -99,9 +99,6 @@ public class Board{
 	    			case "H":
 	    				currentCase.setWall(new Wall(false));
 	    				break;
-	    			case "M":
-						
-						break;
 	    			default:
 	    				break;
     			}

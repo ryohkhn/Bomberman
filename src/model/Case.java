@@ -42,7 +42,8 @@ public class Case{
 	}
 
 	/**
-     * Function that Kill players in the Case and remove them from the case
+	 * * Function that Kill players in the Case
+	 * 	 * @param monster
      */
 	public void killPlayers() {
 		Iterator<Movable> iter = movablesOnCase.iterator();

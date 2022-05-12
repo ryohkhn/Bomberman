@@ -65,11 +65,14 @@ public class FlyingMonster extends Monster implements AI {
 			// check collisions while moving
 			if(direction == 0) {
 				detectCollisionDown(deltaTime);
-			}else if (direction == 1) {
+			}
+			else if (direction == 1) {
 				detectCollisionUp(deltaTime);
-			} else if (direction == 2) {
+			}
+			else if (direction == 2) {
 				detectCollisionLeft(deltaTime);
-			} else if (direction == 3) {
+			}
+			else if (direction == 3) {
 				detectCollisionRight(deltaTime);
 			}
 		}
@@ -111,6 +114,8 @@ public class FlyingMonster extends Monster implements AI {
 			}
 		} 
 		else{
+			position.y=nextColumn-hitboxWidthRight-0.01F;
+			position.y=roundFloat(position.y);
 			stop();
 		}
 		if (board.getCases()[line][nextColumn].getBomb() != null) {
@@ -143,6 +148,8 @@ public class FlyingMonster extends Monster implements AI {
 				stop();
 			}
 		} else {
+			position.x=line+hitboxHeightTop+0.01F;
+			position.x=roundFloat(position.x);
 			stop();
 		}
 		if (board.getCases()[nextLine][column].getBomb() != null) {
@@ -176,6 +183,8 @@ public class FlyingMonster extends Monster implements AI {
 				stop();
 			}
 		} else {
+			position.y=column+hitboxWidthLeft+0.01F;
+			position.y=roundFloat(position.y);
 			stop();
 		}
 		if (board.getCases()[line][nextColumn].getBomb() != null) {
@@ -187,7 +196,7 @@ public class FlyingMonster extends Monster implements AI {
 	
 	/**
 	 * move the player down if there's no wall, considering hitbox
-	 * @param deltaTime is used to establish speedDelta.
+	 * @param d is used to establish speedDelta.
 	 */
     @Override
     public void detectCollisionDown(double d) {
@@ -211,6 +220,8 @@ public class FlyingMonster extends Monster implements AI {
 				stop();
 			}
 		} else {
+			position.x=nextLine-hitboxHeightBottom-0.01F;
+			position.x=roundFloat(position.x);
 			stop();
 		}
 		if (board.getCases()[nextLine][column].getBomb() != null) {
@@ -232,21 +243,40 @@ public class FlyingMonster extends Monster implements AI {
 	 */
     @Override
     public void chooseDirection() {
-		int d = randi.nextInt(2);
-		if (d == 1) {
-			int v = calculateRowDirection();
-			if(v != -1) direction = v;
-			else direction = calculateColDirection();
-		} else if (d == 2) {
-			int h = calculateColDirection();
-			if(h != -1)direction = h;
-			else direction = calculateRowDirection();
-		}
-
 		if (direction == -1) {
-			direction = randi.nextInt(3);
+			direction = randi.nextInt(4);
+		}
+		else{
+			int v;
+			int c;
+			int d=randi.nextInt(2);
+			if (d == 0) {
+				v = calculateRowDirection();
+				if(v != -1){
+					direction = v;
+				}
+				else if((c=calculateColDirection())!=-1){
+					direction=c;
+				}
+				else{
+					direction=randi.nextInt(4);
+				}
+			}
+			else{
+				c = calculateColDirection();
+				if(c != -1){
+					direction = c;
+				}
+				else if((v=calculateRowDirection())!=-1){
+					direction = v;
+				}
+				else{
+					direction=randi.nextInt(4);
+				}
+			}
 		}
 	}
+
 	/**
 	 * Check if the monster can move in any columns
 	 * @return the direction
@@ -299,7 +329,7 @@ public class FlyingMonster extends Monster implements AI {
 			while(iter.hasNext()) {
 				Movable m = iter.next();
 				if (m instanceof Player) {
-					return 3;
+					return 2;
 				}
 			}
 
@@ -312,7 +342,7 @@ public class FlyingMonster extends Monster implements AI {
 			while(iter.hasNext()) {
 				Movable m = iter.next();
 				if (m instanceof Player) {
-					return 4;
+					return 3;
 				}
 			}
 

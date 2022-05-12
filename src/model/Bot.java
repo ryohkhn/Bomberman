@@ -276,7 +276,6 @@ public class Bot implements AI {
 		if(depth > maxDepth) {
 			int distanceCol = enemy.getPositionXasInt() - col;
 			int distanceRow = enemy.getPositionYasInt() - row;
-
 			int distance = distanceCol*distanceCol + distanceRow*distanceRow;
 			
 			if(distance < traverseValue) {

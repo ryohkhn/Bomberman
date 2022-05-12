@@ -28,6 +28,7 @@ public class Player extends GameObject implements Movable{
 
 	private Board board;
 	private boolean dead;
+
 	/**
 	 * Constructor of an object player
 	 * @param id the id of player
@@ -261,7 +262,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	/**
-	 * 	detect diagonal collision when player is between two cases
+	 * 	Detect diagonal collision when player is between two cases
 	 */
 	@Override
 	public boolean detectDiagonalCollisionUpDown(int nextLine,int column){
