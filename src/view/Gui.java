@@ -49,6 +49,10 @@ public class Gui extends JFrame implements KeyListener{
         guiBoard.repaint();
     }
 
+    /**
+     * The function that restart the game by suppressing all references to gui, model and controller.
+     * Launch game Menu.
+     */
     public void restartGame(){
         this.remove(guiBoard);
         this.remove(guiBar);
@@ -70,9 +74,7 @@ public class Gui extends JFrame implements KeyListener{
         this.add(guiMenu,BorderLayout.CENTER);
         try {
             menuMusic = Game.playSound("resources/SFX/MenuMusic.wav", true);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     /**
@@ -84,7 +86,7 @@ public class Gui extends JFrame implements KeyListener{
 
 		switch(guiMenu.getGamemode()) {
 		case 0:
-            game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),this);
+            game = new GameMonster(guiMenu.getMap(),guiMenu.getNumberOfPlayers(), guiMenu.getNumberOfAI(),this);
 			break;
 		case 1:
             game = new GamePVP(guiMenu.getMap(),guiMenu.getNumberOfPlayers(),guiMenu.getNumberOfAI(),this);

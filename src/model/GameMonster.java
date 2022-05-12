@@ -12,26 +12,29 @@ import controller.PlayerInput;
 import view.Gui;
 
 public class GameMonster extends Game{
-    private Gui gui;
+    private final Gui gui;
     private int nbPlayers;
     private int nbAI;
-    private String map;
-    private double endTime = -1;
+    private final String map;
     private int monsterMAX;
     private int numberOfMonstersTotal;
     private Clip gameMusic;
-
+    private final Object pauseLock = new Object();
+    private volatile boolean paused = false;
+    private long pauseTime;
+    private long resumeTime;
     private int minutesTimer=3;
     private int secondsTimer=0;
 
-    public GameMonster(String map, int numberOfPlayers, Gui gui) {
+    public GameMonster(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
 		this.gui = gui;
 		this.map = map;
         players = new ArrayList<>();
         monsters = new ArrayList<>();
         nbPlayers = numberOfPlayers;
-        if (nbAI == 0 && nbPlayers == 0) {
-            nbPlayers = 1; // à mettre dans game monster pour le choix de base
+        this.nbAI = numberOfAI;
+        if (nbPlayers == 0) {
+            nbPlayers = 1;
         }
         if (map.equals("maps/default.csv")) monsterMAX = nbPlayers * 2;
         else if (map.equals("maps/map2.csv")) monsterMAX = (nbPlayers + 1) * 2;
@@ -121,7 +124,10 @@ public class GameMonster extends Game{
         return free;
     }
 
-
+    /**
+     * Adds players to the model and assigns keys to them.
+     * Adds AI.
+     */
     public void addPlayers() {
         float x = 0;
         float y = 0;
@@ -173,16 +179,15 @@ public class GameMonster extends Game{
         }
     }
 
-    private final Object pauseLock = new Object();
-    private volatile boolean paused = false;
-    private long pauseTime;
-    private long resumeTime;
 
+    /**
+     * main loop of the game.
+     */
     @Override
     public void gameLoop() {
         double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
-        
+
         try {
             gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
         } catch (Exception ignored) {}
@@ -313,16 +318,6 @@ public class GameMonster extends Game{
     @Override
     public Board getBoard(){
         return board;
-    }
-
-    @Override
-    public int getNbPlayers(){
-        return nbPlayers;
-    }
-
-    @Override
-    public int getNbAI(){
-        return nbAI;
     }
 
     @Override

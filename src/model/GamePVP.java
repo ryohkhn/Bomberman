@@ -247,16 +247,6 @@ public class GamePVP extends Game{
 	/*
 	 * Getters and setters
 	 */
-	
-    @Override
-    public int getNbPlayers(){
-        return nbPlayers;
-    }
-
-    @Override
-    public int getNbAI() {
-        return nbAI;
-    }
 
     public boolean getPaused(){
         return this.paused;

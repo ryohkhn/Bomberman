@@ -266,7 +266,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        nbPlayers.setOpaque(true);
 	        nbPlayers.setBackground(new Color(0,0,0,0));
 
-			Integer[] optionsToChooseAI = {};
+	        Integer[] optionsToChooseAI = {0,1,2,3};
 	        JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
 	        for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
                 jComboBoxAI.addItem(i);

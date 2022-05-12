@@ -9,10 +9,6 @@ public class Case{
     private Bonus bonus;
     private Bomb bomb;
 
-	public void setWall(Wall wall) {
-		this.wall = wall;
-	}
-
 	/**
      * Kill movables in the Case and give points to the player
      * @return new point count of the player
@@ -128,6 +124,10 @@ public class Case{
 
 	public void setBomb(Bomb bomb) {
 		this.bomb = bomb;
+	}
+
+	public void setWall(Wall wall) {
+		this.wall = wall;
 	}
 
 

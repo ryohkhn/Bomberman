@@ -15,14 +15,11 @@ public abstract class Game{
     public final int FPS = 60;
     protected ArrayList<Player> players;
 	protected ArrayList<Monster> monsters;
-    protected File boardTemplate;
     protected Board board;
 	protected Random random = new Random();
-	protected boolean gameEnd = false;
 	protected boolean gameEndScreen = false;
 	protected boolean gameRestart = false;
-	private final Object pauseLock = new Object();
-    private volatile boolean paused;
+
 
     public abstract void gameLoop();
     public abstract boolean hasEnded();
@@ -31,8 +28,7 @@ public abstract class Game{
 	public abstract void pause();
 	public abstract void resume();
 	public abstract boolean isGamePvp();
-	public abstract int getNbPlayers();
-	public abstract int getNbAI();
+	public abstract void stopMusic();
 
 	/**
 	 * Plays audio file
@@ -68,6 +64,4 @@ public abstract class Game{
 		this.gameRestart = gameRestart;
 	}
 
-	private static Clip gameMusic;
-    public abstract void stopMusic();
 }
