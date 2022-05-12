@@ -13,7 +13,9 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 
+@SuppressWarnings("serial")
 public class GuiMenu extends JPanel implements ActionListener{
+
 	private final JPanel buttonPanel = new JPanel();
     private JPanel settingPanel = new JPanel();
 	private JRadioButton gamePvpButton = new JRadioButton();
@@ -27,12 +29,18 @@ public class GuiMenu extends JPanel implements ActionListener{
     private JButton settings;
     private JButton quit;
     private Gui frame;
+    private JPanel gamemodes = null;
+    private JPanel game;
     
-    private int gamemode = 1; // 0 monster 1 pvp TODO switch les deux game modes une fois monstres réalisés pour solo versus monstres
+    private int gamemode = 1; // 0 monster 1 pvp
     private int map = 0; //0 non selected 1-3 selected
     private int numberOfPlayers = 4; // 1-4
     private int numberOfAI = 0;
     
+    /**
+     * Constructor for GuiMenu
+     * @param frame
+     */
 	public GuiMenu(Gui frame) {
 		this.frame = frame;
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
@@ -41,6 +49,9 @@ public class GuiMenu extends JPanel implements ActionListener{
 		setVisible(true);
 	}
 	
+	/**
+	 * Function to create and add buttons to buttonPanel
+	 */
 	private void addButtons() {
 		newGame = new JButton("Start Game");
 		settings = new JButton("Settings");
@@ -73,20 +84,22 @@ public class GuiMenu extends JPanel implements ActionListener{
 		buttonPanel.setOpaque(true);
 		buttonPanel.setBackground(new Color(0,0,0,0));
 	}
+	
 	 /**
      * This Action disposes the current frame to make room for a new game.
      */
     public Action newGameAction = new AbstractAction() {
-	public void actionPerformed(ActionEvent e) {
-		frame.startGame();
-	}
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent e) {
+			frame.startGame();
+		}
     };
+    
     /**
      * This Action is called when the user clicks on the settings button, it creates a new SettingsFrame.
      */
-    JPanel gamemodes = null;
-    JPanel game;
     public Action settingsAction = new AbstractAction() {
+		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 		    
 	        settingPanel.setLayout(new BoxLayout(settingPanel, BoxLayout.Y_AXIS));
@@ -253,7 +266,6 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        nbPlayers.setOpaque(true);
 	        nbPlayers.setBackground(new Color(0,0,0,0));
 
-	        //Integer[] optionsToChooseAI = {0,1,2,3};
 			Integer[] optionsToChooseAI = {};
 	        JComboBox<Integer> jComboBoxAI = new JComboBox<>(optionsToChooseAI);
 	        for(int i = 0; i < 5 - getNumberOfPlayers(); i++) {
@@ -331,17 +343,18 @@ public class GuiMenu extends JPanel implements ActionListener{
      * This Action terminates the current process.
      */
     public Action quitAction = new AbstractAction() {
+		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 		    System.exit(0);
 		}
     };
     
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void actionPerformed(ActionEvent arg0) {}
 	
+	/**
+	 * Button style class
+	 */
 	static class StyledButtonUI extends BasicButtonUI {
 
 	    @Override
@@ -370,6 +383,10 @@ public class GuiMenu extends JPanel implements ActionListener{
 	    }
 	}
 	
+	/**
+	 * Function to set font of text
+	 * @param f font resource
+	 */
 	public static void setUIFont(FontUIResource f)
 	{   
 	    Enumeration<Object> keys = UIManager.getDefaults().keys();
@@ -391,31 +408,10 @@ public class GuiMenu extends JPanel implements ActionListener{
 		} catch (IOException e) {}
 	}
 
-	public int getGamemode() {
-		return gamemode;
-	}
-
-	public String getMap() {
-		switch(this.map) {
-		case 1:
-			return "maps/default.csv";
-		case 2:
-			return "maps/empty.csv";
-		case 3:
-			return "maps/map2.csv";
-		default:
-			return "maps/default.csv";
-		}
-	}
-
-	public int getNumberOfPlayers() {
-		return numberOfPlayers;
-	}
-
-	public int getNumberOfAI() {
-		return numberOfAI;
-	}
-	
+	/**
+	 * Function to repaint transparent container
+	 * @param container
+	 */
 	private void transparentBox(Container container) {
 	      Component[] components = container.getComponents();
 	      for (Component component : components) {
@@ -451,4 +447,33 @@ public class GuiMenu extends JPanel implements ActionListener{
 	      }
 	   }
 
+	/*
+	 * Getters and setters
+	 */
+	
+	public int getGamemode() {
+		return gamemode;
+	}
+
+	public String getMap() {
+		switch(this.map) {
+		case 1:
+			return "maps/default.csv";
+		case 2:
+			return "maps/empty.csv";
+		case 3:
+			return "maps/map2.csv";
+		default:
+			return "maps/default.csv";
+		}
+	}
+
+	public int getNumberOfPlayers() {
+		return numberOfPlayers;
+	}
+
+	public int getNumberOfAI() {
+		return numberOfAI;
+	}
+	
 }
