@@ -9,6 +9,8 @@ import java.util.Enumeration;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -251,7 +253,20 @@ public class GuiMenu extends JPanel implements ActionListener{
 			Integer[] optionsToChoose =new Integer[]{4,3,2};
 			jComboBox = new JComboBox<>(optionsToChoose);
 	        jComboBox.setSelectedItem(getNumberOfPlayers());
-	       
+	        PopupMenuListener listener = new PopupMenuListener() {
+	            public void popupMenuCanceled(PopupMenuEvent e) {
+	            	repaint();
+	            }
+
+	            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+	            	repaint();
+	            }
+
+	            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	            	repaint();
+	            }
+	          };
+	         jComboBox.addPopupMenuListener(listener);
 	        
 	        nbPlayers.add(new JLabel("Number of players: "));
 	        nbPlayers.add(jComboBox);
@@ -290,6 +305,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	                gamemode = 1;
 	                if(jComboBox.getItemCount() > 3)
 	                	jComboBox.removeItem(1);
+	                repaint();
 	            }
 	        });
 	        
@@ -299,6 +315,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	                gamemode = 0;
 	                if(jComboBox.getItemCount() < 4)
 	                	jComboBox.addItem(1);
+	                repaint();
 	            }
 	        });
 	        
