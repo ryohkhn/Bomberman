@@ -55,8 +55,12 @@ public class GameMonster extends Game{
 
         while(true){
             long startLoopTime = System.currentTimeMillis();
+            if(hasEnded() && !alreadyEnded){
+                endTime = System.currentTimeMillis();
+                alreadyEnded = true;
+            }
             synchronized (pauseLock) {
-                if (paused || hasEnded()) {
+                if (paused || (hasEnded() && endTime + 2000 < System.currentTimeMillis())) {
                     try {
                         gui.repaint();
                         synchronized (pauseLock) {

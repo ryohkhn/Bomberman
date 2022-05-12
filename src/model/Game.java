@@ -17,6 +17,9 @@ public abstract class Game{
     protected Board board;
 	protected Random random = new Random();
 
+	protected double endTime;
+	protected boolean alreadyEnded = false;
+
 
     public abstract void gameLoop();
     public abstract boolean hasEnded();
