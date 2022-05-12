@@ -65,8 +65,7 @@ public class Bomb extends GameObject{
 
 
     /**
-     * Function that kills players in a cross-shaped area (with each extension of length firepower)
-     * and destroy wall (if allowed)
+     * Function that destroy walls in a cross-shaped area (with each extension of length firepower)
      */
     public void explode() {
         if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
