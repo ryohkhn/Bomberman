@@ -1,15 +1,24 @@
 package model;
 
+/**
+ * GameObject stocks the sizes of guiboard and is a superclass
+ * of class Player,Bomb and Monster.
+ * It stocks also the positions of players and bombs.
+ */
 public class GameObject {
-    protected static int sizeX;
-	protected static int sizeY;
+    protected static int sizeX; // sizeX of guiboard
+	protected static int sizeY; // sizeY
 	
-    protected Vector2f position ;
-      
+    protected Vector2f position ; // coordinates of object is stocked in the fields of an Vector2f object
+    /**
+     * Constructor of gameobject is called by players objects
+     * @param x cooridinates
+     * @param y
+     */
     public GameObject(float x, float y) {
     	position = new Vector2f(x,y);
     }
-
+    // setter - getter
     public static void setSizeX(int x) {
         GameObject.sizeX = x;
     }

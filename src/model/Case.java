@@ -93,7 +93,6 @@ public class Case{
 	}
 	
 	//Getters and setters:
-	
 	public void addMovableOnCase(Movable movable) {
 		this.movablesOnCase.add(movable);
 	}

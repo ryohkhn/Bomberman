@@ -1,8 +1,8 @@
 package model;
-
+/**
+ * Interface in order to implement an AI
+ */
 public interface AI {
     void stop(); // stop for chosing new direction
-    void chooseDirection();
-    public interface AIIntelligent extends AI {
-    }
+    void chooseDirection(); // choose a direction
 }

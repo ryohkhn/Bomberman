@@ -3,9 +3,12 @@ package model;
 import java.awt.*;
 import java.util.Random;
 
+/**
+ * interface in order to implement a movable object
+ */
 public interface Movable{
     // methods of moving entities
-    Point point=new Point();
+    Point point=new Point(); // the coordinates of an object
     void detectCollisionRight(double d);
     void detectCollisionUp(double d);
     void detectCollisionLeft(double d);

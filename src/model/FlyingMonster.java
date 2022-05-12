@@ -1,51 +1,69 @@
 package model;
 
 import java.util.Iterator;
-
+/**
+ * FlyingMonster is a monster which moves in the board by columns and rows.
+ * It can fly through breakable walls.
+ * directions. It can target an enemy if it is nearby.
+ *  
+ */
 public class FlyingMonster extends Monster implements AI {
 	private static final int TYPE = 1;
-	public static float speed = 0.3F;
-
+	public static float speed = 0.3F; // speed of walking monster
+	/**
+	 * Constructor of object FlyingMonster
+	 * @param x
+	 * @param y
+	 * @param board
+	 */
     public FlyingMonster(float x, float y,Board board) {
         super(x, y);
         this.board = board;
 		this.isAlive = true;
-		this.thinkTime = 50;
+		this.thinkTime = 50; // time of the bot to think a new action
 		this.spriteTimer = 0;
     }
-
+	/**
+	 * get the id TYPE of an object
+	 */
 	public int getType() {
 		return TYPE;
 	}
 
+	/**
+	 * get the speed of the object
+	 * @return a float
+	 */
 	public static float getSpeed() {
 		return speed;
 	}
 
+	/**
+	 * set the speed of the object
+	 * @param speed
+	 */
 	public static void setSpeed(float speed) {
 		FlyingMonster.speed = speed;
 	}
 
 	public void update(double deltaTime) {
-		//System.out.println("terminatior (x,y) :" + (int)position.x + "," + (int)position.y);
-		if (isAlive() && isset) {
+		if (isAlive() && isset) { // if the monster is alive and was set on board
 			spriteTimer += speed;
-			//System.out.println("spritetimer : " + spriteIndex);
 			if (spriteTimer >= 5) {
-				//System.out.println("spriteindex : " + spriteIndex);
-                spriteIndex++;
+                spriteIndex++; // update the current image according to a spriteTImer
                 spriteTimer = 0;
             }
 			if (spriteIndex >= 3) {
 				spriteIndex = 0;
 			}
-			killPlayers();
+			killPlayers(); // kill players on current board
 			nextInvoke = (++nextInvoke)%thinkTime;
-			if(nextInvoke == 1 && !move) {
+			if(nextInvoke == 1 && !move) { // calculate whenever we get to choose the next move
         		chooseDirection();
 				move = true;
         	}
 			if (!move) spriteIndex = 0;
+			// check collisions while moving
 			if(direction == 0) {
 				detectCollisionDown(deltaTime);
 			}else if (direction == 1) {
@@ -56,20 +74,20 @@ public class FlyingMonster extends Monster implements AI {
 				detectCollisionRight(deltaTime);
 			}
 		}
-		if (!isAlive() && isset) {
-			if (spriteTimer++ >= 15) {
+		if (!isAlive() && isset) { // if the monste isn't alive
+			if (spriteTimer++ >= 15) { // death animations
                 spriteIndex++;
 				if (spriteIndex == 4) {
 					spriteIndex = 0;
 					isset =false;
-					dead = true;
-					return;
+					dead = true; // end of death animations
 				}
 			}
 		}
 	}
 
     @Override
+	// move the player right if there's no wall, considering hitbox
     public void detectCollisionRight(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -77,10 +95,12 @@ public class FlyingMonster extends Monster implements AI {
 		int column= (int)position.y;
 		int nextColumn=column+1;
 		double nextY=position.y+speedDelta;
+		// detect if the player is still on the same case after moving
 		if((nextY+hitboxWidthRight)<nextColumn){
 			position.y+=speedDelta;
 			position.y=roundFloat(position.y);
 		}
+		// detect if there isn't a wall on the next case
 		else if(!(board.getCases()[line][nextColumn].getWall() !=null && !board.getCases()[line][nextColumn].getWall().isBreakable())){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y+=speedDelta;
@@ -99,6 +119,7 @@ public class FlyingMonster extends Monster implements AI {
     }
 
     @Override
+	// move the player up if there's no wall, considering hitbox
     public void detectCollisionUp(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -106,6 +127,7 @@ public class FlyingMonster extends Monster implements AI {
 		int column= (int)position.y;
 		int nextLine=line-1;
 		double nextX=position.x-speedDelta;
+		// detect if the player is still on the same case after moving
 		if((nextX-hitboxHeightTop)>line){
 			position.x-=speedDelta;
 			position.x=roundFloat(position.x);
@@ -126,7 +148,9 @@ public class FlyingMonster extends Monster implements AI {
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
     }
-
+	/**
+	 * move the player left if there's no well,considering the hitbox
+	 */
     @Override
     public void detectCollisionLeft(double d) {
         double speedDelta=speed/d;
@@ -137,10 +161,12 @@ public class FlyingMonster extends Monster implements AI {
 		int column=(int) position.y;
 		int nextColumn=column-1;
 		double nextY=position.y-speedDelta;
+		// detect if the player is still on the same case after moving
 		if((nextY-hitboxWidthLeft)>column){
 			position.y-=speedDelta;
 			position.y=roundFloat(position.y);
 		}
+		// detect if there isn't a wall on the next case
 		else if(!(board.getCases()[line][nextColumn].getWall() !=null && !board.getCases()[line][nextColumn].getWall().isBreakable())){
 			if(detectDiagonalCollisionRightLeft(line,nextColumn)){
 				position.y-=speedDelta;
@@ -157,12 +183,14 @@ public class FlyingMonster extends Monster implements AI {
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
     }
-
+	
+	/**
+	 * move the player down if there's no wall, considering hitbox
+	 * @param deltaTime is used to establish speedDelta.
+	 */
     @Override
     public void detectCollisionDown(double d) {
         double speedDelta=speed/d;
-		//System.out.println("Kick :" + this.kick);
-		//System.out.println("Pierce :" + this.pierce);
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;
 		int column= (int)position.y;
@@ -173,6 +201,7 @@ public class FlyingMonster extends Monster implements AI {
 			position.x+=speedDelta;
 			position.x=roundFloat(position.x);
 		}
+		// detect if there isn't a wall on the next case
 		else if(!(board.getCases()[nextLine][column].getWall() !=null && !board.getCases()[nextLine][column].getWall().isBreakable())){
 			if(detectDiagonalCollisionUpDown(nextLine,column)){
 				position.x+=speedDelta;
@@ -192,9 +221,14 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public void stop() {
+		// set moving to false
     	move = false;
     }
-
+	/**
+	 * Determine if the player should move on the 
+	 * row direction, col direction or randomly
+	 * Stock direction in a variable direction
+	 */
     @Override
     public void chooseDirection() {
 		int d = randi.nextInt(2);
@@ -212,7 +246,10 @@ public class FlyingMonster extends Monster implements AI {
 			direction = randi.nextInt(3);
 		}
 	}
-
+	/**
+	 * Check if the monster can move in any columns
+	 * @return the direction
+	 */
 	protected int calculateColDirection() {
 		int x = (int)position.x;
 		int y = (int)position.y;
@@ -244,7 +281,10 @@ public class FlyingMonster extends Monster implements AI {
 		}
 		return -1;
 	}
-
+	/**
+	 * Check if the monster can move in rows
+	 * @return
+	 */
 	protected int calculateRowDirection() {
 		int x = (int)position.x;
 		int y = (int)position.y;
@@ -282,12 +322,15 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public boolean detectDiagonalCollisionRightLeft(int line, int nextColumn) {
+		// detect if the diagonal left case is empty
 		if(position.x%1<hitboxHeightTop && !(board.getCases()[line-1][nextColumn].getWall()!=null && !board.getCases()[line-1][nextColumn].getWall().isBreakable())){
 			return true;
 		}
+		// detect if the diagonal right case is empty
 		else if(position.x%1>1-hitboxHeightBottom && !(board.getCases()[line+1][nextColumn].getWall()!=null && !board.getCases()[line+1][nextColumn].getWall().isBreakable())){
 			return true;
 		}
+		// detect if the player is in the center of the case
 		else if(position.x%1>hitboxHeightTop && position.x%1<1-hitboxHeightBottom){
 			return true;
 		}
@@ -295,13 +338,19 @@ public class FlyingMonster extends Monster implements AI {
     }
 
     @Override
+	/**
+	 * 	detect diagonal collision when player is between two cases
+	 */
     public boolean detectDiagonalCollisionUpDown(int nextLine, int column) {
+		// detect if the diagonal top case is empty
 		if(position.y%1<hitboxWidthLeft && !(board.getCases()[nextLine][column-1].getWall()!=null && !board.getCases()[nextLine][column-1].getWall().isBreakable())){
 			return true;
 		}
+		// detect if the diagonal bottom case is empty
 		else if(position.y%1>1-hitboxWidthRight && !(board.getCases()[nextLine][column+1].getWall()!=null && !board.getCases()[nextLine][column+1].getWall().isBreakable())){
 			return true;
 		}
+		// detect if the player is in the center of the case
 		else if(position.y%1>hitboxWidthLeft && position.y%1<1-hitboxWidthRight){
 			return true;
 		}

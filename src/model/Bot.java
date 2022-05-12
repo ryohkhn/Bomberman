@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import view.GuiBoard;
 
+/**
+ * Bot that is playing as a player controlled by a computer (Unfinished)
+ * Move and take actions according to the issues faced in the environment
+ */
 public class Bot implements AI {
 
 	private EnemyDistanceComp edc;
@@ -27,7 +31,8 @@ public class Bot implements AI {
 	
 	private int runFromBombTimeLimit = 25*2;
 	
-	private int bombRow, bombCol;
+	private int bombRow; 
+	private int bombCol;
 	
 	private int[] proximity = new int[9];
 	
@@ -38,44 +43,48 @@ public class Bot implements AI {
 	private Player player;
 	private Board board;
 	private boolean bombAround;
-	private int runDir;
 
+	/**
+	 * Constructs an AI object with values passed in by a player object 
+	 * @param b Board of the game
+	 * @param p Original player who is a bot
+	 */
 	public Bot(Board b,Player p) {
 		player = p;
 		board = b;
 		edc = new EnemyDistanceComp();
+		// create int of path
 		for(int i=0; i<maxDepth-1; i++) {
 			powerDepth*=10;
 		}
 	}
 
-	
-
-
+	/**
+	 * Function that updates the actions of AI
+	 */
 	public void update() {
-		if(iReached) {
+		if(iReached) { // case at the end of path reached
 			moveToRow = player.getPositionXasInt();
 			moveToCol = player.getPositionYasInt();
-			//System.out.println("current position : ( "+moveToRow+" , "+moveToCol+" ) ");
 			traverseValue = 9999999;
 			bestPath = 0;
 			Player enemy = getAccessibleCases();
-			//System.out.println("nearest enemy : ( "+enemy.getId()+" ) ");
 			findPath(enemy,0,0,0, player.getPositionXasInt(), player.getPositionYasInt());
 			path = bestPath; // use bestPath directly if everything fine
-			//System.out.println("path to traverse ::  "+path);
      		iReached = false;
      		powerCurrent = powerDepth;
      		timeElapsed = 0;
 		}else {
-			if(!bombAround)
+			if(!bombAround) // check if bombs are around
                 traverse();
-			else
-				runAwayFromBomb();
 		}
 	}
+	/**
+	 * Function that create an arraylist of cases where enemies are present
+	 * ,sort the arraylist by checking the closest enemy
+	 * @return an object player, the first one from the arraylist.
+	 */
 	private Player getAccessibleCases(){
-		// détermine les cases accessibles
 		ArrayList<Player> tiles = new ArrayList<>();
 		for(int x = 0; x < board.getCases().length; ++x){
 			for(int y = 0; y < board.getCases()[0].length; ++y){
@@ -84,11 +93,13 @@ public class Bot implements AI {
 			}
 		}
 		Collections.sort(tiles, edc); // to the closest enemy
-		if(tiles.size() == 0) return null;
+		if(tiles.isEmpty()) return null;
 		return tiles.get(0);
 	}
 
-
+	/**
+	 * Function that releases all actions of the player
+	 */
 	public void stop() {
 		player.setReleasedDown();
 		player.setReleasedLeft();
@@ -96,7 +107,9 @@ public class Bot implements AI {
 		player.setReleasedUp();
 		player.setReleasedAction();
 	}
-
+	/**
+	 * Function that checks and compares the shortest path between an enemy and the current player 
+	 */
 	private class EnemyDistanceComp implements Comparator<Player> {
 		@Override
 		public int compare(Player one, Player two){			
@@ -106,16 +119,17 @@ public class Bot implements AI {
 		}
 	}
 
-
+	/**
+	 * Determine actions of the player and make it effective if path exists.
+	 */
 	private void traverse() {
-		if(path==0) {
+		if(path==0) { // no path then reastart
 			timeElapsed = 0;
 	        stop();
 			powerCurrent = powerDepth;
 			iReached = true;
-			//System.out.println(" path " + bestPath + " is fully traversed ");
 			return;
-		}else if(localReached){ // not reached final but reached next local
+		}else if(localReached){ // use path
 			localReached = false;
 			currDir = path/powerCurrent;
 			System.out.println(":::: Direction chosen ::::: "+currDir);
@@ -130,26 +144,22 @@ public class Bot implements AI {
 			}else if(currDir == 4) {// left
 				moveToCol -= 1;	
 			}
-			//System.out.println("I have to reach : ( "+moveToRow+" , "+moveToCol+" ) ");
 		}else if(!localReached ) {
-			if( Math.abs(player.getPositionY() - moveToRow*GameObject.sizeY) <= player.getSpeed()  && Math.abs(player.getPositionX() - moveToCol*GameObject.sizeX) <= player.getSpeed()) {
-			//	System.out.println("I reached at  : ( "+moveToRow+" , "+moveToCol+" ) ");
+			if( Math.abs(player.getPositionY() - moveToRow*GameObject.sizeY) <= player.getSpeed()  && Math.abs(player.getPositionX() - moveToCol*GameObject.sizeX) <= player.getSpeed()) { // path reached
 				player.setPosition(moveToCol*GameObject.sizeX/board.getCases().length + (GameObject.sizeX - GuiBoard.objectSizex)/2, moveToRow*GameObject.sizeY/board.getCases()[0].length  + (GameObject.sizeY - Player.sizeY)/2);
-				//Engine.updateStage = true;
 				localReached = true;
 				stop();
        		}else {
-				timeElapsed++;
+				timeElapsed++; //  check if the bot isn't in a trap
 				if(timeElapsed > trapTimeLimit) {
                    timeElapsed = 0;
                    localReached = true;
                    stop();
-                  // me.setPosition(me.getCenterCol()*Window.width/StageMatrix.size, me.getCenterRow()*Window.height/StageMatrix.size);
                    path = 0;
                    iReached = true;
 				}else {
-				//	System.out.println("Going towards " + currDir);
-					if(detectBomb(bombRow,bombCol)) {
+					// priority of actions depending on the environment
+					if(detectBomb(bombRow,bombCol)) { // check bombs
 						//runThink = true;
 					    bombAround = true;
 					    path = 0;
@@ -160,7 +170,7 @@ public class Bot implements AI {
 					    timeElapsed = 0;
 					    currDir = 0;
 					  //  return;
-					}else if(kill) {
+					}else if(kill) { // setbomb
 						if(runFromBombTime <= 0) {
 							stop();
 							player.setAction();
@@ -179,7 +189,7 @@ public class Bot implements AI {
 							stop();
 						}
 					}
-					else if(decidedToBreak) {
+					else if(decidedToBreak) { // decide to break wall
 						stop();
 						player.setAction();
 						 
@@ -190,7 +200,7 @@ public class Bot implements AI {
 					    timeElapsed = 0;
 					    currDir = 0;
 					}
-					else {
+					else { // move
 		               chooseDirection();
 					}
 				}
@@ -198,6 +208,9 @@ public class Bot implements AI {
 		}
 	}
 	
+	/**
+	 * Function that sets movements of the current bot according to the variable currDIr
+	 */
 	public void chooseDirection() {
 		if(currDir == 0) { // do nothing
 			player.setReleasedDown();
@@ -219,7 +232,9 @@ public class Bot implements AI {
 		}
 		
 	}
-    
+    /**
+	 * Function which the path to take in order to escape the bomb
+	 */
 	private void moveAway() {
 		int row = player.getPositionXasInt();
 		int col = player.getPositionYasInt();
@@ -244,8 +259,17 @@ public class Bot implements AI {
 		
 	}
 
-	
-	
+	/**
+	 * Function which determines the path recursively.
+	 * Cases are checked for each directions.
+	 * If a path exists, return the path
+	 * @param enemy the target as enemy
+	 * @param depth the depth of the path which isn't deeper than 4
+	 * @param direction the direction 
+	 * @param path int where the path is stocked
+	 * @param row the row of the current case from where paths are checked
+	 * @param col the col of the current case from where paths are checked
+	 */
 	private void findPath(Player enemy, int depth, int direction, int path, int row, int col) {
 
 		
@@ -315,117 +339,50 @@ public class Bot implements AI {
 		
 	}
 	
-	
+	/**
+	 * Function that checks bombs around the player
+	 * @param row current position in row of player
+	 * @param col current postiion in col of player
+	 * @return boolean which checks it.
+	 */
 	private boolean detectBomb(int row, int col) {
-		// détermine les cases où les bombes peuvent tuer
-		proximity[0] = getBombsInPlayerDir(row, col, -1, -1);
-		proximity[1] = getBombsInPlayerDir(row, col, -1, 0);
-		proximity[2] = getBombsInPlayerDir(row, col, -1, 1);
-		proximity[3] = getBombsInPlayerDir(row, col, 0, -1);
-		proximity[4] = getBombsInPlayerDir(row, col, 0, 0);
-		proximity[5] = getBombsInPlayerDir(row, col, 0, 1);
-		proximity[6] = getBombsInPlayerDir(row, col, 1, -1);
-		proximity[7] = getBombsInPlayerDir(row, col, 1, 0);
-		proximity[8] = getBombsInPlayerDir(row, col, 1, 1);
+		proximity[0] = getElementsInPlayerDir(row, col, -1, -1);
+		proximity[1] = getElementsInPlayerDir(row, col, -1, 0);
+		proximity[2] = getElementsInPlayerDir(row, col, -1, 1);
+		proximity[3] = getElementsInPlayerDir(row, col, 0, -1);
+		proximity[4] = getElementsInPlayerDir(row, col, 0, 0);
+		proximity[5] = getElementsInPlayerDir(row, col, 0, 1);
+		proximity[6] = getElementsInPlayerDir(row, col, 1, -1);
+		proximity[7] = getElementsInPlayerDir(row, col, 1, 0);
+		proximity[8] = getElementsInPlayerDir(row, col, 1, 1);
 		for(int i=0; i<9; i++) {
-			if(proximity[i] == 5) {
+			if(proximity[i] == 5) { // if 5 there is a bomb
 				return true;
 			}
 		}
 		return false;
 	}
-
-	private int getBombsInPlayerDir(int x, int y, int xdir, int ydir){
-		// détermine les cases où les bombes peuvent tuer
+	/**
+	 * get the Elements present a new case
+	 * @param x current case of x
+	 * @param y current case of y
+	 * @param xdir direction in row
+	 * @param ydir direction in col
+	 * @return the value according to the present element
+	 */
+	private int getElementsInPlayerDir(int x, int y, int xdir, int ydir){
 		int xx = x + xdir;
 		int yy = y + ydir;
 		if(xx < 0 || xx >= board.getCases().length || yy < 0 || yy >= board.getCases()[0].length) {
 			return 0;
 		}
 		Case t = board.getCases()[xx][yy];
-		if (t.getBomb() != null) return 5;
+		if (t.getBomb() != null) return 5; // bomb placed
 		if (t.getWall() != null && t.getWall().isBreakable()) {
-			return 3;
+			return 3; // brekable wall
 		} else if(t.getWall() != null){
-			return 4;
+			return 4; // solid wall
 		}
 		return 0;
-		
 	}
-	
-	private void runAwayFromBomb() {
-		 // start thinking
-	//		System.out.println("Deciding where to run ......");
-		if(proximity[0] == 5 || proximity[2] == 5 ||proximity[6] == 5 || proximity[8] == 5 ) {
-			// stop
-			runDir = 0;
-		}
-		else if(proximity[3] == 5 || proximity[5] == 5) {
-			if(proximity[1] == 4 || proximity[1] == 3) {
-				//move down
-				runDir = 3;
-			}
-			else {
-				//move up
-				runDir = 1;
-			}				
-		}
-		else if(proximity[1] == 5 || proximity[7] == 5) {
-			if(proximity[3] == 4 || proximity[3] == 3) {
-				//move right
-				runDir = 2;
-			}
-			else {
-				//move left
-				runDir = 4;
-			}				
-		}
-		else if(proximity[4] == 5) {
-			if(proximity[0] == 4 || proximity[0] == 3) {
-				// move diagonal right up ie go to vicinity[2]
-			    runDir = 6;
-			}
-			if(proximity[2] == 4 || proximity[2] == 3) {
-				// move diagonal right down ie go to vicinity[8]
-			    runDir = 7;
-			}
-			if(proximity[8] == 4 || proximity[8] == 3) {
-				// move diagonal left down ie go to vicinity[6]
-			   runDir = 8;
-			}
-			if(proximity[6] == 4 || proximity[6] == 3) {
-				// move diagonal left up ie go to vicinity[0]
-			   runDir = 5;
-			}
-		}
-		runTo(runDir);
-	}
-	
-	
-	public void runTo(int i) {
-		if (i == 0) {
-			stop();
-		} else if (i == 1) {
-			player.setPressUp();
-		} else if (i == 2) {
-			player.setPressRight();
-		} else if (i == 3) {
-			player.setPressDown();
-		} else if (i == 4) {
-			player.setPressLeft();
-		} else if (i == 5) {
-			player.setPressUp();
-			player.setPressLeft();
-		} else if (i == 6) {
-			player.setPressUp();
-			player.setPressRight();
-		} else if (i == 7) {
-			player.setPressDown();
-			player.setPressRight();
-		} else {
-			player.setPressDown();
-			player.setPressLeft();
-		}
-	}
-	
 }

@@ -21,14 +21,21 @@ public class Player extends GameObject implements Movable{
 	private boolean kick = false;
 	private boolean pierce = false;
 	private boolean isset;
-	private int firepower = 1; //max 6
+	private int firepower = 1;
 	private boolean coop;
 	private boolean ai = false;
 	private Bot bot;
 
-	private Board board; // utile pour les bombes, possiblement temporaire
+	private Board board;
 	private boolean dead;
-
+	/**
+	 * Constructor of an object player
+	 * @param id the id of player
+	 * @param x the row position 
+	 * @param y the column position
+	 * @param board the board of the game
+	 * @param isAi boolean if the object player is ai (unfinished)
+	 */
     public Player(int id,float x,float y, Board board,boolean isAi) {
         super(x,y);
     	this.id = id;
@@ -40,24 +47,25 @@ public class Player extends GameObject implements Movable{
 		this.spriteIndex = 0;
 		this.setAttributs(x,y);
 		this.ai = isAi;
-		System.out.println(this.id + ": est bot" + this.ai);
 		if (this.ai) bot = new Bot(board,this); 
     }
 
 	@Override
 	public void update(double deltaTime) {
-		if (alive && isset) {
+		if (alive && isset) { // if player is alive and was set on board
 			if (ai) {
 				bot.update();
 			}
 			if ((spriteTimer += speed) >= 12) {
-                spriteIndex++;
+                spriteIndex++; // update the current image according to a spriteTimer
                 spriteTimer = 0;
             }
             if ((!pressUp && !pressDown && !pressLeft && !pressRight) || (this.spriteIndex >= 3)) {
+				// if the player doesn't move/ is standing
                 spriteIndex = 0;
             }
-			if(pressUp){
+			// checking collisions for each movements
+			if(pressUp){ 
 				detectCollisionUp(deltaTime);
 			}
 			else if(pressDown){
@@ -72,11 +80,11 @@ public class Player extends GameObject implements Movable{
 				dropBomb();
 			}
 		}
-		if (!alive && isset) {
+		if (!alive && isset) { // if not alive, show death animations
 			if (spriteTimer++>=12) {
                 spriteIndex++;
 				if (spriteIndex==8) {
-					spriteIndex=0;
+					spriteIndex=0; // no more death animations
 					isset=false;
 					dead = true;
 					return;
