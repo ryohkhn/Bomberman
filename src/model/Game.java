@@ -19,11 +19,6 @@ public abstract class Game{
     protected Board board;
 	protected Random random = new Random();
 	protected boolean gameEnd = false;
-
-
-
-	private final Object pauseLock = new Object();
-    private volatile boolean paused;
     
     public abstract void gameLoop();
 
@@ -38,6 +33,13 @@ public abstract class Game{
 	public abstract int getNbPlayers();
 	public abstract int getNbAI();
 
+	/**
+	 * Plays audio file
+	 * @param soundFile
+	 * @param loop boolean to loop the audio or not
+	 * @return clip object of audio
+	 * @throws Exception
+	 */
 	public static Clip playSound(String soundFile, boolean loop) throws Exception {
 	    File f = new File(soundFile);
 	    AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
@@ -50,7 +52,6 @@ public abstract class Game{
 	    clip.open(audioIn);
 	    clip.start();
 	    if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
-	    
 	    return clip;
 	}
 
@@ -62,7 +63,5 @@ public abstract class Game{
 		return gameEnd;
 	}
 	
-
-	private static Clip gameMusic;
     public abstract void stopMusic();
 }

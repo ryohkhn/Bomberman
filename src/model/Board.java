@@ -22,30 +22,23 @@ public class Board{
 	private Thread thread;
 	private boolean monstermode;
     
+	/**
+	 * Constructor for board
+	 * @param filename path to map csv file
+	 * @param mode gamemode pvp or monsters
+	 * @throws FileNotFoundException
+	 */
 	public Board(String filename,boolean mode) throws FileNotFoundException {
 		this.loadBoardFile(filename);
 		monstermode = mode;
 		this.loadCases();
-		//this.printCases();
-	}
-
-	public Case[][] getCases() {
-		return cases;
-	}
-
-	public void setPlayerList(ArrayList<Player> playerList) {
-		this.playerList = playerList;
-	}
-
-	public void setMonsterList(ArrayList<Monster> monsterList) {
-		this.monsterList = monsterList;
-	}
-
-	public boolean getMonsterMode() {
-		return monstermode;
 	}
 	
-    //take filename and load the board
+	/**
+	 * Take filename and load the board
+	 * @param filename file path to a csv file of the board
+	 * @throws FileNotFoundException
+	 */
     public void loadBoardFile(String filename) throws FileNotFoundException   {
     	// Loading map file
         try {
@@ -74,7 +67,9 @@ public class Board{
     }
     
     
-    //create array of array of cases from mapLayout
+    /**
+     * Create array of array of cases from mapLayout
+     */
     public void loadCases() {
 		sizeCol = this.mapLayout.size();
 		sizeRow = this.mapLayout.get(0).size();
@@ -114,49 +109,32 @@ public class Board{
     			}
 				
     			cases[lineCount][columnCount] = currentCase;
-    			
     			columnCount++;
     		}
     		lineCount++;
     	}
     }
+	
+	/*
+	 * Getters and setters:
+	 */
     
-    public void printCases() {
-    	for(Case[] line : cases) {
-    		for(Case c : line) {
-    			if(c.getBomb() != null) System.out.print("(");
-    			if(c.getWall() != null) {
-    				String res = c.getWall().isBreakable()?"B":"H";
-    				System.out.print(res);
-    			}
-    			else {
-    				if(c.getMovablesOnCase().size()==0) {
-    					System.out.print("E");
-    				}
-    				else {
-    					System.out.print(((Player) (c.getMovablesOnCase().get(0))).getId());
-    				}
-    			}
-    			if(c.getBomb() != null) System.out.print(")");
-    			else System.out.print(" ");
-    		}
-    		
-    		System.out.println();
-    	}
-    }
-
-	public ArrayList<Player> getPlayerList(){
-		return playerList;
+	public Case[][] getCases() {
+		return cases;
 	}
 
-	public int getCasesCol() {
-		return cases[0].length;
+	public void setPlayerList(ArrayList<Player> playerList) {
+		this.playerList = playerList;
 	}
 
-	public int getCasesRow() {
-		return cases.length;
+	public void setMonsterList(ArrayList<Monster> monsterList) {
+		this.monsterList = monsterList;
 	}
 
+	public boolean getMonsterMode() {
+		return monstermode;
+	}
+	
 	public Player getPlayer(int i) {
 		return playerList.get(i);
 	}
@@ -167,5 +145,17 @@ public class Board{
 
 	public Monster getMonster(int i) {
 		return monsterList.get(i);
+	}
+	
+	public ArrayList<Player> getPlayerList(){
+		return playerList;
+	}
+
+	public int getCasesCol() {
+		return cases[0].length;
+	}
+
+	public int getCasesRow() {
+		return cases.length;
 	}
 }

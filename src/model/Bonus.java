@@ -78,7 +78,9 @@ public class Bonus{
         this.type = type;
     }
 
-    // Random bonuss
+    /**
+     *  Random bonus
+     */
     private static Type[] bonuses = Type.values();
     private static Random random = new Random();
     static final Type randomBonus() {

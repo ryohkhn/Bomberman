@@ -15,7 +15,6 @@ public class GamePVP extends Game{
     private int nbPlayers;
     private int nbAI;
     private String map;
-    private double endTime = -1;
 
     private final Object pauseLock = new Object();
     private volatile boolean paused = false;
@@ -23,6 +22,13 @@ public class GamePVP extends Game{
     private long resumeTime;
     private Clip gameMusic;
 
+    /**
+     * Constructor for GamePVP
+     * @param map
+     * @param numberOfPlayers
+     * @param numberOfAI
+     * @param gui
+     */
     public GamePVP(String map, int numberOfPlayers, int numberOfAI, Gui gui) {
 		this.gui = gui;
 		this.map = map;
@@ -94,7 +100,7 @@ public class GamePVP extends Game{
             gui.addKeyListener(key);
             players.add(player);
             i++;
-        }
+         }
         while (i < nbPlayers + nbAI) {
             if (i == 1) {
                 x = 11.4F;
@@ -114,7 +120,7 @@ public class GamePVP extends Game{
     }
 
     /**
-     * the main loop of the game.
+     * The main loop of the game.
      */
     @Override
     public void gameLoop() {
@@ -170,12 +176,10 @@ public class GamePVP extends Game{
                 e.printStackTrace();
             }
         }
-    
-        //gui.endScreen();
     }
 
     /**
-     * updating player(s) position.
+     * Updating player(s) position.
      * @param deltaTime loop time interval.
      */
     public void playerUpdate(double deltaTime) {
@@ -185,7 +189,7 @@ public class GamePVP extends Game{
     }
 
     /**
-     * updating bomb(s).
+     * Updating bomb(s).
      * @return the number of exploded bombs.
      */
     private int bombUpdate() {
@@ -212,7 +216,7 @@ public class GamePVP extends Game{
     }
 
     /**
-     * set pause.
+     * Set pause.
      */
 	public void pause() {
         pauseTime = System.currentTimeMillis();
@@ -220,7 +224,7 @@ public class GamePVP extends Game{
     }
 
     /**
-     * resume game.
+     * Resume game.
      */
     public void resume() {
         resumeTime = System.currentTimeMillis();
@@ -231,13 +235,8 @@ public class GamePVP extends Game{
         }
     }
 
-    @Override
-    public boolean isGamePvp(){
-        return true;
-    }
-
     /**
-     * update bomb(s) timer with the pause duration.
+     * Update bomb(s) timer with the pause duration.
      */
 	private void bombPauseUpdate() {
 		timer -= (resumeTime - pauseTime);
@@ -250,6 +249,10 @@ public class GamePVP extends Game{
         pauseTime = 0;
 	}
 
+	/*
+	 * Getters and setters
+	 */
+	
     @Override
     public int getNbPlayers(){
         return nbPlayers;
@@ -266,5 +269,10 @@ public class GamePVP extends Game{
     
     public void stopMusic() {
     	this.gameMusic.stop();
+    }
+    
+    @Override
+    public boolean isGamePvp(){
+        return true;
     }
 }

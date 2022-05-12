@@ -44,7 +44,6 @@ public class Bomb extends GameObject{
 
     /**
      * Constructs a bomb object with values passed in by a player object.
-
      * @param player Original player that placed this bomb
      */
     public Bomb(int x, int y, Player player, Board board) {
@@ -167,7 +166,7 @@ public class Bomb extends GameObject{
     
     /**
      * Plays audio file
-     * @param soundfile: audio file path
+     * @param soundfile audio file path
      */
     void playSound(String soundFile) throws Exception {
         File f = new File("resources/SFX/" + soundFile);
