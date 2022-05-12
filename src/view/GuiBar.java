@@ -76,7 +76,7 @@ public class GuiBar extends JPanel{
         if(game.getPaused()){
             paintFilter(g2);
         }
-        if(game.getGameEndScreen()) paintFilter(g2);
+        if(game.hasEnded()) paintFilter(g2);
     }
 
     /**

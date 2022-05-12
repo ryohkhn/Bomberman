@@ -12,27 +12,20 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
 
-
-@SuppressWarnings("serial")
 public class GuiMenu extends JPanel implements ActionListener{
 
 	private final JPanel buttonPanel = new JPanel();
-    private JPanel settingPanel = new JPanel();
-	private JRadioButton gamePvpButton = new JRadioButton();
-    private JRadioButton gameMonsterButton = new JRadioButton();
-    private JPanel nbAI = new JPanel();
+    private final JPanel settingPanel = new JPanel();
+	private final JRadioButton gamePvpButton = new JRadioButton();
+    private final JRadioButton gameMonsterButton = new JRadioButton();
+    private final JPanel nbAI = new JPanel();
     private JPanel nbPlayers = new JPanel();
     private JPanel maps;
-    private JButton returnButton;
-    
-	private JButton newGame;
-    private JButton settings;
-    private JButton quit;
-    private Gui frame;
+
+	private final Gui frame;
     private JPanel gamemodes = null;
-    private JPanel game;
-    
-    private int gamemode = 1; // 0 monster 1 pvp
+
+	private int gamemode = 1; // 0 monster 1 pvp
     private int map = 0; //0 non selected 1-3 selected
     private int numberOfPlayers = 4; // 1-4
     private int numberOfAI = 0;
@@ -53,9 +46,9 @@ public class GuiMenu extends JPanel implements ActionListener{
 	 * Function to create and add buttons to buttonPanel
 	 */
 	private void addButtons() {
-		newGame = new JButton("Start Game");
-		settings = new JButton("Settings");
-		quit = new JButton("Quit");
+		JButton newGame = new JButton("Start Game");
+		JButton settings = new JButton("Settings");
+		JButton quit = new JButton("Quit");
 		
 		newGame.addActionListener(newGameAction);
 		settings.addActionListener(settingsAction);
@@ -108,8 +101,8 @@ public class GuiMenu extends JPanel implements ActionListener{
 		        gamemodes = setGamemode();	        
 		        setPlayersAI();
 		        setMaps();
-		        game = new JPanel();
-		        returnButton = setReturnButton();
+				JPanel game = new JPanel();
+				JButton returnButton = setReturnButton();
 		        
 		        game.setLayout(new BoxLayout(game, BoxLayout.Y_AXIS));
 		        game.add(Box.createRigidArea(new Dimension(0, 20)));

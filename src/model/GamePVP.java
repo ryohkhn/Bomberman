@@ -132,36 +132,31 @@ public class GamePVP extends Game{
 
         while(true) {
             long startLoopTime = System.currentTimeMillis();
-            if (!gameRestart) {
-                gameEndScreen = hasEnded();
-                if (!this.gameEndScreen) {
-                    synchronized (pauseLock) {
-                        if (paused) {
-                            try {
-                                gui.repaint();
-                                synchronized (pauseLock) {
-                                    pauseLock.wait();
-                                }
-                            } catch (InterruptedException ex) {
-                                break;
-                            }
+            synchronized (pauseLock) {
+                if (paused || hasEnded()) {
+                    try {
+                        gui.repaint();
+                        synchronized (pauseLock) {
+                            pauseLock.wait();
                         }
+                    } catch (InterruptedException ex) {
+                        break;
                     }
                 }
-                //instructions timer
-                timer += (startLoopTime - lastTime);
-                lastTime = startLoopTime;
-                // fin timer
-
-                //début des instructions de jeu
-                if (bombUpdate() != 0) {
-                    try {
-                        playSound("resources/SFX/BombeExplode.wav", false);
-                    } catch (Exception ignored) {}
-                }
-                playerUpdate(loopTimeInterval);
-                gui.repaint();
             }
+            //instructions timer
+            timer += (startLoopTime - lastTime);
+            lastTime = startLoopTime;
+            // fin timer
+
+            //début des instructions de jeu
+            if (bombUpdate() != 0) {
+                try {
+                    playSound("resources/SFX/BombeExplode.wav", false);
+                } catch (Exception ignored) {}
+            }
+            playerUpdate(loopTimeInterval);
+            gui.repaint();
             gui.revalidate();
             //fin des instructions de jeu
             long endLoopTime = System.currentTimeMillis();

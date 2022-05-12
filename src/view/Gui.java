@@ -62,7 +62,6 @@ public class Gui extends JFrame implements KeyListener{
         this.guiMenu = null;
         this.guiBar = null;
         this.guiBoard = null;
-        this.game.setGameRestart(true);
         this.game = null;
         for(KeyListener key : getKeyListeners()){
             removeKeyListener(key);
@@ -75,6 +74,8 @@ public class Gui extends JFrame implements KeyListener{
         try {
             menuMusic = Game.playSound("resources/SFX/MenuMusic.wav", true);
         } catch (Exception ignored) {}
+        repaint();
+        revalidate();
     }
 
     /**

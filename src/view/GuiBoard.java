@@ -214,7 +214,7 @@ public class GuiBoard extends JPanel{
         if(game.getPaused()){
             paintFilter(g2);
         }
-        if(game.getGameEndScreen()){
+        if(game.hasEnded()){
             paintFilter(g2);
             if(!endButtonsPrinted) {
                 endButtonsPrinted = true;
@@ -478,7 +478,6 @@ public class GuiBoard extends JPanel{
         restartButton.addActionListener(event -> {
             close = true;
             gui.restartGame();
-            remove(this);
         });
         quitButton.addActionListener(event -> System.exit(0));
         JButton[] buttons = {restartButton, quitButton};

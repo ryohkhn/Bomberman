@@ -17,8 +17,6 @@ public abstract class Game{
 	protected ArrayList<Monster> monsters;
     protected Board board;
 	protected Random random = new Random();
-	protected boolean gameEndScreen = false;
-	protected boolean gameRestart = false;
 
 
     public abstract void gameLoop();
@@ -54,14 +52,6 @@ public abstract class Game{
 
 	public Board getBoard(){
 		return board;
-	}
-
-	public boolean getGameEndScreen(){
-		return gameEndScreen;
-	}
-
-	public void setGameRestart(boolean gameRestart) {
-		this.gameRestart = gameRestart;
 	}
 
 }
