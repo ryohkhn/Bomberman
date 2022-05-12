@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
 
+@SuppressWarnings("serial")
 public class GuiMenu extends JPanel implements ActionListener{
 
 	private final JPanel buttonPanel = new JPanel();
@@ -20,6 +21,7 @@ public class GuiMenu extends JPanel implements ActionListener{
     private final JRadioButton gameMonsterButton = new JRadioButton();
     private JPanel nbPlayers = new JPanel();
     private JPanel maps;
+    private JComboBox<Integer> jComboBox;
 
 	private final Gui frame;
     private JPanel gamemodes = null;
@@ -246,19 +248,8 @@ public class GuiMenu extends JPanel implements ActionListener{
 
 		private void setPlayers() {
 			nbPlayers = new JPanel();
-			Integer[] optionsToChoose;
-			switch(gamemode){
-				case 0:
-					optionsToChoose =new Integer[]{1, 2, 3, 4};
-					break;
-				case 1:
-					optionsToChoose =new Integer[]{2, 3, 4};
-					break;
-				default:
-					optionsToChoose=new Integer[]{0};
-					break;
-			}
-			JComboBox<Integer> jComboBox = new JComboBox<>(optionsToChoose);
+			Integer[] optionsToChoose =new Integer[]{4,3,2};
+			jComboBox = new JComboBox<>(optionsToChoose);
 	        jComboBox.setSelectedItem(getNumberOfPlayers());
 	       
 	        
@@ -282,7 +273,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        switch(getGamemode()) {
 		        case 0:
 					gameMonsterButton.setSelected(true);
-		        	break;
+					break;
 		        case 1:
 		        	gamePvpButton.setSelected(true);
 		        	break;
@@ -296,6 +287,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                gamemode = 1;
+					jComboBox.removeItem(1);
 	            }
 	        });
 	        
@@ -303,6 +295,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                gamemode = 0;
+					jComboBox.addItem(1);
 	            }
 	        });
 	        
