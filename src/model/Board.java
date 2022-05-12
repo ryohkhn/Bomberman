@@ -129,28 +129,13 @@ public class Board{
 	public boolean getMonsterMode() {
 		return monstermode;
 	}
-	
-	public Player getPlayer(int i) {
-		return playerList.get(i);
-	}
 
 	public ArrayList<Monster> getMonsterList() {
 		return monsterList;
-	}
-
-	public Monster getMonster(int i) {
-		return monsterList.get(i);
 	}
 	
 	public ArrayList<Player> getPlayerList(){
 		return playerList;
 	}
 
-	public int getCasesCol() {
-		return cases[0].length;
-	}
-
-	public int getCasesRow() {
-		return cases.length;
-	}
 }

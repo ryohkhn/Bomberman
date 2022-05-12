@@ -1,10 +1,6 @@
 package model;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import java.awt.geom.Point2D;
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -17,23 +13,24 @@ public class Bomb extends GameObject{
     private final Player player;
     private double startTime;
     private final Board board;
+    // Stats
     private final int firepower;
     private final boolean pierce;
-    
-    // Kicking bomb
+    private int spriteIndex = -1;
+    // Kick
     private boolean kicked;
     private KickDirection kickDirection;
 
-    private int spriteIndex = -1;
-    private boolean hasExploded = false;
+    // location where the explosion will stop.
     private int stopTop;
     private int stopDown;
     private int stopLeft;
     private int stopRight;
-    private boolean willBeExploding;
-    private int fuse;
-    private ArrayList<Case> explodingCase;
-    private boolean kill;
+
+    private boolean fuse = false;
+    private final ArrayList<Case> explodingCase;
+    private boolean hasExploded = false;
+
 
 
     /**
@@ -49,11 +46,9 @@ public class Bomb extends GameObject{
         this.firepower = player.getFirepower();
         this.pierce = player.getPierce();
         this.player = player;
-        // Kicking bomb
+        // Kick
         this.kicked = false;
         this.kickDirection = KickDirection.Nothing;
-        this.willBeExploding = false;
-        this.fuse = 0;
         this.startTime = System.currentTimeMillis();
         explodingCase = new ArrayList<>();
 
@@ -65,10 +60,12 @@ public class Bomb extends GameObject{
 
 
     /**
-     * Function that destroy walls in a cross-shaped area (with each extension of length firepower)
+     * Function that destroy walls in a cross-shaped area
+     * the explosion has a range corresponding to the distance between the bomb's location and the first block found.
+     * If no block is found, the explosion has a range = bomb.firepower.
      */
     public void explode() {
-        if(hasExploded) return; //Pour qu'il n'y ait qu'un seul appel d'explode par bombes.
+        if(hasExploded) return; // So that there is only one explosion
         hasExploded = true;
         
     	Case [][] c = board.getCases();
@@ -80,6 +77,8 @@ public class Bomb extends GameObject{
         int i;
         boolean end = false;
         explodingCase.add(current);
+
+        // right extension
         for(i = (int)position.y + 1 ;i <= lineRight && !end; i++ ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
@@ -96,6 +95,8 @@ public class Bomb extends GameObject{
 		}
         stopRight = i;
         end = false;
+
+        // left extension
         for(i = (int)position.y - 1 ;i >= lineLeft && !end; i-- ){
             current = c[(int)position.x][i];
             if (current.getWall() != null) {
@@ -113,6 +114,8 @@ public class Bomb extends GameObject{
         }
         stopLeft = i;
         end = false;
+
+        // top extension
         for(i = (int)position.x - 1 ; i >= columnTop && !end; i-- ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
@@ -131,6 +134,8 @@ public class Bomb extends GameObject{
         }
         stopTop = i;
         end = false;
+
+        // down extension
         for(i = (int)position.x + 1 ; i <= columnDown && !end; i++ ){
             current = c[i][(int)position.y];
             if (current.getWall() != null) {
@@ -148,7 +153,11 @@ public class Bomb extends GameObject{
         }
         stopDown = i;
     }
-
+    
+    /**
+     * kill movable on exploded cases.
+     * @return points won from kill(s)
+     */
     public int kill() {
         int pointsCount = 0;
         for (Case c: explodingCase) {
@@ -156,19 +165,10 @@ public class Bomb extends GameObject{
         }
         return pointsCount;
     }
-    
-    /**
-     * Plays audio file
-     * @param soundFile audio file path
-     */
-    void playSound(String soundFile) throws Exception {
-        File f = new File("resources/SFX/" + soundFile);
-        AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
-        Clip clip = AudioSystem.getClip();
-        clip.open(audioIn);
-        clip.start();
-    }
-    
+
+
+    // setter et getter :
+
     public void setKicked(boolean kicked, KickDirection kickDirection) {
         this.kicked = kicked;
         this.kickDirection = kickDirection;
@@ -184,16 +184,12 @@ public class Bomb extends GameObject{
     }
 
     public KickDirection getKick() {
-    	return this.kickDirection;
+        return this.kickDirection;
     }
-
-
-    // setter et getter :
 
     public double getStartTime() {
         return startTime;
     }
-
 
 	public Player getPlayer() {
 		return player;
@@ -209,10 +205,6 @@ public class Bomb extends GameObject{
     
     public void setStartTime(double time) {
     	this.startTime = time;
-    }
-
-    public int getFirepower() {
-        return firepower;
     }
 
     public int getStopDown() {
@@ -231,26 +223,14 @@ public class Bomb extends GameObject{
         return stopTop;
     }
 
-    public boolean getwillBeExploding() {
-        return willBeExploding;
-    }
-
-    public void setWillBeExploding() {
-        this.willBeExploding = true;
-    }
-    public int getFuse() {
+    public boolean getFuse() {
         return fuse;
     }
 
-    public void setFuse(int fuse) {
-        this.fuse = fuse;
+    public void setFuse(boolean b) {
+        this.fuse = b;
     }
-    public boolean getKill() {
-        return kill;
-    }
-    public void setKill(boolean kill) {
-        this.kill = kill;
-    }
+
 }
 
 /**
@@ -265,7 +245,7 @@ enum KickDirection {
     FromRight(new Point2D.Float(0, -1)),
     Nothing(new Point2D.Float(0, 0));
 
-    private Point2D.Float velocity;
+    private final Point2D.Float velocity;
 
     KickDirection(Point2D.Float velocity) {
         this.velocity = velocity;

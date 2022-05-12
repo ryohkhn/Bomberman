@@ -3,32 +3,32 @@ package model;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javax.sound.sampled.Clip;
-
 import java.awt.event.KeyEvent;
-
 import controller.PlayerInput;
 import view.Gui;
 
 /**
- * Second mode of the game
- * Game Versus Monsters
+ * Second mode of the game.
+ * Game Versus Monsters.
  */
 public class GameMonster extends Game{
+    // to change the duration of game
+    private int minutesTimer=3;
+    private int secondsTimer=0;
+
     private final Gui gui;
-    private int nbPlayers;
-    private int nbAI;
+    private final int nbPlayers;
     private final String map;
-    private int monsterMAX; // maximum numbers of monsters shown
+    private final int monsterMAX; // maximum numbers of monsters shown
     private int numberOfMonstersTotal; // monsters that was added in game (currently living or dead)
+
     private Clip gameMusic;
     private final Object pauseLock = new Object();
     private volatile boolean paused = false;
     private long pauseTime;
     private long resumeTime;
-    private int minutesTimer=3;
-    private int secondsTimer=0;
+
 
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
@@ -41,6 +41,64 @@ public class GameMonster extends Game{
         else monsterMAX = (nbPlayers + 2) * 2;
     }
 
+    /**
+     * main loop of the game.
+     */
+    @Override
+    public void gameLoop() {
+        double loopTimeInterval = 1000 / FPS;
+        double lastTime = System.currentTimeMillis();
+
+        try {
+            gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
+        } catch (Exception ignored) {}
+
+        while(true){
+            long startLoopTime = System.currentTimeMillis();
+            synchronized (pauseLock) {
+                if (paused || hasEnded()) {
+                    try {
+                        gui.repaint();
+                        synchronized (pauseLock) {
+                            pauseLock.wait();
+                        }
+                    } catch (InterruptedException ex) {
+                        break;
+                    }
+                }
+            }
+            //instructions timer
+            timer += (startLoopTime - lastTime);
+            lastTime = startLoopTime;
+            // fin timer
+
+            //début des instructions de jeu
+            if (bombUpdate() != 0) {
+                try {
+                    playSound("resources/SFX/BombeExplode.wav", false);
+                } catch (Exception ignored) {
+                }
+            }
+            playerUpdate(loopTimeInterval);
+            monsterUpdate(loopTimeInterval);
+            gui.repaint();
+            gui.revalidate();
+            //fin des instructions de jeu
+
+            long endLoopTime = System.currentTimeMillis();
+            try{
+                if((long)loopTimeInterval - (endLoopTime - startLoopTime)>0)
+                    Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Create a new board.
+     * @return new board
+     */
     public Board init() {
 		try {
 			board = new Board(this.map,true);
@@ -137,7 +195,6 @@ public class GameMonster extends Game{
 
     /**
      * Adds players to the model and assigns keys to them.
-     * Adds AI.
      */
     public void addPlayers() {
         float x = 0;
@@ -173,81 +230,11 @@ public class GameMonster extends Game{
             players.add(player);
             i++;
         }
-        while (i < nbPlayers + nbAI) {
-            if (i == 1) {
-                x = 11.4F;
-                y = 13.4F;
-            } else if (i == 2) {
-                x = 1.4F;
-                y = 13.4F;
-            } else if (i==3) {
-                x = 11.4F;
-                y = 1.4F;
-            }
-            player = new Player(i, x, y, board,true);
-            board.getCases()[(int)x][(int)y].addMovableOnCase(player);
-            players.add(player);
-            i++;
-        }
     }
 
-
-    /**
-     * main loop of the game.
-     */
-    @Override
-    public void gameLoop() {
-        double loopTimeInterval = 1000 / FPS;
-        double lastTime = System.currentTimeMillis();
-
-        try {
-            gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
-        } catch (Exception ignored) {}
-
-        while(true){
-            long startLoopTime = System.currentTimeMillis();
-            synchronized (pauseLock) {
-                if (paused || hasEnded()) {
-                    try {
-                        gui.repaint();
-                        synchronized (pauseLock) {
-                            pauseLock.wait();
-                        }
-                    } catch (InterruptedException ex) {
-                        break;
-                    }
-                }
-            }
-            //instructions timer
-            timer += (startLoopTime - lastTime);
-            lastTime = startLoopTime;
-            // fin timer
-
-            //début des instructions de jeu
-            if (bombUpdate() != 0) {
-                try {
-                    playSound("resources/SFX/BombeExplode.wav", false);
-                } catch (Exception ignored) {
-                }
-            }
-            playerUpdate(loopTimeInterval);
-            monsterUpdate(loopTimeInterval);
-            gui.repaint();
-            gui.revalidate();
-            //fin des instructions de jeu
-
-            long endLoopTime = System.currentTimeMillis();
-            try{
-                if((long)loopTimeInterval - (endLoopTime - startLoopTime)>0)
-                    Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-    }
     /**
      * update the step of every players
-     * @param deltaTime
+     * @param deltaTime is used to establish speedDelta.
      */
     public void playerUpdate(double deltaTime) {
         for(Player p : players){
@@ -256,7 +243,7 @@ public class GameMonster extends Game{
     }
     /**
      * update the step of every monsters
-     * @param deltaTime
+     * @param deltaTime is used to establish speedDelta.
      */
     private void monsterUpdate(double deltaTime) {
         addMonsters();
@@ -281,7 +268,7 @@ public class GameMonster extends Game{
     }
     /**
      * Functions that returns the number of bombs exploded.
-     * @return
+     * @return int
      */
     private int bombUpdate() {
     	int bombsExploded = 0;
@@ -291,10 +278,10 @@ public class GameMonster extends Game{
         return bombsExploded;
     }
 
-    @Override
     /**
-     * Function that check if the game hasended
+     * Function that check if the game has ended
      */
+    @Override
     public boolean hasEnded() { // verification de la victoire
         int alivePlayer = this.players.size();
         int aliveMonsters = this.monsters.size();
@@ -307,12 +294,18 @@ public class GameMonster extends Game{
         return alivePlayer == 0 || aliveMonsters == 0 || (((int)(Game.timer/1000)%3600)/60 == minutesTimer && ((int)(Game.timer/1000)%60) == secondsTimer);
     }
 
-
+    /**
+     * note the start time of the pause.
+     * puts the game on pause.
+     */
 	public void pause() {
         pauseTime = System.currentTimeMillis();
         this.paused = true;
     }
-
+    /**
+     * note the end time of the pause.
+     * release the pause state of the game.
+     */
     public void resume() {
         resumeTime = System.currentTimeMillis();
         bombPauseUpdate();
@@ -322,6 +315,10 @@ public class GameMonster extends Game{
         }
     }
 
+    /**
+     * update bomb time.
+     * (to not count the pause time in the bomb countdown).
+     */
     private void bombPauseUpdate() {
 		timer -= (resumeTime - pauseTime);
         for(Player p : players){

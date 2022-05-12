@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Enumeration;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,7 +15,6 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
 
-@SuppressWarnings("serial")
 public class GuiMenu extends JPanel implements ActionListener{
 
 	private final JPanel buttonPanel = new JPanel();
@@ -74,7 +74,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 		{
 		    setUIFont(new javax.swing.plaf.FontUIResource("Courier",Font.BOLD,12));
 		}
-		catch(Exception e){}
+		catch(Exception ignored){}
 		
 		buttonPanel.setOpaque(true);
 		buttonPanel.setBackground(new Color(0,0,0,0));
@@ -94,6 +94,7 @@ public class GuiMenu extends JPanel implements ActionListener{
      * This Action is called when the user clicks on the settings button, it creates a new SettingsFrame.
      */
     public Action settingsAction = new AbstractAction() {
+		@Serial
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 		    
@@ -275,7 +276,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 
 	        jComboBox.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
-	                numberOfPlayers = (int) jComboBox.getSelectedItem();
+					numberOfPlayers = (int) jComboBox.getSelectedItem();
 	                repaint();
 	            }
 	        });
@@ -299,28 +300,22 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        editableGroup.add(gamePvpButton);
 	        editableGroup.add(gameMonsterButton);
 	        
-	        gamePvpButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                gamemode = 1;
-	                if(jComboBox.getItemCount() > 3)
-	                	jComboBox.removeItem(1);
-	                repaint();
-	            }
-	        });
+	        gamePvpButton.addActionListener(e -> {
+				gamemode = 1;
+				if(jComboBox.getItemCount() > 3)
+					jComboBox.removeItem(1);
+				repaint();
+			});
 	        
-	        gameMonsterButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                gamemode = 0;
-	                if(jComboBox.getItemCount() < 4)
-	                	jComboBox.addItem(1);
-	                repaint();
-	            }
-	        });
+	        gameMonsterButton.addActionListener(e -> {
+				gamemode = 0;
+				if(jComboBox.getItemCount() < 4)
+					jComboBox.addItem(1);
+				repaint();
+			});
 	        
 	        JPanel gamemodes = new JPanel();
-	        gamemodes.add(new JLabel("Select gamemode:"));
+	        gamemodes.add(new JLabel("Select game mode:"));
 	        gamemodes.add(gamePvpButton);
 	        gamemodes.add(gameMonsterButton);
 	        gamemodes.setOpaque(true);
@@ -333,6 +328,7 @@ public class GuiMenu extends JPanel implements ActionListener{
      * This Action terminates the current process.
      */
     public Action quitAction = new AbstractAction() {
+		@Serial
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 		    System.exit(0);
@@ -377,8 +373,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	 * Function to set font of text
 	 * @param f font resource
 	 */
-	public static void setUIFont(FontUIResource f)
-	{   
+	public static void setUIFont(FontUIResource f) {
 	    Enumeration<Object> keys = UIManager.getDefaults().keys();
 	    while(keys.hasMoreElements())
 	    {
@@ -387,7 +382,11 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        if(value instanceof FontUIResource) UIManager.put(key, f);
 	    }
 	}
-	
+
+	/**
+	 * paint component
+	 * @param g graphic item g
+	 */
 	@Override
     protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -395,12 +394,12 @@ public class GuiMenu extends JPanel implements ActionListener{
 		try {
 			myImage = ImageIO.read(new File("resources/background.jpg"));
 	        g.drawImage(myImage, 0, 0, null);
-		} catch (IOException e) {}
+		} catch (IOException ignored) {}
 	}
 
 	/**
 	 * Function to repaint transparent container
-	 * @param container
+	 * @param container container
 	 */
 	private void transparentBox(Container container) {
 	      Component[] components = container.getComponents();
@@ -447,8 +446,6 @@ public class GuiMenu extends JPanel implements ActionListener{
 
 	public String getMap() {
 		switch(this.map) {
-		case 1:
-			return "maps/default.csv";
 		case 2:
 			return "maps/empty.csv";
 		case 3:

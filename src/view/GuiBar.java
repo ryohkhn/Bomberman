@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class GuiBar extends JPanel{
-    private Game game;
-    private ArrayList<Player> players;
+    private final Game game;
+    private final ArrayList<Player> players;
     private BufferedImage barImage;
     private BufferedImage pointHolder;
     private BufferedImage largePointHolder;
     private Font font;
-    private LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
+    private final LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
 
     /**
      * Constructor for GuiBar class

@@ -4,6 +4,7 @@ package model;
  * Abstract class of all monsters
  */
 public abstract class Monster extends GameObject implements Movable{
+
     protected boolean isset = false;
     protected boolean isAlive = false;
     protected Board board;
@@ -18,7 +19,9 @@ public abstract class Monster extends GameObject implements Movable{
     protected Monster(float x, float y) {
         super(x, y);
     }
+
     // setters - getters
+
     /**
      * return value of variable isset
      * @return isset
@@ -26,6 +29,7 @@ public abstract class Monster extends GameObject implements Movable{
     public boolean isSet() {
         return isset;
     }
+
     /**
      * get the variable which represents the position of 
      * the image in the array of arrays of images
@@ -34,6 +38,7 @@ public abstract class Monster extends GameObject implements Movable{
     public int getSpriteIndex() {
         return spriteIndex;
     }
+
     /**
      * get the current direction
      */
@@ -48,21 +53,22 @@ public abstract class Monster extends GameObject implements Movable{
      * @param x
      * @param y
      */
+
     public void setMonster(float x,float y) {
 		this.setPosition(x, y);
 		isset = true;
         direction = -1;
 	}
     /**
-     * getter of variable dead
-     * @return
+     * @return dead
      */
     public boolean getDead() {
 		return dead;
-	}    
+	}
+
     /**
      * change the boolean variable isAlive 
-     * @param b
+     * @param b alive boolean
      */
     public void setAlive(boolean b) {
 		if (!b) { // spriteindex is reset
@@ -70,13 +76,15 @@ public abstract class Monster extends GameObject implements Movable{
 		}
 		isAlive = b;
 	}
+
     /**
      * return the value of the variable isAlive
-     * @return
+     * @return isAlive
      */
     public boolean isAlive() {
 		return isAlive;
 	}
+
     /**
      * kill players who are present in the current case which the player is present.
      */
@@ -86,6 +94,7 @@ public abstract class Monster extends GameObject implements Movable{
 		board.getCases()[line][column].killPlayers();
         
     }
+
     /**
      * return the rounded number of a float
      */

@@ -29,10 +29,10 @@ public abstract class Game{
 
 	/**
 	 * Plays audio file
-	 * @param soundFile
+	 * @param soundFile sound file
 	 * @param loop boolean to loop the audio or not
 	 * @return clip object of audio
-	 * @throws Exception
+	 * @throws Exception exception
 	 */
 	public static Clip playSound(String soundFile, boolean loop) throws Exception {
 	    File f = new File(soundFile);

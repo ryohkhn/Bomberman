@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 
 public class Player extends GameObject implements Movable{
-    private int id;
+    private final int id;
     private int bombCount;
 
     private ArrayList<Bomb> bombList = new ArrayList<>();
@@ -23,10 +23,8 @@ public class Player extends GameObject implements Movable{
 	private boolean isset;
 	private int firepower = 1;
 	private boolean coop;
-	private boolean ai = false;
-	private Bot bot;
 
-	private Board board;
+	private final Board board;
 	private boolean dead;
 
 	/**
@@ -37,7 +35,7 @@ public class Player extends GameObject implements Movable{
 	 * @param board the board of the game
 	 * @param isAi boolean if the object player is a bot (unfinished)
 	 */
-    public Player(int id,float x,float y, Board board,boolean isAi) {
+    public Player(int id,float x,float y, Board board, boolean isAi) {
         super(x,y);
     	this.id = id;
     	this.alive = true;
@@ -47,16 +45,15 @@ public class Player extends GameObject implements Movable{
 		this.direction = 0;
 		this.spriteIndex = 0;
 		this.setPosition(x, y);
-		this.ai = isAi;
-		if (this.ai) bot = new Bot(board,this);
     }
 
+	/**
+	 * model updater for players. This function calls collisions detector and change player's sprite index.
+	 * @param deltaTime is used to establish speedDelta.
+	 */
 	@Override
 	public void update(double deltaTime) {
 		if (alive && isset) { // if player is alive and was set on board
-			if (ai) {
-				bot.update();
-			}
 			if ((spriteTimer += speed) >= 12) {
                 spriteIndex++; // update the current image according to a spriteTimer
                 spriteTimer = 0;
@@ -95,8 +92,14 @@ public class Player extends GameObject implements Movable{
 		}
 	}
 
-
-	/* stock inputs into varaibles */
+	/**
+	 * stock inputs into class attributes
+	 * @param up up key
+	 * @param down down key
+	 * @param left left key
+	 * @param right right key
+	 * @param action action key (to drop bomb)
+	 */
     public void bindKeys(int up, int down, int left, int right, int action) {
 		keyUp = up;
 		keyDown = down;
@@ -281,7 +284,9 @@ public class Player extends GameObject implements Movable{
 		return false;
 	}
 
-
+	/**
+	 * 	Detect diagonal collision when player is between two cases
+	 */
 	@Override
 	public boolean detectDiagonalCollisionRightLeft(int line,int nextColumn){
 		// detect if the diagonal top case is empty
@@ -325,63 +330,73 @@ public class Player extends GameObject implements Movable{
 		int bombsExploded = 0;
 		ArrayList<Bomb> valueToRemove=new ArrayList<>();
 		for(Bomb b : bombList){
-			if(System.currentTimeMillis() - b.getStartTime() > 2900) {
-				b.setFuse(b.getFuse()-1);
+			double bombTimer = System.currentTimeMillis() - b.getStartTime();
+			// bomb sprite index updater
+			// after 2 seconds, the sprite index change each 0,1 seconds
+			if(bombTimer > 2900) {
+				b.setFuse(false);
 				board.getCases()[(int)b.position.x][(int)b.position.y].setBomb(null);
 				valueToRemove.add(b);
-				bombCount -= 1;
+				bombCount -= 1; //  decrement bomb count
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2800){
+			else if(bombTimer > 2800){
 				b.setSpriteIndex(0);
-				b.setKill(false);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2700){
+			else if(bombTimer > 2700){
 				b.setSpriteIndex(1);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2600){
+			else if(bombTimer > 2600){
 				b.setSpriteIndex(2);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2500){
+			else if(bombTimer > 2500){
 				b.setSpriteIndex(3);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2400){
+			else if(bombTimer > 2400){
 				b.setSpriteIndex(4);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2300){
+			else if(bombTimer > 2300){
 				b.setSpriteIndex(3);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2200){
+			else if(bombTimer > 2200){
 				b.setSpriteIndex(2);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2100){
+			else if(bombTimer > 2100){
 				b.setSpriteIndex(1);
-				b.setKill(true);
 			}
-			else if(System.currentTimeMillis() - b.getStartTime() > 2000){
+			else if(bombTimer > 2000){
 				b.explode();
 				bombsExploded += 1;
 				b.setSpriteIndex(0);
 			}
-			if (b.getFuse() == 1) { // fuse bomb if an exploding bomb touches it
-				b.setStartTime(System.currentTimeMillis() - Math.max(System.currentTimeMillis() - b.getStartTime(),1999));
-				b.setFuse(0);
+
+			// fuse bomb if an exploding bomb touches it
+			if (b.getFuse()) {
+				b.setStartTime(System.currentTimeMillis() - Math.max(bombTimer, 1999));
+				b.setFuse(false);
 
 			}
-			if (b.getKill()) { // call kill functions while bomb is exploding
+
+			//set points
+			if (bombTimer > 2000 && bombTimer < 2800) { // call kill functions while bomb is exploding
 				setPoints(getPoints() + b.kill());
 			}
-			
+
+			// kick
 			if(b.isKicked()) {
 				if ((int) (b.position.x + b.getKick().getVelocity().x) >= 13 || (int) (b.position.y + b.getKick().getVelocity().y) >= 15) {
 					b.stopKick();
 				} else {
+					// case where the bomb hit a wall.
 					if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getWall() != null) {
 						b.stopKick();
 					}
-					if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() > 0 && (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() != 1 || !board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
+					// case where the bomb hit a player who is not himself.
+					else if (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() > 0 && (board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().size() != 1 || !board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].getMovablesOnCase().get(0).equals(this))) {
 						b.setStartTime(System.currentTimeMillis() - 2000);
 						b.stopKick();
-					} else if ((int) b.position.x + b.getKick().getVelocity().x != (int) b.position.x || (int) b.position.y + b.getKick().getVelocity().y != (int) b.position.y) {
+					}
+					// case where the bomb doesn't reach any obstacles already.
+					else if ((int) b.position.x + b.getKick().getVelocity().x != (int) b.position.x || (int) b.position.y + b.getKick().getVelocity().y != (int) b.position.y) {
 						board.getCases()[(int) b.position.x][(int) b.position.y].setBomb(null);
 						board.getCases()[(int) (b.position.x + b.getKick().getVelocity().x)][(int) (b.position.y + b.getKick().getVelocity().y)].setBomb(b);
 					}
@@ -389,7 +404,9 @@ public class Player extends GameObject implements Movable{
 				}
 			}
 		}
+		// suppressing bombs who already exploded
 		bombList.removeAll(valueToRemove);
+
 		return bombsExploded;
 	}
 
@@ -497,24 +514,12 @@ public class Player extends GameObject implements Movable{
 		return isset;
 	}
 
-	public int getAmmo() {
-		return ammo;
-	}
-
 	public boolean getCoop(){
 		return coop;
 	}
 
 	public int getId() {
 		return id;
-	}
-
-	public int getBombCount() {
-		return bombCount;
-	}
-
-	public void setBombCount(int bombCount) {
-		this.bombCount = bombCount;
 	}
 
 	public Board getBoard() {
@@ -561,7 +566,4 @@ public class Player extends GameObject implements Movable{
 		this.points = points;
 	}
 
-	public boolean getDead() {
-		return dead;
-	}
 }

@@ -35,9 +35,8 @@ public class Case{
 			}
 		}
 		if (bomb != null) {
-			bomb.setFuse(1);
+			bomb.setFuse(true);
 		}
-
 		return pointsCount;
 	}
 
@@ -94,50 +93,47 @@ public class Case{
 	}
 	
 	/**
-	 * add an object movable to the arraylist addmovablecase
-	 * @param movable
+	 * add a movable object to the arraylist
+	 * @param movable movable
 	 */
 	public void addMovableOnCase(Movable movable) {
 		this.movablesOnCase.add(movable);
 	}
 	/**
-	 * Remove the movable object from the arraylist addmovablecase
-	 * @param movable
+	 * Remove movable object from the arraylist
+	 * @param movable movable
 	 */
 	public void deleteMovableOnCase(Movable movable) {
 		this.movablesOnCase.remove(movable);
 	}
 	/**
-	 * return movablesoCase
-	 * @return
+	 * @return movables on case
 	 */
 	public ArrayList<Movable> getMovablesOnCase(){
 		return this.movablesOnCase;
 	}
 	/** 
-	 * get the bonus of the map
+	 * @return bonus on the case
 	*/
 	public Bonus getBonus() {
 		return bonus;
 	}
 	/**
-	 * set the bonus of the map
-	 * @param bonus
+	 * set the bonus on the case
+	 * @param bonus bonus
 	 */
 	public void setBonus(Bonus bonus) {
 		this.bonus = bonus;
 	}
 	/**
-	 * get the variable wall
-	 * @return
+	 * @return variable wall
 	 */
 	public Wall getWall() {
 		return wall;
 	}
 	
 	/**
-	 * get the varaible bomb
-	 * @return
+	 * @return bomb
 	 */
 	public Bomb getBomb() {
 		return this.bomb;
@@ -145,7 +141,7 @@ public class Case{
 
 	/**
 	 * set an object bomb to the variable bomb
-	 * @param bomb
+	 * @param bomb bomb
 	 */
 	public void setBomb(Bomb bomb) {
 		this.bomb = bomb;
@@ -153,7 +149,7 @@ public class Case{
 
 	/**
 	 * set an object wall to the variable wall
-	 * @param wall
+	 * @param wall wall
 	 */
 	public void setWall(Wall wall) {
 		this.wall = wall;

@@ -8,10 +8,9 @@ import controller.PlayerInput;
 import view.Gui;
 
 public class GamePVP extends Game{
-    private Gui gui;
-    private int nbPlayers;
-    private int nbAI;
-    private String map;
+    private final Gui gui;
+    private final int nbPlayers;
+    private final String map;
 
     private final Object pauseLock = new Object();
     private volatile boolean paused = false;
@@ -21,9 +20,9 @@ public class GamePVP extends Game{
 
     /**
      * Constructor for GamePVP
-     * @param map
-     * @param numberOfPlayers
-     * @param gui
+     * @param map map of the game
+     * @param numberOfPlayers number of players
+     * @param gui object for the gui
      */
     public GamePVP(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
@@ -52,16 +51,15 @@ public class GamePVP extends Game{
 
     /**
      * Adds players to the model and assigns keys to them.
-     * Adds AI.
      */
     public void addPlayers() {
         float x = 0;
         float y = 0;
         int i = 0;
         Player player = null;
-        // add numberof players playing and their positions of board
-        while (i < nbPlayers) { // set players by number of players chosen
-            if (i == 0) { //set in top left corner
+        // add number of players playing and their positions of board
+        while (i < nbPlayers) { // set players by number
+            if (i == 0) {
                 x = 1.4F;
                 y = 1.4F;
                 player = new Player(i, x, y, board,false);
@@ -85,23 +83,6 @@ public class GamePVP extends Game{
             board.getCases()[(int)x][(int)y].addMovableOnCase(player);
             PlayerInput key = new PlayerInput(player);
             gui.addKeyListener(key); // add adapter class into gui in order to receive keyboard events
-            players.add(player);
-            i++;
-        }
-        // set the bots after the playes according to the number of ai
-        while (i < nbPlayers + nbAI) {
-            if (i == 1) {
-                x = 11.4F;
-                y = 13.4F;
-            } else if (i == 2) {
-                x = 1.4F;
-                y = 13.4F;
-            } else if (i==3) {
-                x = 11.4F;
-                y = 1.4F;
-            }
-            player = new Player(i, x, y, board,true); // boolean true
-            board.getCases()[(int)x][(int)y].addMovableOnCase(player);
             players.add(player);
             i++;
         }

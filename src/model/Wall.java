@@ -1,7 +1,7 @@
 package model;
 
 public class Wall{
-	private boolean breakable;
+	private final boolean breakable;
 	
 	/**
 	 * Constructor for Wall

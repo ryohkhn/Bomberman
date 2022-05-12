@@ -2,15 +2,16 @@ package model;
 
 /**
  * WalkingMonster is a type of monster which can move fast.
- * It doesn't walk fly on walls.
  */
 public class WalkingMonster extends Monster implements AI{
+
 	static final int TYPE = 0; // id of a monster
 	public static float speed = 0.75F; // speed of a walking monster
+
 	/**
-	 * Constructor of an walkingmonster object
-	 * @param x its coordinates
-	 * @param y
+	 * Constructor of a walking monster object
+	 * @param x position x
+	 * @param y position y
 	 * @param board the board of the game
 	 */
     public WalkingMonster(float x, float y,Board board) {
@@ -21,12 +22,14 @@ public class WalkingMonster extends Monster implements AI{
 		nextInvoke = 0;
 		thinkTime = 20; 
     }
+
 	/**
 	 * get the id type of the walking monster
 	 */
 	public int getType() {
 		return TYPE;
 	}
+
 	/**
 	 * get the speed of a monster
 	 * @return the speed as float 
@@ -34,9 +37,10 @@ public class WalkingMonster extends Monster implements AI{
 	public static float getSpeed() {
 		return speed;
 	}
+
 	/**
-	 * set the spee of the object
-	 * @param speed
+	 * set the speed of the object
+	 * @param speed speed
 	 */
 	public static void setSpeed(float speed) {
 		FlyingMonster.speed = speed;
@@ -78,14 +82,16 @@ public class WalkingMonster extends Monster implements AI{
 					spriteIndex = 0;
 					isset =false;
 					dead = true;
-					return;
 				}
 			}
 		}
 	}
 
+	/**
+	 * move the monster right if there's no wall, considering hit box.
+	 * @param d is used to establish speed.
+	 */
     @Override
-	// move the player right if there's no wall, considering hitbox
     public void detectCollisionRight(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -118,8 +124,11 @@ public class WalkingMonster extends Monster implements AI{
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
     }
 
+	/**
+	 * move the monster up if there's no wall, considering hit box.
+	 * @param d is used to establish speed.
+	 */
     @Override
-	// move the player up if there's no wall, considering hitbox
     public void detectCollisionUp(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -152,8 +161,11 @@ public class WalkingMonster extends Monster implements AI{
         
     }
 
+	/**
+	 * move the monster left if there's no wall, considering hit box
+	 * @param d is used to establish speed.
+	 */
     @Override
-	// move the player left if there's no wall, considering hitbox
     public void detectCollisionLeft(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int) position.x][(int) position.y].deleteMovableOnCase(this);
@@ -186,8 +198,8 @@ public class WalkingMonster extends Monster implements AI{
     }
 
 	/**
-	 * move the player down if there's no wall, considering hitbox
-	 * @param d is used to establish speedDelta.
+	 * move the monster down if there's no wall, considering hit box.
+	 * @param d is used to establish speed.
 	 */
     @Override
     public void detectCollisionDown(double d) {
@@ -220,6 +232,7 @@ public class WalkingMonster extends Monster implements AI{
 		board.getCases()[(int)position.x][(int)position.y].addMovableOnCase(this);
         
     }
+
 	/**
 	 * stops the movements of the monster
 	 */
@@ -227,9 +240,10 @@ public class WalkingMonster extends Monster implements AI{
     public void stop() {
     	move = false;
     }
+
 	/**
 	 * Determinate the new direction of the monster which is
-	 * different from the current direction
+	 * asserted to be different from the current direction
 	 */
     @Override
     public void chooseDirection() {
@@ -244,7 +258,9 @@ public class WalkingMonster extends Monster implements AI{
 		direction=d;
     }
 
-
+	/**
+	 * 	Detect diagonal collision when monster is between two cases
+	 */
     @Override
     public boolean detectDiagonalCollisionRightLeft(int line, int nextColumn) {
 		// detect if the diagonal top case is empty
@@ -262,6 +278,9 @@ public class WalkingMonster extends Monster implements AI{
 		return false;
     }
 
+	/**
+	 * 	Detect diagonal collision when monster is between two cases
+	 */
     @Override
     public boolean detectDiagonalCollisionUpDown(int nextLine, int column) {
 		// detect if the diagonal top case is empty

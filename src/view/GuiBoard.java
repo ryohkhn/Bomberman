@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class GuiBoard extends JPanel{
-    private Game game;
+    private final Game game;
     private final Board board;
     private final Gui gui;
-    private ArrayList<Player> players;
-    private ArrayList<Monster> monsters;
+    private final ArrayList<Player> players;
+    private final ArrayList<Monster> monsters;
     private BufferedImage block;
     private BufferedImage breakableBlock;
     private BufferedImage unbreakableBlock;
@@ -256,58 +256,76 @@ public class GuiBoard extends JPanel{
         }
     }
 
-    // todo clément
+    /**
+     * Paint bomb and explosion images based on its state.
+     * @param g2 graphics component item
+     * @param x position x
+     * @param y position y
+     * @param width of the case
+     * @param height of the case
+     */
     private void paintBomb(Graphics2D g2, int x, int y, int width, int height){
         Bomb bomb = board.getCases()[x][y].getBomb();
         int spriteIndex = bomb.getSpriteIndex();
         if(spriteIndex == -1){
+            // the bomb is displayed
             g2.drawImage(bombImage, width * y, height * x, width, height, null); // on affiche l'image de l'état de la bombe
             return;
         }
-        if(spriteIndex == 0){
-            g2.drawImage(explosionMidList.get(0), width * y, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+        if(spriteIndex == 0){ // the center explosion of the bomb is displayed
+            g2.drawImage(explosionMidList.get(0), width * y, height * x, width, height, null);
             return;
         }
-        g2.drawImage(getBombImageState("mid",spriteIndex), width * y, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+        // the center explosion of the bomb is displayed
+        g2.drawImage(getBombImageState("mid",spriteIndex), width * y, height * x, width, height, null);
 
         //left
         int i = y - 1;
         while(i > bomb.getStopLeft() + 1 && board.getCases()[x][i].getWall() == null) {
-            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the arms of the explosion is displayed
+            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * x, width, height, null);
             i -= 1;
         }
         if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable() ) {
-            g2.drawImage(getBombImageState("left", spriteIndex), width * i, height * x, width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the tip of the explosion arm is displayed
+            g2.drawImage(getBombImageState("left", spriteIndex), width * i, height * x, width, height, null);
         }
 
         //top
          i = x - 1;
         while(i > bomb.getStopTop() + 1 && board.getCases()[i][y].getWall() == null) {
-            g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the arms of the explosion is displayed
+            g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null);
             i -= 1;
         }
         if(board.getCases()[i][y].getWall() == null || board.getCases()[i][y].getWall().isBreakable()) {
-            g2.drawImage(getBombImageState("top", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the tip of the explosion arm is displayed
+            g2.drawImage(getBombImageState("top", spriteIndex), width * y, height * i, width, height, null);
         }
 
         //right
         i = y + 1;
         while(i < bomb.getStopRight() - 1 && board.getCases()[x][i].getWall() == null) {
-            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * (x), width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the arms of the explosion is displayed
+            g2.drawImage(getBombImageState("width", spriteIndex), width * i, height * (x), width, height, null);
             i += 1;
         }
         if(board.getCases()[x][i].getWall() == null || board.getCases()[x][i].getWall().isBreakable()) {
-            g2.drawImage(getBombImageState("right", spriteIndex), width * i, height * (x), width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the tip of the explosion arm is displayed
+            g2.drawImage(getBombImageState("right", spriteIndex), width * i, height * (x), width, height, null);
         }
 
         //down
         i = x + 1;
         while(i < bomb.getStopDown() - 1 && board.getCases()[i][y].getWall() == null) {
-            g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the arms of the explosion is displayed
+            g2.drawImage(getBombImageState("height", spriteIndex), width * y, height * i, width, height, null);
             i += 1;
         }
         if(board.getCases()[i][y].getWall() == null || board.getCases()[i][y].getWall().isBreakable()) {
-            g2.drawImage(getBombImageState("down", spriteIndex), width * y, height * i, width, height, null); // on affiche l'image de l'état de la bombe
+            // the image of the state of the tip of the explosion arm is displayed
+
+            g2.drawImage(getBombImageState("down", spriteIndex), width * y, height * i, width, height, null);
         }
     }
 
@@ -397,6 +415,11 @@ public class GuiBoard extends JPanel{
         }
     }
 
+    /**
+     * paint monsters images.
+     * @param g2 paintComponent Graphics object
+     * @throws IOException
+     */
     private void paintMonsters(Graphics2D g2) throws IOException {
         for (Monster monster: monsters) {
             float x = monster.getPositionX() - 0.4F;
