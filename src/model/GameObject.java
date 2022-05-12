@@ -18,7 +18,7 @@ public class GameObject {
     public GameObject(float x, float y) {
     	position = new Vector2f(x,y);
     }
-    // setter - getter
+    // setters - getters
     public static void setSizeX(int x) {
         GameObject.sizeX = x;
     }

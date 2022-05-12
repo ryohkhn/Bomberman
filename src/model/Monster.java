@@ -13,12 +13,8 @@ public abstract class Monster extends GameObject implements Movable{
     protected int nextInvoke; // stock rounds of invoke
 	protected int thinkTime;
     protected double spriteTimer;
-<<<<<<< HEAD
     protected boolean dead;
 
-=======
-    protected boolean dead; // if monster is dead, set variable to true and remove the monster
->>>>>>> comments
     protected Monster(float x, float y) {
         super(x, y);
     }

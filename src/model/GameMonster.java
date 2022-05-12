@@ -259,7 +259,6 @@ public class GameMonster extends Game{
         if (numberOfMonstersTotal == 2 * monsterMAX) {
             FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
             WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
-            monsterMAX += monsterMAX/3;
         }
     }
     
