@@ -160,7 +160,7 @@ public class Bomb extends GameObject{
     
     /**
      * Plays audio file
-     * @param soundfile audio file path
+     * @param soundFile audio file path
      */
     void playSound(String soundFile) throws Exception {
         File f = new File("resources/SFX/" + soundFile);

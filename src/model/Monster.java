@@ -11,9 +11,9 @@ public abstract class Monster extends GameObject implements Movable{
 	protected int thinkTime;
     protected double spriteTimer;
     protected boolean dead;
+
     protected Monster(float x, float y) {
         super(x, y);
-        //TODO Auto-generated constructor stub
     }
     // setters - getters
     public boolean isSet() {
@@ -46,7 +46,6 @@ public abstract class Monster extends GameObject implements Movable{
 	}
 
     public boolean isAlive() {
-		// TODO Auto-generated method stub
 		return isAlive;
 	}
 

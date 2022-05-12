@@ -160,7 +160,6 @@ public class FlyingMonster extends Monster implements AI {
 
     @Override
     public void detectCollisionDown(double d) {
-        // TODO Auto-generated method stub
         double speedDelta=speed/d;
 		//System.out.println("Kick :" + this.kick);
 		//System.out.println("Pierce :" + this.pierce);

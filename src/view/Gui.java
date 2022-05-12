@@ -14,12 +14,13 @@ public class Gui extends JFrame implements KeyListener{
     private GuiBoard guiBoard;
     public static int width;
     public static int height; 
-    private Board board; // TODO: 05/05/2022 suppr ?
     private Game game;
     public static Thread gameThread;
-    public static boolean isPaused=false; // TODO: 05/05/2022 suppr ?
     private Clip menuMusic;
 
+    /**
+     * Constructor for Gui class
+     */
     public Gui(){
         width = this.getWidth();
         height = this.getHeight();
@@ -27,6 +28,7 @@ public class Gui extends JFrame implements KeyListener{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         addKeyListener(this);
 
+        // set size of the JFrame
         getContentPane().setPreferredSize(new Dimension(675,608));
         pack();
 
@@ -58,7 +60,6 @@ public class Gui extends JFrame implements KeyListener{
         this.guiBoard = null;
         this.game.setGameRestart(true);
         this.game = null;
-        this.board = null;
         for(KeyListener key : getKeyListeners()){
             removeKeyListener(key);
         }
@@ -91,7 +92,7 @@ public class Gui extends JFrame implements KeyListener{
 		}
 
 		Game.timer = 0;
-		board = game.init();
+		game.init();
         this.guiBar=new GuiBar(game);
         this.guiBoard=new GuiBoard(game, this);
 

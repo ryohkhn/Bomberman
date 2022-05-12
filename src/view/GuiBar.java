@@ -22,6 +22,10 @@ public class GuiBar extends JPanel{
     private Font font;
     private LinkedList<BufferedImage> playerImagesList=new LinkedList<>();
 
+    /**
+     * Constructor for GuiBar class
+     * @param game Game object
+     */
     public GuiBar(Game game){
         this.game=game;
         this.players=game.getBoard().getPlayerList();
@@ -34,6 +38,10 @@ public class GuiBar extends JPanel{
         }
     }
 
+    /**
+     * Loads each player images
+     * @throws IOException IO exception when loading images
+     */
     private void loadPlayerImages() throws IOException{
         playerImagesList.add(ImageIO.read(new File("resources/player_head_0.png")));
         playerImagesList.add(ImageIO.read(new File("resources/player_head_1.png")));
@@ -41,12 +49,20 @@ public class GuiBar extends JPanel{
         playerImagesList.add(ImageIO.read(new File("resources/player_head_3.png")));
     }
 
+    /**
+     * Load bar images
+     * @throws IOException IO exception when loading images
+     */
     private void loadBarImages() throws IOException{
         barImage=ImageIO.read(new File("resources/bar.png"));
         pointHolder=ImageIO.read(new File("resources/point_holder.png"));
         largePointHolder=ImageIO.read(new File("resources/large_point_holder.png"));
     }
 
+    /**
+     * Java paintComponent that calls every paint function
+     * @param g paintComponent Graphics object
+     */
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -63,10 +79,18 @@ public class GuiBar extends JPanel{
         if(game.getGameEndScreen()) paintFilter(g2);
     }
 
+    /**
+     * Paint background bar image
+     * @param g2 paintComponent Graphics object
+     */
     private void drawBarImage(Graphics2D g2){
         g2.drawImage(barImage,0,0,this.getWidth(),this.getHeight(),null);
     }
 
+    /**
+     * Paint point holder and timer holder images
+     * @param g2 paintComponent Graphics object
+     */
     private void paintBar(Graphics2D g2){
         if(game.isGamePvp()){
             int multiplier=0;
@@ -105,6 +129,10 @@ public class GuiBar extends JPanel{
 
     }
 
+    /**
+     * Draw players heads images
+     * @param g2 paintComponent Graphics object
+     */
     private void drawPlayersHeads(Graphics2D g2){
         int multiplier=0;
         if(game.isGamePvp()){
@@ -117,7 +145,7 @@ public class GuiBar extends JPanel{
 
     /**
      * Paint a transparent filter when the game is paused or ended
-     * @param graphics paintComponent object used to paint
+     * @param graphics paintComponent Graphics object
      */
     private void paintFilter(Graphics2D graphics){
         int alpha=157;

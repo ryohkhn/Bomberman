@@ -28,6 +28,7 @@ public class GuiBoard extends JPanel{
     protected boolean close = false;
     protected boolean endButtonsPrinted = false;
     private final HashMap<Bonus.Type, BufferedImage> bonusMap=new LinkedHashMap<>();
+
     private final LinkedList<BufferedImage> explosionMidList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionWidthList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionHeightList=new LinkedList<>();
@@ -35,6 +36,7 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> explosionRightList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionTopList=new LinkedList<>();
     private final LinkedList<BufferedImage> explosionDownList=new LinkedList<>();
+
     private BufferedImage bombImage;
     private final LinkedList<BufferedImage[][]> playerImagesList=new LinkedList<>();
 
@@ -46,6 +48,11 @@ public class GuiBoard extends JPanel{
     private final LinkedList<BufferedImage> minvoRightList =new LinkedList<>();
     private final LinkedList<BufferedImage> minvoDeadList =new LinkedList<>();
 
+    /**
+     * Constructor for Gui class
+     * @param game Game object
+     * @param gui Gui object
+     */
     public GuiBoard(Game game, Gui gui){
         this.game=game;
         this.gui = gui;
@@ -53,6 +60,7 @@ public class GuiBoard extends JPanel{
         this.players=board.getPlayerList();
         this.monsters=board.getMonsterList();
 
+        // set size of the JPanel
         GameObject.setSizeY(this.getHeight());
         GameObject.setSizeX(this.getWidth());
 
@@ -61,6 +69,9 @@ public class GuiBoard extends JPanel{
         loadImages();
     }
 
+    /**
+     * Function that calls all loadImages method
+     */
     private void loadImages(){
         try{
             loadExplosionImages();
@@ -75,6 +86,10 @@ public class GuiBoard extends JPanel{
         }
     }
 
+    /**
+     * Load all explosions images
+     * @throws IOException IO exception when loading images
+     */
     private void loadExplosionImages() throws IOException{
         bombImage = ImageIO.read(new File("resources/bomb.png"));
 
@@ -116,6 +131,10 @@ public class GuiBoard extends JPanel{
 
     }
 
+    /**
+     * Load all bonus images
+     * @throws IOException IO exception when loading images
+     */
     private void loadBonusImages() throws IOException{
         bonusMap.put(Bonus.Type.Bomb,ImageIO.read(new File("resources/bonus_bomb.png")));
         bonusMap.put(Bonus.Type.Firemax,ImageIO.read(new File("resources/bonus_firemax.png")));
@@ -123,9 +142,12 @@ public class GuiBoard extends JPanel{
         bonusMap.put(Bonus.Type.Kick,ImageIO.read(new File("resources/bonus_kick.png")));
         bonusMap.put(Bonus.Type.Pierce,ImageIO.read(new File("resources/bonus_pierce.png")));
         bonusMap.put(Bonus.Type.Speed,ImageIO.read(new File("resources/bonus_speed.png")));
-        //bonusMap.put(Bonus.Type.Timer,ImageIO.read(new File("resources/bonus_timer.png")));
     }
 
+    /**
+     * Load all players images
+     * @throws IOException IO exception when loading images
+     */
     private void loadPlayerImages() throws IOException{
         for (int i = 0; i <4; i++) {
             BufferedImage image = ImageIO.read(new File("resources/playersheet_"+ i+".png"));
@@ -142,6 +164,10 @@ public class GuiBoard extends JPanel{
         }
     }
 
+    /**
+     * Load all monsters images
+     * @throws IOException IO exception when loading images
+     */
     private void loadMonsterImages() throws IOException{
         kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left1.png")));
         kondoriaLeftList.add(ImageIO.read(new File("resources/monsters/kondoria_left2.png")));
@@ -170,23 +196,23 @@ public class GuiBoard extends JPanel{
         minvoDeadList.add(ImageIO.read(new File("resources/monsters/mob_dead3.png")));
     }
 
+    /**
+     * Java paintComponent that calls every paint function
+     * @param g paintComponent Graphics object
+     */
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2= (Graphics2D) g;
-        try{
-            paintBoard(g2);
-            paintPlayers(g2);
-            if (board.getMonsterMode()){
-                try {
-                    paintMonsters(g2);
-                }catch (Exception ignored) {}
-            }
-            if(game.getPaused()){
-                paintFilter(g2);
-            }
-        } catch(IOException e){
-            e.printStackTrace();
+        paintBoard(g2);
+        paintPlayers(g2);
+        if (board.getMonsterMode()){
+            try {
+                paintMonsters(g2);
+            }catch (Exception ignored) {}
+        }
+        if(game.getPaused()){
+            paintFilter(g2);
         }
         if(game.getGameEndScreen()){
             paintFilter(g2);
@@ -198,7 +224,11 @@ public class GuiBoard extends JPanel{
 
     }
 
-    private void paintBoard(Graphics2D g2) throws IOException{
+    /**
+     * Paint the board: walls,bonus,grass images
+     * @param g2 paintComponent Graphics object
+     */
+    private void paintBoard(Graphics2D g2){
         Case[][] cases=board.getCases();
         int height=this.getHeight()/cases.length;
         int width=this.getWidth()/cases[0].length;
@@ -222,13 +252,12 @@ public class GuiBoard extends JPanel{
             }
         }
         for(Point p : bombs){ // bombs paint
-            try {
-                paintBomb(board, g2, p.x, p.y, width, height);
-            }catch (NullPointerException e){}
+            paintBomb(g2, p.x, p.y, width, height);
         }
     }
 
-    private void paintBomb(Board board,Graphics2D g2, int x, int y, int width, int height) {
+    // todo clément
+    private void paintBomb(Graphics2D g2, int x, int y, int width, int height){
         Bomb bomb = board.getCases()[x][y].getBomb();
         int spriteIndex = bomb.getSpriteIndex();
         if(spriteIndex == -1){
@@ -282,7 +311,13 @@ public class GuiBoard extends JPanel{
         }
     }
 
-    private BufferedImage getBombImageState(String explosion, int spriteIndex) {
+    /**
+     * Get the image of the bomb depending on the direction and the state
+     * @param explosion Direction of the explosion
+     * @param spriteIndex State of bomb exposion
+     * @return Image of the bomb
+     */
+    private BufferedImage getBombImageState(String explosion, int spriteIndex){
         switch (explosion) {
             case "mid" : switch (spriteIndex) {
                 case 1 : return explosionMidList.get(1);
@@ -337,7 +372,11 @@ public class GuiBoard extends JPanel{
         }
     }
 
-    private void paintPlayers(Graphics2D g2) throws IOException {
+    /**
+     * Paint the players images
+     * @param g2 paintComponent Graphics object
+     */
+    private void paintPlayers(Graphics2D g2){
         for (Player player : players) {
             float x = player.getPositionX() - 0.4F;
             float y = player.getPositionY() - 0.4F;
@@ -358,7 +397,11 @@ public class GuiBoard extends JPanel{
         }
     }
 
-    private void paintMonsters(Graphics2D g2) throws IOException {
+    /**
+     * Paint the monsters images
+     * @param g2 paintComponent Graphics object
+     */
+    private void paintMonsters(Graphics2D g2){
         System.out.println("monstersboard" + monsters.size());
         for (Monster monster: monsters) {
             float x = monster.getPositionX() - 0.4F;
@@ -395,8 +438,8 @@ public class GuiBoard extends JPanel{
     }
 
     /**
-     * Create a grey filter that makes the board fade into the background during the pause and the end of game screen.
-     * @param g
+     * Paint a transparent filter when the game is paused or ended
+     * @param g paintComponent Graphics object
      */
     private void paintFilter(Graphics2D g){
         int alpha=157;
@@ -405,6 +448,9 @@ public class GuiBoard extends JPanel{
         g.fillRect(0,0,this.getWidth(),this.getHeight());
     }
 
+    /**
+     * Create and add the pause buttons to the JPanel
+     */
     private void createPauseButtons(){
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(true);
@@ -425,6 +471,9 @@ public class GuiBoard extends JPanel{
         }
     }
 
+    /**
+     * Create and add the end buttons to the JPanel
+     */
     protected void createEndButtons(){
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(true);
@@ -453,6 +502,9 @@ public class GuiBoard extends JPanel{
         revalidate();
     }
 
+    /**
+     * Show the pause buttons on the JPanel
+     */
     public void showPauseButtons(){
         buttonPanel.setPreferredSize(new Dimension(this.getWidth(),this.getHeight()));
         buttonPanel.add(Box.createRigidArea(new Dimension(0, this.getHeight()/3)));
@@ -464,6 +516,9 @@ public class GuiBoard extends JPanel{
         revalidate();
     }
 
+    /**
+     * Hide the pause buttons of the JPanel
+     */
     public void removePauseButtons(){
         buttonPanel.removeAll();
         this.remove(buttonPanel);
@@ -471,6 +526,9 @@ public class GuiBoard extends JPanel{
         revalidate();
     }
 
+    /**
+     * Request the focus on the parent JFrame for keyboard inputs
+     */
     public void requestFocusAncestor(){
         SwingUtilities.getWindowAncestor(this).requestFocusInWindow();
     }
