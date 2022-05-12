@@ -178,7 +178,9 @@ public class GuiBoard extends JPanel{
             paintBoard(g2);
             paintPlayers(g2);
             if (board.getMonsterMode()){
-                paintMonsters(g2);
+                try {
+                    paintMonsters(g2);
+                }catch (Exception ignored) {}
             }
             if(game.getPaused()){
                 paintFilter(g2);
@@ -186,7 +188,7 @@ public class GuiBoard extends JPanel{
         } catch(IOException e){
             e.printStackTrace();
         }
-        if(game.getGameEnd()){
+        if(game.getGameEndScreen()){
             paintFilter(g2);
             if(!endButtonsPrinted) {
                 endButtonsPrinted = true;
@@ -220,7 +222,9 @@ public class GuiBoard extends JPanel{
             }
         }
         for(Point p : bombs){ // bombs paint
-            paintBomb(board, g2, p.x, p.y, width, height);
+            try {
+                paintBomb(board, g2, p.x, p.y, width, height);
+            }catch (NullPointerException e){}
         }
     }
 
@@ -429,7 +433,8 @@ public class GuiBoard extends JPanel{
         quitButton=new JButton("Quit");
         restartButton.addActionListener(event -> {
             close = true;
-            gui.endGame();
+            gui.restartGame();
+            remove(this);
         });
         quitButton.addActionListener(event -> System.exit(0));
         JButton[] buttons = {restartButton, quitButton};

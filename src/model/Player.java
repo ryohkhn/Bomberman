@@ -268,9 +268,7 @@ public class Player extends GameObject implements Movable{
 		return false;
 	}
 
-	/**
-	 * 	detect diagonal collision when player is between two cases
-	 */
+
 	@Override
 	public boolean detectDiagonalCollisionRightLeft(int line,int nextColumn){
 		// detect if the diagonal top case is empty

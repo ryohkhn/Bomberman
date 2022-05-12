@@ -19,13 +19,14 @@ public abstract class Game{
     protected Board board;
 	protected Random random = new Random();
 	protected boolean gameEnd = false;
-    
+	protected boolean gameEndScreen = false;
+	protected boolean gameRestart = false;
+	private final Object pauseLock = new Object();
+    private volatile boolean paused;
+
     public abstract void gameLoop();
-
     public abstract boolean hasEnded();
-
 	public abstract Board init();
-
 	public abstract boolean getPaused();
 	public abstract void pause();
 	public abstract void resume();
@@ -59,9 +60,14 @@ public abstract class Game{
 		return board;
 	}
 
-	public boolean getGameEnd(){
-		return gameEnd;
+	public boolean getGameEndScreen(){
+		return gameEndScreen;
 	}
-	
+
+	public void setGameRestart(boolean gameRestart) {
+		this.gameRestart = gameRestart;
+	}
+
+	private static Clip gameMusic;
     public abstract void stopMusic();
 }

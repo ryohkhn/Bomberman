@@ -130,49 +130,47 @@ public class GamePVP extends Game{
 
         try {
 			gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
-		} catch (Exception e1) {}
-        while(true){
-            gameEnd = hasEnded();
-            if(!this.gameEnd) {
-                synchronized (pauseLock) {
-                    if (paused) {
-                        try {
-                            gui.repaint();
-                            synchronized (pauseLock) {
-                                pauseLock.wait();
+		} catch (Exception ignored) {}
+
+        while(true) {
+            long startLoopTime = System.currentTimeMillis();
+            if (!gameRestart) {
+                gameEndScreen = hasEnded();
+                if (!this.gameEndScreen) {
+                    synchronized (pauseLock) {
+                        if (paused) {
+                            try {
+                                gui.repaint();
+                                synchronized (pauseLock) {
+                                    pauseLock.wait();
+                                }
+                            } catch (InterruptedException ex) {
+                                break;
                             }
-                        } catch (InterruptedException ex) {
-                            break;
                         }
                     }
                 }
-            }
-        
-            long startLoopTime = System.currentTimeMillis();
+                //instructions timer
+                timer += (startLoopTime - lastTime);
+                lastTime = startLoopTime;
+                // fin timer
 
-            //instructions timer
-            timer += (startLoopTime - lastTime);
-            lastTime = startLoopTime;
-            // fin timer
-
-            //début des instructions de jeu
-            
-            int bombUpdate = bombUpdate();
-            if(bombUpdate != 0) {
-				try {
-					playSound("resources/SFX/BombeExplode.wav", false);
-				} catch (Exception e) {}
+                //début des instructions de jeu
+                if (bombUpdate() != 0) {
+                    try {
+                        playSound("resources/SFX/BombeExplode.wav", false);
+                    } catch (Exception ignored) {}
+                }
+                playerUpdate(loopTimeInterval);
+                gui.repaint();
             }
-            playerUpdate(loopTimeInterval);
-            gui.repaint();
             gui.revalidate();
             //fin des instructions de jeu
-
             long endLoopTime = System.currentTimeMillis();
-            try{
-            	if((long)loopTimeInterval - (endLoopTime - startLoopTime)>0)
-					Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
-            }catch (InterruptedException e){
+            try {
+                if ((long) loopTimeInterval - (endLoopTime - startLoopTime) > 0)
+                    Thread.sleep((long) loopTimeInterval - (endLoopTime - startLoopTime));
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

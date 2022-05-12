@@ -127,7 +127,8 @@ public class Case{
 	}
 
 	public void setBomb(Bomb bomb) {
-		if(bomb == null) this.bomb = null;
-		else this.bomb = bomb;
+		this.bomb = bomb;
 	}
+
+
 }

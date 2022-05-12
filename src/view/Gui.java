@@ -1,16 +1,12 @@
 package view;
 
-import model.Board;
-import model.Game;
-import model.GameMonster;
-import model.GamePVP;
+import model.*;
 
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
 
 public class Gui extends JFrame implements KeyListener{
     private GuiMenu guiMenu;
@@ -49,11 +45,21 @@ public class Gui extends JFrame implements KeyListener{
         guiBoard.repaint();
     }
 
-    public void endGame(){
+    public void restartGame(){
         this.remove(guiBoard);
         this.remove(guiBar);
+        this.remove(guiMenu);
         this.game.stopMusic();
+        gameThread = null;
+        this.guiMenu = null;
+        this.guiBar = null;
+        this.guiBoard = null;
+        this.game.setGameRestart(true);
         this.game = null;
+        this.board = null;
+        for(KeyListener key : getKeyListeners()){
+            removeKeyListener(key);
+        }
 
         this.guiMenu=new GuiMenu(this);
         addKeyListener(this);
@@ -84,12 +90,8 @@ public class Gui extends JFrame implements KeyListener{
 		this.add(guiBoard,BorderLayout.CENTER);
         requestFocusInWindow();
 
-        gameThread=new Thread(new Runnable(){
-            @Override
-            public void run(){
-                game.gameLoop();
-            }
-        });
+        gameThread=new Thread(() -> game.gameLoop());
+        System.out.println("start gameThread\n");
 
         gameThread.start();
 	}
