@@ -261,6 +261,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	        jComboBox.addActionListener (new ActionListener () {
 	            public void actionPerformed(ActionEvent e) {
 	                numberOfPlayers = (int) jComboBox.getSelectedItem();
+	                repaint();
 	            }
 	        });
 	        transparentBox(jComboBox);
@@ -287,7 +288,8 @@ public class GuiMenu extends JPanel implements ActionListener{
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                gamemode = 1;
-					jComboBox.removeItem(1);
+	                if(jComboBox.getItemCount() > 3)
+	                	jComboBox.removeItem(1);
 	            }
 	        });
 	        
@@ -295,7 +297,8 @@ public class GuiMenu extends JPanel implements ActionListener{
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                gamemode = 0;
-					jComboBox.addItem(1);
+	                if(jComboBox.getItemCount() < 4)
+	                	jComboBox.addItem(1);
 	            }
 	        });
 	        
