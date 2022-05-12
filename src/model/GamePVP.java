@@ -2,11 +2,8 @@ package model;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
 import javax.sound.sampled.Clip;
-
 import java.awt.event.KeyEvent;
-
 import controller.PlayerInput;
 import view.Gui;
 

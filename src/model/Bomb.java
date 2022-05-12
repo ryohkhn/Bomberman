@@ -14,15 +14,9 @@ import java.util.ArrayList;
  */
 public class Bomb extends GameObject{
 
-    // Original player that placed this bomb
     private final Player player;
-
     private double startTime;
-
-    //Position of the bomb
     private final Board board;
-    
-    // Stats
     private final int firepower;
     private final boolean pierce;
     

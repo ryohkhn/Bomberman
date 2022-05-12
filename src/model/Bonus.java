@@ -1,11 +1,15 @@
 package model;
-
 import java.util.Random;
 
 public class Bonus{
 
+	/**
+	 * Enum for bonus type
+	 */
     public enum Type {
-        // Additional bombs
+        /**
+         *  Additional bombs
+         */
         Bomb() {
             @Override
             protected void grantBonus(Player player) {
@@ -13,7 +17,9 @@ public class Bonus{
             }
         },
 
-        // Increases firepower
+        /**
+         *  Increases firepower
+         */
         Fireup(){
             @Override
             protected void grantBonus(Player player) {
@@ -21,7 +27,9 @@ public class Bonus{
             }
         },
 
-        // Increases firepower to max
+        /**
+         *  Increases firepower to max
+         */
         Firemax(){
             @Override
             protected void grantBonus(Player player) {
@@ -29,7 +37,9 @@ public class Bonus{
             }
         },
 
-        // Increases speed
+        /**
+         *  Increases speed
+         */
         Speed(){
             @Override
             protected void grantBonus(Player player) {
@@ -37,7 +47,9 @@ public class Bonus{
             }
         },
 
-        // Adds ability for explosions to pierce soft walls
+        /**
+         *  Adds ability for explosions to pierce soft walls
+         */
         Pierce(){
             @Override
             protected void grantBonus(Player player) {
@@ -45,29 +57,17 @@ public class Bonus{
             }
         },
 
-        // Adds ability to kick bombs
+        /**
+         *  Adds ability to kick bombs
+         */
         Kick(){
             @Override
             protected void grantBonus(Player player) {
                 player.setKick(true);
             }
         };
-        /*
-
-        // Reduces time for bomb to detonate
-        
-        Timer(){
-            @Override
-            protected void grantBonus(Player player) {
-                player.reduceTimer(15);
-            }
-        };
-        */
         protected abstract void grantBonus(Player player);
-
     }
-
-
     private Type type;
 
     /**
@@ -95,6 +95,10 @@ public class Bonus{
         this.type.grantBonus(player);
     }
 
+    /**
+     * Getter for bonus type
+     * @return bonus type
+     */
     public Type getType(){
         return type;
     }

@@ -3,7 +3,6 @@ package model;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 
 import javax.sound.sampled.Clip;
 
@@ -185,41 +184,43 @@ public class GameMonster extends Game{
         try {
 			gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
 		} catch (Exception e1) {}
-
-        while(true){
-            long startLoopTime = System.currentTimeMillis();
-            if (!gameRestart) {
-                gameEndScreen = hasEnded();
-                if (!this.gameEndScreen) {
-                    synchronized (pauseLock) {
-                        if (paused) {
-                            try {
-                                gui.repaint();
-                                synchronized (pauseLock) {
-                                    pauseLock.wait();
-                                }
-                            } catch (InterruptedException ex) {
-                                break;
-                            }
-                        }
-                    }
-                }
-                //instructions timer
-                timer += (startLoopTime - lastTime);
-                lastTime = startLoopTime;
-                // fin timer
-
-                //début des instructions de jeu
-                if (bombUpdate() != 0) {
+        boolean endLoop = false;
+        while(!endLoop){
+        	synchronized (pauseLock) {
+                if (paused) {
                     try {
-                        playSound("resources/SFX/BombeExplode.wav", false);
-                    } catch (Exception e) {
+                        gui.repaint();
+                        synchronized (pauseLock) {
+                            pauseLock.wait();
+                        }
+                    } catch (InterruptedException ex) {
+                        break;
                     }
                 }
-                playerUpdate(loopTimeInterval);
-                monsterUpdate(loopTimeInterval);
-                gui.repaint();
             }
+        
+            long startLoopTime = System.currentTimeMillis();
+
+            //instructions timer
+            timer += (startLoopTime - lastTime);
+            lastTime = startLoopTime;
+            // fin timer
+
+            //début des instructions de jeu
+            
+            bombUpdate();
+            if(this.hasEnded()){
+                if(endTime == -1) endTime = System.currentTimeMillis();
+                else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
+            }
+            if(bombUpdate() != 0) {
+				try {
+					playSound("resources/SFX/BombeExplode.wav", false);
+				} catch (Exception e) {}
+            }
+            playerUpdate(loopTimeInterval);
+            monsterUpdate(loopTimeInterval);
+            gui.repaint();
             gui.revalidate();
             //fin des instructions de jeu
 
@@ -265,13 +266,6 @@ public class GameMonster extends Game{
         return bombsExploded;
     }
 
-    private double printTime(double timer2) {
-        if(timer >= timer2 + 100){
-            return timer;
-        }
-        return timer2;
-    }
-
     @Override
     public boolean hasEnded() { // verification de la victoire
         int alivePlayer = this.players.size();
@@ -282,6 +276,7 @@ public class GameMonster extends Game{
             }
         }
         return alivePlayer == 0 || aliveMonsters == 0 || (((int)(Game.timer/1000)%3600)/60 == 10 && ((int)(Game.timer/1000)%60) == 0);
+        // check monsters
     }
 
 

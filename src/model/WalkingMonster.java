@@ -98,7 +98,6 @@ public class WalkingMonster extends Monster implements AI{
     @Override
     public void detectCollisionUp(double d) {
 		//System.out.println("up");
-        // TODO Auto-generated method stub
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
 		int line= (int)position.x;

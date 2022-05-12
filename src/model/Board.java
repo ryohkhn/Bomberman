@@ -19,7 +19,6 @@ public class Board{
 
 	public static int sizeRow;
 	public static int sizeCol;
-	private Thread thread;
 	private boolean monstermode;
     
 	/**
