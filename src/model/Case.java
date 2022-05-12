@@ -42,7 +42,7 @@ public class Case{
 	}
 
 	/**
-     * Kill players in the Case
+     * Function that Kill players in the Case
      */
 	public void killPlayers() {
 		Iterator<Movable> iter = movablesOnCase.iterator();

@@ -70,7 +70,7 @@ public class GamePVP extends Game{
         int i = 0;
         Player player = null;
         // add numberof players playing and their positions of board
-        while (i < nbPlayers) {
+        while (i < nbPlayers) { // set players by number
             if (i == 0) {
                 x = 1.4F;
                 y = 1.4F;
@@ -97,7 +97,8 @@ public class GamePVP extends Game{
             gui.addKeyListener(key);
             players.add(player);
             i++;
-         }
+        }
+        // set the bots after the ai
         while (i < nbPlayers + nbAI) {
             if (i == 1) {
                 x = 11.4F;
@@ -109,7 +110,7 @@ public class GamePVP extends Game{
                 x = 11.4F;
                 y = 1.4F;
             }
-            player = new Player(i, x, y, board,true);
+            player = new Player(i, x, y, board,true); // boolean true
             board.getCases()[(int)x][(int)y].addMovableOnCase(player);
             players.add(player);
             i++;
@@ -190,7 +191,7 @@ public class GamePVP extends Game{
     private int bombUpdate() {
     	int bombsExploded = 0;
         for(Player p : players){
-        	bombsExploded += p.bombUpdate();
+        	bombsExploded += p.bombUpdate(); // return nomber of bombs exploded
         }
         return bombsExploded;
     }
@@ -204,7 +205,7 @@ public class GamePVP extends Game{
         int alivePlayer = this.players.size();
         for(Player p : this.players){
             if(!p.isAlive()){
-                alivePlayer -= 1;
+                alivePlayer -= 1; // decrement number of players alive
             }
         }
         return alivePlayer <= 1;

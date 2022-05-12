@@ -11,13 +11,17 @@ import java.awt.event.KeyEvent;
 import controller.PlayerInput;
 import view.Gui;
 
+/**
+ * Second mode of the game
+ * Game Versus Monsters
+ */
 public class GameMonster extends Game{
     private final Gui gui;
     private int nbPlayers;
     private int nbAI;
     private final String map;
     private int monsterMAX;
-    private int numberOfMonstersTotal;
+    private int numberOfMonstersTotal; // monsters that was added in game
     private Clip gameMusic;
     private final Object pauseLock = new Object();
     private volatile boolean paused = false;
@@ -32,7 +36,7 @@ public class GameMonster extends Game{
         players = new ArrayList<>();
         monsters = new ArrayList<>();
         nbPlayers = numberOfPlayers;
-        this.nbAI = numberOfAI;
+        nbAI = numberOfAI;
         if (nbPlayers == 0) {
             nbPlayers = 1;
         }
@@ -56,23 +60,27 @@ public class GameMonster extends Game{
         }
         return board;
     }
-
+    /**
+     * Function that add monsters to the arraylist of monsters.
+     */
     public void addMonsters() {
         Monster monster = null;
         int i = monsters.size();
-        if (i < monsterMAX) {
-            //System.out.println("monstersgame" + monsters.size());
-            //System.out.println("numofmonsterstot" + numberOfMonstersTotal);
-            int r = random.nextInt(3);
-            if (r == 2) monster = new WalkingMonster(0, 0, board);
-            else monster = new FlyingMonster(0, 0, board);
-            if (placeMonster(monster)) {
+        if (i < monsterMAX) { // check if the exisiting monsters are lesser than the maximum
+            int r = random.nextInt(3); 
+            if (r == 2) monster = new WalkingMonster(0, 0, board); // 1/3 prob
+            else monster = new FlyingMonster(0, 0, board); // 1/3 prob
+            if (placeMonster(monster)) { // check if we can place the new monster
                 monsters.add(monster);
                 numberOfMonstersTotal += 1;
             }
         }
     }
-
+    /**
+     * Function that determine a place where we can set a monster
+     * @param monster the current monster to place
+     * @return a boolean
+     */
     public boolean placeMonster(Monster monster) {
         int x;
         int y;
@@ -88,6 +96,13 @@ public class GameMonster extends Game{
         return true;
     }
 
+    /**
+     * Check in a grill of 3x3 if there is a player in a case
+     * or in its direct surroundings and monsters on diagonal cases.
+     * @param x row of the center case of the grill
+     * @param y col of the center case of the grill
+     * @return true or false
+     */
     private boolean checkplace(int x,int y) {
         boolean free = true;
         if (x == 0 || y == 0 || x == 12 || y == 14) {
@@ -238,30 +253,44 @@ public class GameMonster extends Game{
             }
         }
     }
-
+    /**
+     * update the step of every players
+     * @param deltaTime
+     */
     public void playerUpdate(double deltaTime) {
         for(Player p : players){
             p.update(deltaTime);
         }
     }
+    /**
+     * update the step of every monsters
+     * @param deltaTime
+     */
     private void monsterUpdate(double deltaTime) {
         addMonsters();
         updateSpeed();
         Iterator<Monster> iter = monsters.iterator();
 		while(iter.hasNext()) {
 			Monster m = iter.next();
-            if (m.getDead()) iter.remove();
+            if (m.getDead()) { // if monster is dead remove it from monsters arraylist
+                iter.remove();
+            }
 			else m.update(deltaTime);
 		}
     }
-
+    /**
+     * update speed for the gameplay
+     */
     public void updateSpeed() {
-        if (numberOfMonstersTotal == 2 * monsterMAX) {
+        if (numberOfMonstersTotal % 10 == 0) { // upgrade speed 
             FlyingMonster.setSpeed(FlyingMonster.getSpeed() + 0.1F);
             WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
         }
     }
-    
+    /**
+     * Functions that returns the number of bombs exploded.
+     * @return
+     */
     private int bombUpdate() {
     	int bombsExploded = 0;
         for(Player p : players){
@@ -271,6 +300,9 @@ public class GameMonster extends Game{
     }
 
     @Override
+    /**
+     * Function that check if the game hasended
+     */
     public boolean hasEnded() { // verification de la victoire
         int alivePlayer = this.players.size();
         int aliveMonsters = this.monsters.size();
@@ -279,8 +311,8 @@ public class GameMonster extends Game{
                 alivePlayer -= 1;
             }
         }
+        // check if players are dead, monsters are dead or the timer has ended.
         return alivePlayer == 0 || aliveMonsters == 0 || (((int)(Game.timer/1000)%3600)/60 == minutesTimer && ((int)(Game.timer/1000)%60) == secondsTimer);
-        // check monsters
     }
 
 
