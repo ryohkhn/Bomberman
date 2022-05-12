@@ -42,7 +42,7 @@ public class Case{
 	}
 
 	/**
-     * Function that Kill players in the Case
+     * Function that Kill players in the Case and remove them from the case
      */
 	public void killPlayers() {
 		Iterator<Movable> iter = movablesOnCase.iterator();
@@ -92,39 +92,68 @@ public class Case{
 		return null;
 	}
 	
-	//Getters and setters:
+	/**
+	 * add an object movable to the arraylist addmovablecase
+	 * @param movable
+	 */
 	public void addMovableOnCase(Movable movable) {
 		this.movablesOnCase.add(movable);
 	}
-	
+	/**
+	 * Remove the movable object from the arraylist addmovablecase
+	 * @param movable
+	 */
 	public void deleteMovableOnCase(Movable movable) {
 		this.movablesOnCase.remove(movable);
 	}
-
+	/**
+	 * return movablesoCase
+	 * @return
+	 */
 	public ArrayList<Movable> getMovablesOnCase(){
 		return this.movablesOnCase;
 	}
-
+	/** 
+	 * get the bonus of the map
+	*/
 	public Bonus getBonus() {
 		return bonus;
 	}
-	
+	/**
+	 * set the bonus of the map
+	 * @param bonus
+	 */
 	public void setBonus(Bonus bonus) {
 		this.bonus = bonus;
 	}
-
+	/**
+	 * get the variable wall
+	 * @return
+	 */
 	public Wall getWall() {
 		return wall;
 	}
 	
+	/**
+	 * get the varaible bomb
+	 * @return
+	 */
 	public Bomb getBomb() {
 		return this.bomb;
 	}
 
+	/**
+	 * set an object bomb to the variable bomb
+	 * @param bomb
+	 */
 	public void setBomb(Bomb bomb) {
 		this.bomb = bomb;
 	}
 
+	/**
+	 * set an object wall to the variable wall
+	 * @param wall
+	 */
 	public void setWall(Wall wall) {
 		this.wall = wall;
 	}

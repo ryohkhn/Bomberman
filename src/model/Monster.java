@@ -10,7 +10,7 @@ public abstract class Monster extends GameObject implements Movable{
     protected int direction;
     protected boolean move = false;
 	protected int spriteIndex;
-    protected int nextInvoke; // stock rounds of invoke
+    protected int nextInvoke;
 	protected int thinkTime;
     protected double spriteTimer;
     protected boolean dead;
@@ -49,7 +49,7 @@ public abstract class Monster extends GameObject implements Movable{
      * @param y
      */
     public void setMonster(float x,float y) {
-		this.setAttributs(x,y);
+		this.setPosition(x, y);
 		isset = true;
         direction = -1;
 	}

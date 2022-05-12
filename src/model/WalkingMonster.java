@@ -19,7 +19,7 @@ public class WalkingMonster extends Monster implements AI{
         this.board = board;
 		isAlive = true;
 		nextInvoke = 0;
-		thinkTime = 20;
+		thinkTime = 20; 
     }
 	/**
 	 * get the id type of the walking monster
@@ -48,12 +48,13 @@ public class WalkingMonster extends Monster implements AI{
 	public void update(double deltaTime) {
 		if (isAlive && isset) {
 			killPlayers();
-			if ((spriteTimer += speed) >= 20) {
+			spriteTimer += speed;
+			if (spriteTimer >= 20) { // make animations fluid
                 spriteIndex++; // update alive animations
                 spriteTimer = 0;
             }
 			if (spriteIndex >= 3) spriteIndex = 0;
-			nextInvoke = (++nextInvoke)%thinkTime;
+			nextInvoke = (++nextInvoke)%thinkTime; 
 			if (nextInvoke == 1 && !move) { // next time to invoke actions
 				chooseDirection();
 				move = true;
@@ -73,7 +74,7 @@ public class WalkingMonster extends Monster implements AI{
 		if (!isAlive && isset) {
 			if (spriteTimer++ >= 15) { // update death animations
                 spriteIndex++;
-				if (spriteIndex == 4) {
+				if (spriteIndex == 4) { // end of death animation, proceeding to reset
 					spriteIndex = 0;
 					isset =false;
 					dead = true;

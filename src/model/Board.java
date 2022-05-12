@@ -44,7 +44,6 @@ public class Board{
             this.bufferedReader = new BufferedReader(new FileReader(filename));
         } catch (IOException | NullPointerException e) {
             // Load default map when map file could not be loaded
-            System.err.println(e + ": Cannot load map file, loading default map");
             this.bufferedReader = new BufferedReader(new FileReader("maps/default.csv"));
         }
 

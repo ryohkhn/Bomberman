@@ -69,23 +69,23 @@ public class GamePVP extends Game{
         int i = 0;
         Player player = null;
         // add numberof players playing and their positions of board
-        while (i < nbPlayers) { // set players by number
-            if (i == 0) {
+        while (i < nbPlayers) { // set players by number of players chosen
+            if (i == 0) { //set in top left corner
                 x = 1.4F;
                 y = 1.4F;
                 player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
-            } else if (i == 1) {
+            } else if (i == 1) { // bottom right corner
                 x = 11.4F;
                 y = 13.4F;
                 player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_ALT_GRAPH);
-            } else if (i == 2) {
+            } else if (i == 2) { // bottom left corner
                 x = 1.4F;
                 y = 13.4F;
                 player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
-            } else if (i==3) {
+            } else if (i==3) { // top right corner
                 x = 11.4F;
                 y = 1.4F;
                 player = new Player(i, x, y, board,false);
@@ -93,11 +93,11 @@ public class GamePVP extends Game{
             }
             board.getCases()[(int)x][(int)y].addMovableOnCase(player);
             PlayerInput key = new PlayerInput(player);
-            gui.addKeyListener(key);
+            gui.addKeyListener(key); // add adapter class into gui in order to receive keyboard events
             players.add(player);
             i++;
         }
-        // set the bots after the ai
+        // set the bots after the playes according to the number of ai
         while (i < nbPlayers + nbAI) {
             if (i == 1) {
                 x = 11.4F;
@@ -195,7 +195,7 @@ public class GamePVP extends Game{
      * (if there is only one player alive).
      */
     @Override
-    public boolean hasEnded() { // verification de la victoire
+    public boolean hasEnded() {
         int alivePlayer = this.players.size();
         for(Player p : this.players){
             if(!p.isAlive()){

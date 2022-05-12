@@ -34,7 +34,7 @@ public class Player extends GameObject implements Movable{
 	 * @param x the row position 
 	 * @param y the column position
 	 * @param board the board of the game
-	 * @param isAi boolean if the object player is ai (unfinished)
+	 * @param isAi boolean if the object player is a bot (unfinished)
 	 */
     public Player(int id,float x,float y, Board board,boolean isAi) {
         super(x,y);
@@ -45,9 +45,9 @@ public class Player extends GameObject implements Movable{
 		this.board=board;
 		this.direction = 0;
 		this.spriteIndex = 0;
-		this.setAttributs(x,y);
+		this.setPosition(x, y);
 		this.ai = isAi;
-		if (this.ai) bot = new Bot(board,this); 
+		if (this.ai) bot = new Bot(board,this);
     }
 
 	@Override
@@ -361,12 +361,12 @@ public class Player extends GameObject implements Movable{
 				bombsExploded += 1;
 				b.setSpriteIndex(0);
 			}
-			if (b.getFuse() == 1) {
+			if (b.getFuse() == 1) { // fuse bomb if an exploding bomb touches it
 				b.setStartTime(System.currentTimeMillis() - Math.max(System.currentTimeMillis() - b.getStartTime(),1999));
 				b.setFuse(0);
 
 			}
-			if (b.getKill()) {
+			if (b.getKill()) { // call kill functions while bomb is exploding
 				setPoints(getPoints() + b.kill());
 			}
 			

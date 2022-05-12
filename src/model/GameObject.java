@@ -9,7 +9,7 @@ public class GameObject {
     protected static int sizeX; // sizeX of guiboard
 	protected static int sizeY; // sizeY
 	
-    protected Vector2f position ; // coordinates of object is stocked in the fields of an Vector2f object
+    protected Vector2f position ;
     /**
      * Constructor of gameobject is called by players objects
      * @param x cooridinates
@@ -45,15 +45,15 @@ public class GameObject {
     public Vector2f getPosition() {
     	return position;
     }
-      
+    
+    /**
+     * Set coordinates of current object in a vector2f object
+     * @param x
+     * @param y
+     */
     public void setPosition(float x, float y) {
     	this.position.x = x;
     	this.position.y = y;
-    }
-
-    protected void setAttributs(float x, float y) {
-        position.x = x;
-        position.y = y;
     }
     class Vector2f {
         public float x;

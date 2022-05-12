@@ -20,8 +20,8 @@ public class GameMonster extends Game{
     private int nbPlayers;
     private int nbAI;
     private final String map;
-    private int monsterMAX;
-    private int numberOfMonstersTotal; // monsters that was added in game
+    private int monsterMAX; // maximum numbers of monsters shown
+    private int numberOfMonstersTotal; // monsters that was added in game (currently living or dead)
     private Clip gameMusic;
     private final Object pauseLock = new Object();
     private volatile boolean paused = false;
@@ -40,6 +40,7 @@ public class GameMonster extends Game{
         if (nbPlayers == 0) {
             nbPlayers = 1;
         }
+        // the value of monstermax is different for every map
         if (map.equals("maps/default.csv")) monsterMAX = nbPlayers * 2;
         else if (map.equals("maps/map2.csv")) monsterMAX = (nbPlayers + 1) * 2;
         else monsterMAX = (nbPlayers + 2) * 2;
@@ -90,15 +91,15 @@ public class GameMonster extends Game{
             y = random.nextInt(13) + 1;
             timing++; // avoid loopholes
         }while (!checkplace(x,y) && timing <= 25);
-        if (timing > 25) return false;
+        if (timing > 25) return false; // monster couldn't be placed
         monster.setMonster(x+0.4F, y+0.4F);
         board.getCases()[x][y].addMovableOnCase(monster);
         return true;
     }
 
     /**
-     * Check in a grill of 3x3 if there is a player in a case
-     * or in its direct surroundings and monsters on diagonal cases.
+     * Check in a grill of 3x3 if there is a player in the current case
+     * or in its bordering squares and monsters on diagonal squares.
      * @param x row of the center case of the grill
      * @param y col of the center case of the grill
      * @return true or false
@@ -148,23 +149,24 @@ public class GameMonster extends Game{
         float y = 0;
         int i = 0;
         Player player = null;
-        while (i < nbPlayers) {
-            if (i == 0) {
+        // set players by number of players chosen
+        while (i < nbPlayers) { // set players by number of players chosen
+            if (i == 0) { //set in top left corner
                 x = 1.4F;
                 y = 1.4F;
                 player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_Z, KeyEvent.VK_S, KeyEvent.VK_Q, KeyEvent.VK_D, KeyEvent.VK_CONTROL);
-            } else if (i == 1) {
+            } else if (i == 1) { //bottom right corner
                 x = 11.4F;
                 y = 13.4F;
                 player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,KeyEvent.VK_ALT_GRAPH);
-            } else if (i == 2) {
+            } else if (i == 2) { // bottom left corner
                 x = 1.4F;
                 y = 13.4F;
                 player = new Player(i, x, y, board,false);
                 player.bindKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6,KeyEvent.VK_NUMPAD2);
-            } else if (i==3) {
+            } else if (i==3) { // top right corner
                 x = 11.4F;
                 y = 1.4F;
                 player = new Player(i, x, y, board,false);

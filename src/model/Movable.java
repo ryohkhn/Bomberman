@@ -9,6 +9,7 @@ import java.util.Random;
 public interface Movable{
     // methods of moving entities
     Point point=new Point(); // the coordinates of an object
+    // collision methods
     void detectCollisionRight(double d);
     void detectCollisionUp(double d);
     void detectCollisionLeft(double d);

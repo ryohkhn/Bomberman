@@ -6,7 +6,8 @@ import java.util.Comparator;
 import view.GuiBoard;
 
 /**
- * Bot that is playing as a player controlled by a computer (Unfinished)
+ * (Unfinished)
+ * Bot that is playing as a player controlled by a computer.
  * Move and take actions according to the issues faced in the environment
  */
 public class Bot implements AI {
@@ -343,6 +344,8 @@ public class Bot implements AI {
 	 * @return boolean which checks it.
 	 */
 	private boolean detectBomb(int row, int col) {
+		// proximity is a grill of 3x3 representing a grill where (row,col)
+		// is the position of central case of the grill
 		proximity[0] = getElementsInPlayerDir(row, col, -1, -1);
 		proximity[1] = getElementsInPlayerDir(row, col, -1, 0);
 		proximity[2] = getElementsInPlayerDir(row, col, -1, 1);
@@ -370,7 +373,7 @@ public class Bot implements AI {
 	private int getElementsInPlayerDir(int x, int y, int xdir, int ydir){
 		int xx = x + xdir;
 		int yy = y + ydir;
-		if(xx < 0 || xx >= board.getCases().length || yy < 0 || yy >= board.getCases()[0].length) {
+		if(xx < 0 || xx >= board.getCases().length || yy < 0 || yy >= board.getCases()[0].length) { // invalid coordinates
 			return 0;
 		}
 		Case t = board.getCases()[xx][yy];

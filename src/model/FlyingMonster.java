@@ -45,7 +45,6 @@ public class FlyingMonster extends Monster implements AI {
 	public static void setSpeed(float speed) {
 		FlyingMonster.speed = speed;
 	}
-
 	public void update(double deltaTime) {
 		if (isAlive() && isset) { // if the monster is alive and was set on board
 			spriteTimer += speed;
@@ -87,7 +86,9 @@ public class FlyingMonster extends Monster implements AI {
 	}
 
     @Override
-	// move the player right if there's no wall, considering hitbox
+	/**
+	 * move the player right if there's no wall, considering hitbox
+	 */
     public void detectCollisionRight(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -119,7 +120,9 @@ public class FlyingMonster extends Monster implements AI {
     }
 
     @Override
-	// move the player up if there's no wall, considering hitbox
+	/**
+	 * move the player up if there's no wall, considering hitbox
+	 */
     public void detectCollisionUp(double d) {
         double speedDelta=speed/d;
 		board.getCases()[(int)position.x][(int)position.y].deleteMovableOnCase(this);
@@ -281,7 +284,7 @@ public class FlyingMonster extends Monster implements AI {
 	}
 	/**
 	 * Check if the monster can move in rows
-	 * @return
+	 * @return direction
 	 */
 	protected int calculateRowDirection() {
 		int x = (int)position.x;
