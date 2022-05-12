@@ -174,60 +174,57 @@ public class GameMonster extends Game{
     private volatile boolean paused = false;
     private long pauseTime;
     private long resumeTime;
-    
+
     @Override
     public void gameLoop() {
-
         double loopTimeInterval = 1000 / FPS;
         double lastTime = System.currentTimeMillis();
-
+        
         try {
-			gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
-		} catch (Exception e1) {}
-        boolean endLoop = false;
-        while(!endLoop){
-        	synchronized (pauseLock) {
-                if (paused) {
-                    try {
-                        gui.repaint();
-                        synchronized (pauseLock) {
-                            pauseLock.wait();
+            gameMusic = playSound("resources/SFX/BackgroundMusic.wav", true);
+        } catch (Exception ignored) {}
+
+        while(true){
+            long startLoopTime = System.currentTimeMillis();
+            if (!gameRestart) {
+                gameEndScreen = hasEnded();
+                if (!this.gameEndScreen) {
+                    synchronized (pauseLock) {
+                        if (paused) {
+                            try {
+                                gui.repaint();
+                                synchronized (pauseLock) {
+                                    pauseLock.wait();
+                                }
+                            } catch (InterruptedException ex) {
+                                break;
+                            }
                         }
-                    } catch (InterruptedException ex) {
-                        break;
                     }
                 }
-            }
-        
-            long startLoopTime = System.currentTimeMillis();
+                //instructions timer
+                timer += (startLoopTime - lastTime);
+                lastTime = startLoopTime;
+                // fin timer
 
-            //instructions timer
-            timer += (startLoopTime - lastTime);
-            lastTime = startLoopTime;
-            // fin timer
-
-            //début des instructions de jeu
-            
-            bombUpdate();
-            if(this.hasEnded()){
-                if(endTime == -1) endTime = System.currentTimeMillis();
-                else if(endTime + 1000 < System.currentTimeMillis()) endLoop = true;
+                //début des instructions de jeu
+                if (bombUpdate() != 0) {
+                    try {
+                        playSound("resources/SFX/BombeExplode.wav", false);
+                    } catch (Exception ignored) {
+                    }
+                }
+                playerUpdate(loopTimeInterval);
+                monsterUpdate(loopTimeInterval);
+                gui.repaint();
             }
-            if(bombUpdate() != 0) {
-				try {
-					playSound("resources/SFX/BombeExplode.wav", false);
-				} catch (Exception e) {}
-            }
-            playerUpdate(loopTimeInterval);
-            monsterUpdate(loopTimeInterval);
-            gui.repaint();
             gui.revalidate();
             //fin des instructions de jeu
 
             long endLoopTime = System.currentTimeMillis();
             try{
-            	if((long)loopTimeInterval - (endLoopTime - startLoopTime)>0)
-					Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
+                if((long)loopTimeInterval - (endLoopTime - startLoopTime)>0)
+                    Thread.sleep((long)loopTimeInterval - (endLoopTime - startLoopTime));
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
