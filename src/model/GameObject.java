@@ -12,8 +12,8 @@ public class GameObject {
 
     /**
      * Constructor of gameobject is called by players objects
-     * @param x cooridinates
-     * @param y
+     * @param x position x
+     * @param y position y
      */
     public GameObject(float x, float y) {
     	position = new Vector2f(x, y);

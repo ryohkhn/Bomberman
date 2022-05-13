@@ -30,6 +30,12 @@ public class GameMonster extends Game{
     private long resumeTime;
 
 
+    /**
+     * Constructor for GameMonster
+     * @param map map of the game
+     * @param numberOfPlayers number of players
+     * @param gui object for the gui
+     */
     public GameMonster(String map, int numberOfPlayers, Gui gui) {
 		this.gui = gui;
 		this.map = map;
@@ -42,7 +48,7 @@ public class GameMonster extends Game{
     }
 
     /**
-     * main loop of the game.
+     * Main loop of the game.
      */
     @Override
     public void gameLoop() {
@@ -100,8 +106,8 @@ public class GameMonster extends Game{
     }
 
     /**
-     * Create a new board.
-     * @return new board
+     * Create a new board
+     * @return board object
      */
     public Board init() {
 		try {
@@ -118,8 +124,9 @@ public class GameMonster extends Game{
         }
         return board;
     }
+
     /**
-     * Function that add monsters to the arraylist of monsters.
+     * Function that add monsters to the arraylist of monsters
      */
     public void addMonsters() {
         Monster monster = null;
@@ -134,6 +141,7 @@ public class GameMonster extends Game{
             }
         }
     }
+
     /**
      * Function that determine a place where we can set a monster
      * @param monster the current monster to place
@@ -237,7 +245,7 @@ public class GameMonster extends Game{
     }
 
     /**
-     * update the step of every players
+     * Update the step of every player
      * @param deltaTime is used to establish speedDelta.
      */
     public void playerUpdate(double deltaTime) {
@@ -245,8 +253,9 @@ public class GameMonster extends Game{
             p.update(deltaTime);
         }
     }
+
     /**
-     * update the step of every monsters
+     * Update the step of every monster
      * @param deltaTime is used to establish speedDelta.
      */
     private void monsterUpdate(double deltaTime) {
@@ -261,8 +270,9 @@ public class GameMonster extends Game{
 			else m.update(deltaTime);
 		}
     }
+
     /**
-     * update speed for the gameplay
+     * Update speed for the gameplay
      */
     public void updateSpeed() {
         if (numberOfMonstersTotal % 10 == 0) { // upgrade speed 
@@ -270,8 +280,9 @@ public class GameMonster extends Game{
             WalkingMonster.setSpeed(WalkingMonster.getSpeed() + 0.1F);
         }
     }
+
     /**
-     * Functions that returns the number of bombs exploded.
+     * Functions that returns the number of bombs exploded
      * @return int
      */
     private int bombUpdate() {
@@ -299,16 +310,15 @@ public class GameMonster extends Game{
     }
 
     /**
-     * note the start time of the pause.
-     * puts the game on pause.
+     * Note the start time of the pause and change the pause boolean to true
      */
 	public void pause() {
         pauseTime = System.currentTimeMillis();
         this.paused = true;
     }
+
     /**
-     * note the end time of the pause.
-     * release the pause state of the game.
+     * Note the end time of the pause and release the pause state of the game
      */
     public void resume() {
         resumeTime = System.currentTimeMillis();
@@ -320,7 +330,7 @@ public class GameMonster extends Game{
     }
 
     /**
-     * update bomb time.
+     * Update bomb time.
      * (to not count the pause time in the bomb countdown).
      */
     private void bombPauseUpdate() {

@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serial;
 import java.util.Enumeration;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -84,7 +83,6 @@ public class GuiMenu extends JPanel implements ActionListener{
      * This Action disposes the current frame to make room for a new game.
      */
     public Action newGameAction = new AbstractAction() {
-		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 			frame.startGame();
 		}
@@ -94,8 +92,6 @@ public class GuiMenu extends JPanel implements ActionListener{
      * This Action is called when the user clicks on the settings button, it creates a new SettingsFrame.
      */
     public Action settingsAction = new AbstractAction() {
-		@Serial
-		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 		    
 	        settingPanel.setLayout(new BoxLayout(settingPanel, BoxLayout.Y_AXIS));
@@ -328,8 +324,6 @@ public class GuiMenu extends JPanel implements ActionListener{
      * This Action terminates the current process.
      */
     public Action quitAction = new AbstractAction() {
-		@Serial
-		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 		    System.exit(0);
 		}
@@ -384,7 +378,7 @@ public class GuiMenu extends JPanel implements ActionListener{
 	}
 
 	/**
-	 * paint component
+	 * Paint component
 	 * @param g graphic item g
 	 */
 	@Override

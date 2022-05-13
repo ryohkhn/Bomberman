@@ -108,6 +108,7 @@ public class Bot implements AI {
 		player.setReleasedUp();
 		player.setReleasedAction();
 	}
+
 	/**
 	 * Function that checks and compares the shortest path between an enemy and the current player 
 	 */
@@ -232,6 +233,7 @@ public class Bot implements AI {
 		}
 		
 	}
+
     /**
 	 * Function which the path to take in order to escape the bomb
 	 */
@@ -362,7 +364,7 @@ public class Bot implements AI {
 		return false;
 	}
 	/**
-	 * get the Elements present a new case
+	 * Get the Elements present a new case
 	 * @param x current case of x
 	 * @param y current case of y
 	 * @param xdir direction in row

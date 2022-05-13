@@ -48,7 +48,7 @@ public class Player extends GameObject implements Movable{
     }
 
 	/**
-	 * model updater for players. This function calls collisions detector and change player's sprite index.
+	 * Model updater for players. This function calls collisions detector and change player's sprite index.
 	 * @param deltaTime is used to establish speedDelta.
 	 */
 	@Override
@@ -93,7 +93,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	/**
-	 * stock inputs into class attributes
+	 * Stock inputs into class attributes
 	 * @param up up key
 	 * @param down down key
 	 * @param left left key
@@ -109,7 +109,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	/**
-	 * move the player down if there's no wall, considering hitbox
+	 * Move the player down if there's no wall, considering hitbox
 	 * @param deltaTime is used to establish speedDelta.
 	 */
 	@Override
@@ -148,7 +148,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	/**
-	 * move the player up if there's no wall, considering hitbox
+	 * Move the player up if there's no wall, considering hitbox
 	 * @param deltaTime is used to establish speedDelta.
 	 */
 	@Override
@@ -187,7 +187,7 @@ public class Player extends GameObject implements Movable{
 	}
 	
 	/**
-	 * move the player left if there's no wall, considering hitbox
+	 * Move the player left if there's no wall, considering hitbox
 	 * @param deltaTime is used to establish speedDelta.
 	 */
 	@Override
@@ -226,7 +226,7 @@ public class Player extends GameObject implements Movable{
 	}
 
 	/**
-	 * move the player right if there's no wall, considering hitbox
+	 * Move the player right if there's no wall, considering hitbox
 	 * @param deltaTime is used to establish speedDelta.
 	 */
 	@Override

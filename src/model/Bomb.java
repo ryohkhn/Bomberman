@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Bomb objects that are created by players.
  * firepower Strength of the bomb explosionContact
- * pierce Whether or not the explosions will pierce soft walls
+ * pierce Whether the explosions will pierce soft walls
  */
 public class Bomb extends GameObject{
 
@@ -155,7 +155,7 @@ public class Bomb extends GameObject{
     }
     
     /**
-     * kill movable on exploded cases.
+     * Kill movable on exploded cases.
      * @return points won from kill(s)
      */
     public int kill() {
@@ -167,7 +167,7 @@ public class Bomb extends GameObject{
     }
 
 
-    // setter et getter :
+    // Setter and getter :
 
     public void setKicked(boolean kicked, KickDirection kickDirection) {
         this.kicked = kicked;

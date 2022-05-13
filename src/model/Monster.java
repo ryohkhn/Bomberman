@@ -23,7 +23,7 @@ public abstract class Monster extends GameObject implements Movable{
     // setters - getters
 
     /**
-     * return value of variable isset
+     * Return value of variable isset
      * @return isset
      */
     public boolean isSet() {
@@ -31,8 +31,7 @@ public abstract class Monster extends GameObject implements Movable{
     }
 
     /**
-     * get the variable which represents the position of 
-     * the image in the array of arrays of images
+     * Get the variable which represents the position of the image in the array of arrays of images
      * @return
      */
     public int getSpriteIndex() {
@@ -40,7 +39,7 @@ public abstract class Monster extends GameObject implements Movable{
     }
 
     /**
-     * get the current direction
+     * Get the current direction
      */
     public int getDirection() {
         return direction;
@@ -49,16 +48,16 @@ public abstract class Monster extends GameObject implements Movable{
     public abstract int getType();
 
     /**
-     * initate Monster 
+     * Initate Monster
      * @param x
      * @param y
      */
-
     public void setMonster(float x,float y) {
 		this.setPosition(x, y);
 		isset = true;
         direction = -1;
 	}
+
     /**
      * @return dead
      */
@@ -67,7 +66,7 @@ public abstract class Monster extends GameObject implements Movable{
 	}
 
     /**
-     * change the boolean variable isAlive 
+     * Change the boolean variable isAlive
      * @param b alive boolean
      */
     public void setAlive(boolean b) {
@@ -78,7 +77,7 @@ public abstract class Monster extends GameObject implements Movable{
 	}
 
     /**
-     * return the value of the variable isAlive
+     * Return the value of the variable isAlive
      * @return isAlive
      */
     public boolean isAlive() {
@@ -86,7 +85,7 @@ public abstract class Monster extends GameObject implements Movable{
 	}
 
     /**
-     * kill players who are present in the current case which the player is present.
+     * Kill players who are present in the current case which the player is present.
      */
     public void killPlayers() {
 		int line= (int)position.x;
@@ -96,7 +95,7 @@ public abstract class Monster extends GameObject implements Movable{
     }
 
     /**
-     * return the rounded number of a float
+     * Return the rounded number of a float
      */
     public float roundFloat(float f) {
         return (float)(Math.round((f)*100.0)/100.0);

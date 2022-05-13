@@ -11,8 +11,8 @@ public class Case{
 
 	/**
      * Kill movables in the Case and give points to the player
-     * @return new point count of the player
-     * @param player: Original player that placed the bomb
+     * @return New point count of the player
+     * @param player Original player that placed the bomb
      */
 	public int killMoveables(Player player) {
 		Iterator<Movable> iterator = movablesOnCase.iterator();
@@ -41,9 +41,8 @@ public class Case{
 	}
 
 	/**
-	 * * Function that Kill players in the Case
-	 * 	 * @param monster
-     */
+	 * Function that Kill players in the Case
+	 */
 	public void killPlayers() {
 		Iterator<Movable> iter = movablesOnCase.iterator();
 		while(iter.hasNext()) {
@@ -57,7 +56,7 @@ public class Case{
 
 	/**
      * Return true if there are other players in the Case
-     * @param p: original player
+     * @param p original player
      */
 	public boolean hasPlayers(Player p) {
 		Iterator<Movable> iter = movablesOnCase.iterator();
@@ -93,12 +92,13 @@ public class Case{
 	}
 	
 	/**
-	 * add a movable object to the arraylist
+	 * Add a movable object to the arraylist
 	 * @param movable movable
 	 */
 	public void addMovableOnCase(Movable movable) {
 		this.movablesOnCase.add(movable);
 	}
+
 	/**
 	 * Remove movable object from the arraylist
 	 * @param movable movable
@@ -106,18 +106,21 @@ public class Case{
 	public void deleteMovableOnCase(Movable movable) {
 		this.movablesOnCase.remove(movable);
 	}
+
 	/**
 	 * @return movables on case
 	 */
 	public ArrayList<Movable> getMovablesOnCase(){
 		return this.movablesOnCase;
 	}
+
 	/** 
 	 * @return bonus on the case
 	*/
 	public Bonus getBonus() {
 		return bonus;
 	}
+
 	/**
 	 * set the bonus on the case
 	 * @param bonus bonus
@@ -125,6 +128,7 @@ public class Case{
 	public void setBonus(Bonus bonus) {
 		this.bonus = bonus;
 	}
+
 	/**
 	 * @return variable wall
 	 */
@@ -154,6 +158,4 @@ public class Case{
 	public void setWall(Wall wall) {
 		this.wall = wall;
 	}
-
-
 }

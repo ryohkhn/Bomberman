@@ -24,14 +24,14 @@ public class WalkingMonster extends Monster implements AI{
     }
 
 	/**
-	 * get the id type of the walking monster
+	 * Get the id type of the walking monster
 	 */
 	public int getType() {
 		return TYPE;
 	}
 
 	/**
-	 * get the speed of a monster
+	 * Get the speed of a monster
 	 * @return the speed as float 
 	 */
 	public static float getSpeed() {
@@ -39,7 +39,7 @@ public class WalkingMonster extends Monster implements AI{
 	}
 
 	/**
-	 * set the speed of the object
+	 * Set the speed of the object
 	 * @param speed speed
 	 */
 	public static void setSpeed(float speed) {
@@ -88,7 +88,7 @@ public class WalkingMonster extends Monster implements AI{
 	}
 
 	/**
-	 * move the monster right if there's no wall, considering hit box.
+	 * Move the monster right if there's no wall, considering hit box.
 	 * @param d is used to establish speed.
 	 */
     @Override
@@ -125,7 +125,7 @@ public class WalkingMonster extends Monster implements AI{
     }
 
 	/**
-	 * move the monster up if there's no wall, considering hit box.
+	 * Move the monster up if there's no wall, considering hit box.
 	 * @param d is used to establish speed.
 	 */
     @Override
@@ -162,7 +162,7 @@ public class WalkingMonster extends Monster implements AI{
     }
 
 	/**
-	 * move the monster left if there's no wall, considering hit box
+	 * Move the monster left if there's no wall, considering hit box
 	 * @param d is used to establish speed.
 	 */
     @Override
@@ -198,7 +198,7 @@ public class WalkingMonster extends Monster implements AI{
     }
 
 	/**
-	 * move the monster down if there's no wall, considering hit box.
+	 * Move the monster down if there's no wall, considering hit box.
 	 * @param d is used to establish speed.
 	 */
     @Override
@@ -234,7 +234,7 @@ public class WalkingMonster extends Monster implements AI{
     }
 
 	/**
-	 * stops the movements of the monster
+	 * Stops the movements of the monster
 	 */
     @Override
     public void stop() {

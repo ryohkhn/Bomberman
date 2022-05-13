@@ -20,7 +20,7 @@ public class Bonus{
     static Type randomBonus() { return bonuses[random.nextInt(bonuses.length)];}
 
     /**
-     * Grants bonuses to player.
+     * Grants bonuses to player
      * @param player Player object to be granted bonus
      */
     void grantBonus(Player player) {

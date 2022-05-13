@@ -416,7 +416,7 @@ public class GuiBoard extends JPanel{
     }
 
     /**
-     * paint monsters images.
+     * Paint monsters images.
      * @param g2 paintComponent Graphics object
      * @throws IOException
      */
